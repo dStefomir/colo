@@ -34,7 +34,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
   @override
   void update(double dt) {
     super.update(dt);
-    final limit = game.manager.getBulletDyLimit(positionDy: position.y);
+    final limit = game.manager.getBulletDyLimit();
     if (limit >= position.y) {
       game.remove(this);
     }

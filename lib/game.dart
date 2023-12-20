@@ -46,7 +46,7 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> onLoad() async {
     super.onLoad();
     /// Loads the background music of the game
-    FlameAudio.loopLongAudio('background.mp3', volume: 0.1);
+    FlameAudio.loop('background.mp3', volume: 0.1);
 
     manager = GameManager(onChange: _onLevelChange);
     _score = Score(text: '${manager.score}');

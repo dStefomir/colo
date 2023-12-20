@@ -36,14 +36,14 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    if (_destroyedBars.value == 10) {
+    if (_destroyedBars.value == 1) {
       if (_actionButtons.length == 2) {
         _addExtraActionButton();
         _level = GameLevel.medium;
         onChange(_level);
       }
     }
-    if (_destroyedBars.value == 50) {
+    if (_destroyedBars.value == 2) {
       if (_actionButtons.length == 3) {
         _addExtraActionButton();
         _level = GameLevel.hard;
@@ -58,8 +58,9 @@ class GameManager extends Component with HasGameRef<ColoGame> {
           height: colorfulBtnSize,
           color: e,
           btnPosition: () {
+            const double horizontalSpace = colorfulBtnSize * 3;
             final double verticalSpace = game.size.y - (colorfulBtnSize * 2.2);
-            double horizontalSpace = colorfulBtnSize * 3;
+
             /// Game has two colors
             if (_gameColors.length == 2) {
               if (_gameColors.indexOf(e) == 0) {
@@ -71,7 +72,7 @@ class GameManager extends Component with HasGameRef<ColoGame> {
             } else if (_gameColors.length == 3) {
               if (_gameColors.indexOf(e) == 0) {
                 return Vector2(15, verticalSpace);
-              } else if (_gameColors.indexOf(e) == 1) {
+              } else if (_gameColors.indexOf(e) == 2) {
                 return Vector2(15 + horizontalSpace / 1.5, verticalSpace - colorfulBtnSize);
               } else {
                 return Vector2(game.size.x - (colorfulBtnSize * 2) - 15, verticalSpace);
@@ -80,12 +81,12 @@ class GameManager extends Component with HasGameRef<ColoGame> {
             } else {
               if (_gameColors.indexOf(e) == 0) {
                 return Vector2(15, verticalSpace);
-              } else if (_gameColors.indexOf(e) == 1) {
-                return Vector2(game.size.x - (colorfulBtnSize * 2) - 15, verticalSpace);
               } else if (_gameColors.indexOf(e) == 2) {
                 return Vector2(15 + horizontalSpace / 1.5, verticalSpace - colorfulBtnSize);
-              } else {
+              } else if (_gameColors.indexOf(e) == 3) {
                 return Vector2(game.size.x - (colorfulBtnSize * 2) - 15 - horizontalSpace / 1.5, verticalSpace - colorfulBtnSize);
+              } else {
+                return Vector2(game.size.x - (colorfulBtnSize * 2) - 15, verticalSpace);
               }
             }
           }
@@ -146,7 +147,7 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   }
 
   /// Gets a dy limit for the bullet based on the game level
-  double getBulletDyLimit({required double positionDy}) {
+  double getBulletDyLimit() {
     double dy;
 
     switch (_level) {
