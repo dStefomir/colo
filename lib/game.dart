@@ -23,6 +23,8 @@ const barVelocity = 100.0;
 const barInterval = 0.8;
 /// Velocity of the bullet
 const bulletVelocity = 500;
+/// Speed of the background parallax effect
+const backgroundParallax = 25.0;
 /// Game colors
 const Map<String, Color> colors = {
   'assets/wave_purple.riv' : Colors.deepPurpleAccent,
@@ -51,14 +53,14 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> onLoad() async {
     super.onLoad();
 
-    manager = GameManager(onBarFallingSpeedChange: _onLevelChange);
+    manager = GameManager();
     _score = Score(text: '${manager.score}');
 
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
         [
           manager,
-          Background(asset: 'background2.jpg'),
+          Background(asset: 'background.jpg'),
           _renderBar(),
           _score
         ]
@@ -110,7 +112,4 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
         barSize: Vector2(size.x / 2, 50),
     );
   }
-
-  /// What happens when the game level is changed
-  void _onLevelChange(double interval) => _barInterval.limit = interval;
 }

@@ -31,6 +31,6 @@ class Background extends ParallaxComponent<ColoGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    parallax?.baseVelocity.x = barVelocity;
+    parallax?.baseVelocity.x = backgroundParallax;
   }
 }

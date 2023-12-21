@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:colo/component/color_button.dart';
 import 'package:colo/game.dart';
-import 'package:colo/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +11,6 @@ enum GameLevel {
 
 /// Manger for controlling the game rules
 class GameManager extends Component with HasGameRef<ColoGame> {
-
-  /// What happens when the bar falling speed changes
-  final void Function(double) onBarFallingSpeedChange;
   /// Game colors structure
   late List<Color> _gameColors;
   /// Action buttons structure
@@ -23,16 +19,13 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   late ValueNotifier<int> _destroyedBars;
   /// Current game level
   late GameLevel _level;
-  /// Falling interval for the bars
-  late double _barFallingInterval;
   /// Multiplier for the falling speed of the bars
   late double _barFallingSpeedMultiplier;
 
-  GameManager({required this.onBarFallingSpeedChange}) {
+  GameManager() {
     _level = GameLevel.easy;
     _gameColors = List.generate(_getGameColors(), (index) => colors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
-    _barFallingInterval = barInterval;
     _barFallingSpeedMultiplier = 1;
   }
 
@@ -133,16 +126,7 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     /// If its hard level and 20 more bars are destroyed - increase bar falling speed
     if (_destroyedBars.value > 40 && _destroyedBars.value % 20 == 1) {
       _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.0001;
-      onBarFallingSpeedChange(_getBarInterval());
     }
-  }
-  /// Gets the game bar interval based on the level
-  double _getBarInterval() {
-    if (_barFallingInterval >= 0.4) {
-      _barFallingInterval = _barFallingInterval - 0.002;
-    }
-
-    return _barFallingInterval;
   }
 
   /// Gets a riv file based on the color based on the game level
@@ -192,7 +176,6 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     if (_destroyedBars.value < 0) {
       gameOver();
     }
-    vibrate();
   }
   /// Pauses the game
   void gameOver() => game.pauseEngine();

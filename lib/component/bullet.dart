@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:colo/component/bar.dart';
 import 'package:colo/game.dart';
 import 'package:colo/utils/audio.dart';
+import 'package:colo/widgets/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -29,6 +30,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
   @override
   Future<void> onLoad() async {
     super.onLoad();
+
     play(asset: 'rocket.wav', volume: 0.05);
     position = Vector2(game.size.x / 2, game.size.y);
   }
@@ -49,9 +51,10 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
               generator: (i) => AcceleratedParticle(
                 acceleration: _getRandomVector(),
                 speed: _getRandomVector(),
-                child: CircleParticle(
+                child: CustomParticle(
                   radius: 1,
                   paint: Paint()..color = bulletColor,
+                  shadowColor: bulletColor
                 ),
               ),
             )
@@ -73,7 +76,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
                   position: position.clone(),
                   acceleration: _getRandomVector() * 2.0,
                   speed: _getRandomVector() * 2.0,
-                  child: CircleParticle(
+                  child: CustomParticle(
                     radius: 1,
                     paint: Paint()..color = bulletColor,
                   ),

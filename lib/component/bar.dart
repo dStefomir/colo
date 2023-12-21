@@ -4,9 +4,11 @@ import 'package:colo/component/bullet.dart';
 import 'package:colo/component/riv.dart';
 import 'package:colo/game.dart';
 import 'package:colo/utils/audio.dart';
+import 'package:colo/widgets/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame/rendering.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +36,16 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   
   @override
   Future<void> onLoad() async {
+    decorator.addLast(
+        Shadow3DDecorator(
+          angle: - 0.5,
+          xShift: 1.2,
+          yScale: 1.2,
+          opacity: 0.5,
+          blur: 1.5,
+        )
+    );
     position = Vector2(_generateRandomDx(), 0);
-    // position = Vector2(30, 0);
     final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getRivAssetBasedOnColor(color: color)));
     riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
     await add(riv);
@@ -89,10 +99,10 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,
         position: Vector2((game.size / 2).x, position.y),
-        child: CircleParticle(
+        child: CustomParticle(
             radius: 3,
             paint: Paint()
-              ..color = color.withOpacity(0.7)
+              ..color = color
               ..filterQuality = FilterQuality.high
               ..isAntiAlias = true
         ),
