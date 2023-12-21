@@ -103,8 +103,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
             radius: 3,
             paint: Paint()
               ..color = color
-              ..filterQuality = FilterQuality.high
-              ..isAntiAlias = true
         ),
       ),
     ),
