@@ -51,14 +51,14 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> onLoad() async {
     super.onLoad();
 
-    manager = GameManager(onChange: _onLevelChange);
+    manager = GameManager(onBarFallingSpeedChange: _onLevelChange);
     _score = Score(text: '${manager.score}');
 
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
         [
           manager,
-          Background(asset: 'background.jpg'),
+          Background(asset: 'background2.jpg'),
           _renderBar(),
           _score
         ]
@@ -66,7 +66,7 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
     /// ------------------------------------------------------------------------
 
     /// Game looper
-    _barInterval = Timer(manager.getBarInterval(), repeat: true);
+    _barInterval = Timer(barInterval, repeat: true);
     _barInterval.onTick = () async {
       await add(_renderBar());
       await add(_score);
@@ -112,8 +112,5 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   }
 
   /// What happens when the game level is changed
-  void _onLevelChange(GameLevel level) {
-    _barInterval.limit = manager.getBarInterval();
-    _barInterval.start();
-  }
+  void _onLevelChange(double interval) => _barInterval.limit = interval;
 }

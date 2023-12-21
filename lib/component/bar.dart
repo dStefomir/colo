@@ -44,11 +44,11 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   @override
   void update(double dt) {
     super.update(dt);
-    position.y += barVelocity * dt;
+    position.y += (barVelocity * dt) * game.manager.barFallingSpeedMultiplier;
 
     if (position.y > game.size.y) {
       game.remove(this);
-      game.pauseEngine();
+      game.manager.gameOver();
       /// TODO: Show game over dialog
     }
   }

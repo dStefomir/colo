@@ -81,6 +81,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
               )
           )
       );
+      game.manager.onBulletColorMiss();
     }
     super.onCollision(intersectionPoints, other);
   }

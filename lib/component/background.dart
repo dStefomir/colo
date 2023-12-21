@@ -4,7 +4,6 @@ import 'package:colo/game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/parallax.dart';
-import 'package:flame/rendering.dart';
 
 /// Renders a background
 class Background extends ParallaxComponent<ColoGame> {
@@ -16,13 +15,12 @@ class Background extends ParallaxComponent<ColoGame> {
   @override
   Future<void> onLoad() async {
     final background = await Flame.images.load(asset);
-    decorator.addLast(PaintDecorator.blur(5.5));
     parallax = Parallax(
         [
           ParallaxLayer(
             ParallaxImage(
                 background,
-                fill: LayerFill.none,
+                fill: LayerFill.height,
                 filterQuality: FilterQuality.high
             )
           )
