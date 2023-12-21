@@ -5,6 +5,7 @@ import 'package:colo/game.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bullet
@@ -28,6 +29,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    FlameAudio.play('rocket.wav', volume: 0.05);
     position = Vector2(game.size.x / 2, game.size.y);
   }
 

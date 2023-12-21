@@ -1,11 +1,13 @@
 import 'dart:math';
 
 import 'package:colo/component/bullet.dart';
+import 'package:colo/component/riv.dart';
 import 'package:colo/game.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bar
@@ -14,6 +16,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   final Color color;
   /// Bar size
   final Vector2 barSize;
+
+  late RivAnimationComponent riv;
 
   Bar({required this.color, required this.barSize}) : super(
       size: barSize,
@@ -31,7 +35,10 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   @override
   Future<void> onLoad() async {
     final random = Random();
-    position = Vector2(random.nextInt(game.size.x ~/ 6).toDouble() * 2, 0);
+    position = Vector2(random.nextInt(game.size.x ~/ 6).toDouble() * 2.5, 0);
+    final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getRivAssetBasedOnColor(color: color)));
+    riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
+    await add(riv);
   }
 
   @override
@@ -69,7 +76,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   /// When the bullet is destroyed because of a wrong
   /// color, also decrease the current score
   _destroyBullet() {
-    FlameAudio.play('mismatch.wav', volume: 0.7);
+    FlameAudio.play('mismatch.wav', volume: 0.5);
     game.manager.decreaseScore();
   }
 
@@ -99,4 +106,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
     final random = Random();
     return (Vector2.random(random) - Vector2.random(random)) * 500;
   }
+
+
 }

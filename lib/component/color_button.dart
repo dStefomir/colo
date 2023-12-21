@@ -27,7 +27,7 @@ class ColorfulButton extends SpriteComponent {
             ..filterQuality = FilterQuality.high
             ..isAntiAlias = true,
           radius: height - 7.5,
-          position: Vector2(height / 4 , height / 4),
+          position: Vector2(height / 4.8, height / 4.8),
         )
       ]
   );

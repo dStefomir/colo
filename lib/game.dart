@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Size of the action buttons
-const colorfulBtnSize = 30.0;
+const colorfulBtnSize = 38.0;
 /// Size of the bullet
 const bulletSize = 15.0;
 /// Bar speed easy mode
@@ -24,13 +24,12 @@ const barInterval = 0.8;
 /// Velocity of the bullet
 const bulletVelocity = 500;
 /// Game colors
-const colors = [
-  Colors.deepPurpleAccent,
-  Colors.deepOrangeAccent,
-  Colors.blue,
-  Colors.greenAccent,
-  Colors.yellowAccent
-];
+const Map<String, Color> colors = {
+  'assets/wave_purple.riv' : Colors.deepPurpleAccent,
+  'assets/wave_red.riv': Colors.pink,
+  'assets/wave_blue.riv': Colors.blue,
+  'assets/wave_green.riv': Colors.greenAccent,
+};
 
 /// Represents the game itself
 class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
@@ -46,7 +45,7 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> onLoad() async {
     super.onLoad();
     /// Loads the background music of the game
-    FlameAudio.loop('background.mp3', volume: 0.1);
+    FlameAudio.loop('background.mp3', volume: 0.05);
 
     manager = GameManager(onChange: _onLevelChange);
     _score = Score(text: '${manager.score}');
@@ -81,9 +80,13 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
     try {
       final ColorfulButton actionButton = manager.actionButtons.firstWhere((element) => element.containsPoint(info.eventPosition.global));
       final Color buttonColor = manager.gameColors[manager.actionButtons.indexOf(actionButton)];
-      FlameAudio.play('rocket.wav', volume: 0.1);
       actionButton.handleClick();
-      add(Bullet(bulletColor: buttonColor, bulletSize: bulletSize));
+      add(
+          Bullet(
+              bulletColor: buttonColor,
+              bulletSize: bulletSize
+          )
+      );
     } catch (e) {
       if (kDebugMode) {
         print("No button was clicked");
@@ -93,11 +96,11 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
 
   /// Renders the falling bars
   _renderBar() {
-    final Random random = Random();
+    final random = Random();
 
     return Bar(
         color: manager.gameColors[random.nextInt(manager.gameColors.length)],
-        barSize: Vector2(size.x / 1.5, 50),
+        barSize: Vector2(size.x / 2, 50),
     );
   }
 

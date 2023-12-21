@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:colo/component/color_button.dart';
 import 'package:colo/game.dart';
 import 'package:colo/utils/vibration.dart';
@@ -23,7 +25,7 @@ class GameManager extends Component with HasGameRef<ColoGame> {
 
   GameManager({required this.onChange}) {
     _level = GameLevel.easy;
-    _gameColors = List.generate(_getGameColors(), (index) => colors[index]);
+    _gameColors = List.generate(_getGameColors(), (index) => colors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
   }
 
@@ -36,14 +38,14 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    if (_destroyedBars.value == 1) {
+    if (_destroyedBars.value == 10) {
       if (_actionButtons.length == 2) {
         _addExtraActionButton();
         _level = GameLevel.medium;
         onChange(_level);
       }
     }
-    if (_destroyedBars.value == 2) {
+    if (_destroyedBars.value == 30) {
       if (_actionButtons.length == 3) {
         _addExtraActionButton();
         _level = GameLevel.hard;
@@ -115,7 +117,7 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   /// Adds a button to the game
   void _addExtraActionButton() {
     game.removeAll(_actionButtons);
-    _gameColors = [..._gameColors, colors[_getGameColors()]];
+    _gameColors = [..._gameColors, colors.values.toList()[_getGameColors()]];
     _actionButtons = _renderActionButtons();
     game.addAll(_actionButtons);
   }
@@ -144,6 +146,17 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     }
 
     return interval;
+  }
+
+  /// Gets a riv file based on the color based on the game level
+  String getRivAssetBasedOnColor({required Color color}) {
+    if (_level == GameLevel.easy || _level == GameLevel.medium) {
+
+      return colors.entries.firstWhere((element) => element.value == color).key;
+    }
+    final random = Random();
+
+    return colors.keys.toList()[random.nextInt(colors.length)];
   }
 
   /// Gets a dy limit for the bullet based on the game level
