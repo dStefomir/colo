@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:colo/component/bullet.dart';
 import 'package:colo/component/riv.dart';
 import 'package:colo/game.dart';
+import 'package:colo/utils/audio.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   final Color color;
   /// Bar size
   final Vector2 barSize;
-
+  /// Riv animation component
   late RivAnimationComponent riv;
 
   Bar({required this.color, required this.barSize}) : super(
@@ -34,8 +34,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   
   @override
   Future<void> onLoad() async {
-    final random = Random();
-    position = Vector2(random.nextInt(game.size.x ~/ 6).toDouble() * 2.5, 0);
+    position = Vector2(_generateRandomDx(), 0);
+    // position = Vector2(30, 0);
     final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getRivAssetBasedOnColor(color: color)));
     riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
     await add(riv);
@@ -67,7 +67,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
 
   /// Destroys a bar
   _destroyBar() {
-    FlameAudio.play('blow.wav');
+    play(asset: 'blow.wav');
     game.manager.increaseScore();
     game.remove(this);
     game.add(_generateParticle());
@@ -76,7 +76,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   /// When the bullet is destroyed because of a wrong
   /// color, also decrease the current score
   _destroyBullet() {
-    FlameAudio.play('mismatch.wav', volume: 0.5);
+    play(asset: 'mismatch.wav', volume: 0.5);
     game.manager.decreaseScore();
   }
 
@@ -100,12 +100,17 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
     ),
   );
 
+  /// Generates a random dx for the bar
+  _generateRandomDx({int min = 30}) {
+    final random = Random();
+
+    return min + random.nextInt(((game.size.x / 2) - min + 1).toInt()).toDouble();
+  }
+
   // This method generates a random vector with its angle
   // between from 0 and 360 degrees.
   _getRandomVector() {
     final random = Random();
     return (Vector2.random(random) - Vector2.random(random)) * 500;
   }
-
-
 }

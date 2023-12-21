@@ -8,10 +8,14 @@ import 'package:flame/rendering.dart';
 
 /// Renders a background
 class Background extends ParallaxComponent<ColoGame> {
+  /// Asset for the background
+  final String asset;
+
+  Background({required this.asset});
 
   @override
   Future<void> onLoad() async {
-    final background = await Flame.images.load('background.jpg');
+    final background = await Flame.images.load(asset);
     decorator.addLast(PaintDecorator.blur(5.5));
     parallax = Parallax(
         [
@@ -29,6 +33,6 @@ class Background extends ParallaxComponent<ColoGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    parallax?.baseVelocity.x = 15;
+    parallax?.baseVelocity.x = barVelocity;
   }
 }

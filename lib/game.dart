@@ -6,10 +6,10 @@ import 'package:colo/component/bullet.dart';
 import 'package:colo/component/color_button.dart';
 import 'package:colo/component/manager.dart';
 import 'package:colo/component/score.dart';
+import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +33,6 @@ const Map<String, Color> colors = {
 
 /// Represents the game itself
 class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
-
   /// Timer for updating the falling bars
   late Timer _barInterval;
   /// Gama manager component
@@ -42,25 +41,32 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   late Score _score;
 
   @override
+  void onMount() {
+    super.onMount();
+    /// Loads the background music of the game
+    playLooped(asset: 'background.mp3', volume: 0.05);
+  }
+
+  @override
   Future<void> onLoad() async {
     super.onLoad();
-    /// Loads the background music of the game
-    FlameAudio.loop('background.mp3', volume: 0.05);
 
     manager = GameManager(onChange: _onLevelChange);
     _score = Score(text: '${manager.score}');
+
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
         [
           manager,
-          Background(),
+          Background(asset: 'background.jpg'),
           _renderBar(),
           _score
         ]
     );
     /// ------------------------------------------------------------------------
+
+    /// Game looper
     _barInterval = Timer(manager.getBarInterval(), repeat: true);
-    /// What happens when timer updates the game
     _barInterval.onTick = () async {
       await add(_renderBar());
       await add(_score);
@@ -71,6 +77,7 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   void update(double dt) {
     super.update(dt);
     _barInterval.update(dt);
+    /// Updates the text score component
     _score.text = '${manager.score}';
   }
 
