@@ -18,8 +18,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
   final Color color;
   /// Bar size
   final Vector2 barSize;
-  /// Riv animation component
-  late RivAnimationComponent riv;
 
   Bar({required this.color, required this.barSize}) : super(
       size: barSize,
@@ -46,8 +44,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
         )
     );
     position = Vector2(_generateRandomDx(), 0);
-    final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getRivAssetBasedOnColor(color: color)));
-    riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
+    final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getBarRivAssetBasedOnColor(color: color)));
+    final riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
     await add(riv);
   }
 

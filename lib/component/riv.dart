@@ -10,11 +10,13 @@ class RivAnimationComponent extends RiveComponent {
 
   RivAnimationComponent({
     required Artboard artBoard,
-    required Vector2 size,
+    Vector2? size,
+    Vector2? position,
     this.stateMachineKey = 'State Machine 1',
     this.animationKey = 'Wave'}) : super(
       artboard: artBoard,
       size: size,
+      position: position,
       alignment: Alignment.center
   );
 

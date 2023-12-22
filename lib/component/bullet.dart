@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:colo/component/bar.dart';
+import 'package:colo/component/riv.dart';
 import 'package:colo/game.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/widgets/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bullet
@@ -33,6 +35,18 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
 
     play(asset: 'rocket.wav', volume: 0.05);
     position = Vector2(game.size.x / 2, game.size.y);
+    final bulletRiv = await loadArtboard(
+        RiveFile.asset(
+            game.manager.getBulletRivAssetBasedOnColor(color: bulletColor)
+        )
+    );
+    final riv = RivAnimationComponent(
+        artBoard: bulletRiv,
+        position: Vector2(-150, -125),
+        stateMachineKey: 'State Machine 1',
+        animationKey: 'All'
+    );
+    await add(riv);
   }
 
   @override

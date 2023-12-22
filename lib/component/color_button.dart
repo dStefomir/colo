@@ -1,45 +1,54 @@
 import 'package:colo/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/flame.dart';
+import 'package:flame/rendering.dart';
+import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a colorful button
-class ColorfulButton extends SpriteComponent {
-
+class ColorfulButton extends RiveComponent {
+  /// Art board for the riv component
+  final Artboard artBoard;
   /// Color of the button
   final Color color;
   /// Position of the button
   final Vector2 Function() btnPosition;
   /// Height of the button
-  @override
-  final double height;
+  final double buttonSize;
 
   ColorfulButton({
-    required this.height,
+    required this.artBoard,
+    required this.buttonSize,
     required this.color,
     required this.btnPosition
   }) : super(
-      children: [
-        CircleComponent(
-          paint: Paint()
-            ..color = color
-            ..filterQuality = FilterQuality.high
-            ..isAntiAlias = true,
-          radius: height - 7.5,
-          position: Vector2(height / 4.8, height / 4.8),
-        )
-      ]
+    artboard: artBoard,
+    size: Vector2(buttonSize, buttonSize),
+    position: btnPosition()
   );
 
   @override
   Future<void> onLoad() async{
     super.onLoad();
-    final button = await Flame.images.load('round_button.png');
-    position = btnPosition();
-    size = Vector2(height * 2, height * 2);
     priority = 1;
-    sprite = Sprite(button);
+    decorator.addLast(
+        Shadow3DDecorator(
+          angle: - 0.5,
+          xShift: 1.2,
+          yScale: 1.2,
+          opacity: 0.5,
+          blur: 1.5,
+        )
+    );
+    final controller = StateMachineController.fromArtboard(
+      artboard,
+      'State Machine 1',
+    );
+    if (controller != null) {
+      artboard.addController(controller);
+      final levelInput = controller.findInput<double>('Idle');
+      levelInput?.value = 0;
+    }
   }
 
   /// What happens when the button is clicked and not released

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:colo/component/color_button.dart';
 import 'package:colo/game.dart';
 import 'package:flame/components.dart';
+import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 enum GameLevel {
@@ -24,64 +25,109 @@ class GameManager extends Component with HasGameRef<ColoGame> {
 
   GameManager() {
     _level = GameLevel.easy;
-    _gameColors = List.generate(_getGameColors(), (index) => colors.values.toList()[index]);
+    _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _barFallingSpeedMultiplier = 1;
   }
 
   @override
   Future<void> onLoad() async {
-    _actionButtons = _renderActionButtons();
+    _actionButtons = await _renderActionButtons();
     await game.addAll(_actionButtons);
   }
 
   @override
-  void update(double dt) {
+  Future<void> update(double dt) async {
     super.update(dt);
     _increaseLevel();
   }
 
   /// Renders the action buttons
-  _renderActionButtons() => _gameColors.map(
-          (e) => ColorfulButton(
-          height: colorfulBtnSize,
-          color: e,
-          btnPosition: () {
-            const double padding = 10;
-            const double dX = colorfulBtnSize * 3;
-            final double dY = game.size.y - (colorfulBtnSize * 2.2);
+  Future<List<ColorfulButton>> _renderActionButtons() async {
+    final List<MapEntry<Artboard, Color>> rivBoards = [];
 
-            /// Game has two colors
-            if (_gameColors.length == 2) {
-              if (_gameColors.indexOf(e) == 0) {
-                return Vector2(padding, dY);
+    for (final color in _gameColors) {
+      rivBoards.add(
+          MapEntry(
+              await loadArtboard(
+                  RiveFile.asset(
+                      getButtonRivAssetBasedOnColor(color: color)
+                  )
+              ),
+              color
+          )
+      );
+    }
+    return _gameColors.map((e) =>
+        ColorfulButton(
+            artBoard: rivBoards.firstWhere((element) => element.value == e).key,
+            buttonSize: colorfulBtnSize,
+            color: e,
+            btnPosition: () {
+              const double padding = 10;
+              const double dX = colorfulBtnSize;
+              final double dY = game.size.y - (colorfulBtnSize + padding);
+
+              /// Game has two colors
+              if (_gameColors.length == 2) {
+                if (_gameColors.indexOf(e) == 0) {
+
+                  return Vector2(padding, dY);
+                } else {
+
+                  return Vector2(
+                      game.size.x - (dX + padding),
+                      dY
+                  );
+                }
+
+                /// Game has three colors
+              } else if (_gameColors.length == 3) {
+                if (_gameColors.indexOf(e) == 0) {
+
+                  return Vector2(padding, dY);
+                } else if (_gameColors.indexOf(e) == 2) {
+
+                  return Vector2(
+                      (padding + dX) * 0.99,
+                      dY - colorfulBtnSize / 2
+                  );
+                } else {
+
+                  return Vector2(
+                      game.size.x - (dX + padding),
+                      dY
+                  );
+                }
+
+                /// Game has four colors
               } else {
-                return Vector2(game.size.x - (colorfulBtnSize * 2) - padding, dY);
+                if (_gameColors.indexOf(e) == 0) {
+
+                  return Vector2(padding, dY);
+                } else if (_gameColors.indexOf(e) == 2) {
+
+                  return Vector2(
+                      padding + dX,
+                      dY - colorfulBtnSize / 2
+                  );
+                } else if (_gameColors.indexOf(e) == 3) {
+
+                  return Vector2(
+                      game.size.x - ((padding + dX) * 1.85),
+                      dY - colorfulBtnSize / 2
+                  );
+                } else {
+
+                  return Vector2(
+                      game.size.x - (dX + padding),
+                      dY
+                  );
+                }
               }
-              /// Game has three colors
-            } else if (_gameColors.length == 3) {
-              if (_gameColors.indexOf(e) == 0) {
-                return Vector2(padding, dY);
-              } else if (_gameColors.indexOf(e) == 2) {
-                return Vector2(padding + dX / 1.5, dY - colorfulBtnSize);
-              } else {
-                return Vector2(game.size.x - (colorfulBtnSize * 2) - padding, dY);
-              }
-              /// Game has four colors
-            } else {
-              if (_gameColors.indexOf(e) == 0) {
-                return Vector2(padding, dY);
-              } else if (_gameColors.indexOf(e) == 2) {
-                return Vector2(padding + dX / 1.5, dY - colorfulBtnSize);
-              } else if (_gameColors.indexOf(e) == 3) {
-                return Vector2(game.size.x - (colorfulBtnSize * 2) - padding - dX / 1.5, dY - colorfulBtnSize);
-              } else {
-                return Vector2(game.size.x - (colorfulBtnSize * 2) - padding, dY);
-              }
-            }
-          }
-      )
-  ).toList();
+            })
+    ).toList();
+  }
   /// Gets the number of different colors in the game
   int _getGameColors() {
     int colors;
@@ -101,10 +147,10 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     return colors;
   }
   /// Adds a button to the game
-  void _addExtraActionButton() {
+  Future<void> _addExtraActionButton() async {
     game.removeAll(_actionButtons);
-    _gameColors = [..._gameColors, colors.values.toList()[_getGameColors()]];
-    _actionButtons = _renderActionButtons();
+    _gameColors = [..._gameColors, barColors.values.toList()[_getGameColors()]];
+    _actionButtons = await _renderActionButtons();
     game.addAll(_actionButtons);
   }
   /// Increases the game level
@@ -129,16 +175,20 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     }
   }
 
-  /// Gets a riv file based on the color based on the game level
-  String getRivAssetBasedOnColor({required Color color}) {
+  /// Gets a riv file bar color based on the game level
+  String getBarRivAssetBasedOnColor({required Color color}) {
     if (_level == GameLevel.easy || _level == GameLevel.medium) {
 
-      return colors.entries.firstWhere((element) => element.value == color).key;
+      return barColors.entries.firstWhere((element) => element.value == color).key;
     }
     final random = Random();
 
-    return colors.keys.toList()[random.nextInt(colors.length)];
+    return barColors.keys.toList()[random.nextInt(barColors.length)];
   }
+  /// Gets a riv file bullet color based on the game level
+  String getBulletRivAssetBasedOnColor({required Color color}) => bulletColors.entries.firstWhere((element) => element.value == color).key;
+  /// Gets a riv file button color based on the game level
+  String getButtonRivAssetBasedOnColor({required Color color}) => buttonColors.entries.firstWhere((element) => element.value == color).key;
   /// Gets a dy limit for the bullet based on the game level
   double getBulletDyLimit() {
     double dy;
