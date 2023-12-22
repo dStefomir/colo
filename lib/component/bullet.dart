@@ -43,6 +43,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbac
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
         position: Vector2(-150, -125),
+        useShadow: true,
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );

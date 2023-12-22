@@ -6,6 +6,7 @@ import 'package:colo/component/bullet.dart';
 import 'package:colo/component/color_button.dart';
 import 'package:colo/component/manager.dart';
 import 'package:colo/component/score.dart';
+import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -58,7 +59,7 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   void onMount() {
     super.onMount();
     /// Loads the background music of the game
-    // playLooped(asset: 'background.mp3', volume: 0.05);
+    playLooped(asset: 'background.mp3', volume: 0.05);
   }
 
   @override
