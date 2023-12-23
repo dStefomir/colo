@@ -48,7 +48,7 @@ class InitialPage extends StatelessWidget {
         SlideTransitionAnimation(
           getStart: () => const Offset(0, 1),
           getEnd: () => const Offset(0, 0),
-          duration: const Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 800),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Padding(

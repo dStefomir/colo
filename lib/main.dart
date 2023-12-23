@@ -1,4 +1,4 @@
-import 'package:colo/module/game/utils/audio.dart';
+import 'package:colo/utils/audio.dart';
 import 'package:colo/module/main_module.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,6 @@ class _MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp.router(
       debugShowCheckedModeBanner: false,
-
       title: "Colo",
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,

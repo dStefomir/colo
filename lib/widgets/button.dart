@@ -19,7 +19,7 @@ class NormalButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final button = TextButton(
       style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll<Color>(color ?? Colors.black87),
+          backgroundColor: MaterialStatePropertyAll<Color>(color ?? Colors.black),
       ),
       onPressed: () => onClick(),
       child: text,

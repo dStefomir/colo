@@ -59,17 +59,20 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   late GameManager manager;
   /// Game score
   late Score _score;
+  /// Falling bars structure
+  late List<Bar> _fallingBars;
 
   ColoGamePage({required SharedPreferences sharedPrefs, bool disabled = false}) {
     _sharedPreferences = sharedPrefs;
     _disabled = disabled;
+    _fallingBars = [];
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
-    manager = GameManager(sharedPreferences: _sharedPreferences, disabled: _disabled);
+    manager = GameManager(sharedPreferences: _sharedPreferences, disabled: _disabled, fallingBars: _fallingBars);
     _score = Score(text: '${manager.score}');
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
@@ -127,10 +130,12 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Renders the falling bars
   _renderBar() {
     final random = Random();
-
-    return Bar(
-        color: manager.gameColors[random.nextInt(manager.gameColors.length)],
-        barSize: Vector2(size.x / 2, 50),
+    final bar = Bar(
+      color: manager.gameColors[random.nextInt(manager.gameColors.length)],
+      barSize: Vector2(size.x / 2, 50),
     );
+    _fallingBars.add(bar);
+
+    return bar;
   }
 }

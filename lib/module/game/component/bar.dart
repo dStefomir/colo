@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
-import 'package:colo/module/game/utils/audio.dart';
-import 'package:colo/module/game/widgets/particle.dart';
+import 'package:colo/utils/audio.dart';
+import 'package:colo/module/game/component/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -61,9 +61,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     position.y += (barVelocity * dt) * game.manager.barFallingSpeedMultiplier;
 
     if (position.y > game.size.y) {
-      game.remove(this);
+      game.manager.removeBar(bar: this);
       game.manager.gameOver();
-      /// TODO: Show game over dialog
     }
   }
 
