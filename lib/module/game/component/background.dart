@@ -1,16 +1,18 @@
 import 'dart:ui';
 
-import 'package:colo/game.dart';
+import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/parallax.dart';
 
 /// Renders a background
-class Background extends ParallaxComponent<ColoGame> {
+class Background extends ParallaxComponent<ColoGamePage> {
   /// Asset for the background
   final String asset;
+  /// Fit for the background
+  final LayerFill fill;
 
-  Background({required this.asset});
+  Background({required this.asset, this.fill = LayerFill.height});
 
   @override
   Future<void> onLoad() async {
@@ -20,8 +22,8 @@ class Background extends ParallaxComponent<ColoGame> {
           ParallaxLayer(
             ParallaxImage(
                 background,
-                fill: LayerFill.height,
-                filterQuality: FilterQuality.high
+                fill: fill,
+                filterQuality: FilterQuality.high,
             )
           )
         ]

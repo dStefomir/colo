@@ -1,11 +1,11 @@
-import 'package:colo/game.dart';
+import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a text score
-class Score extends TextComponent with HasGameRef<ColoGame> {
+class Score extends TextComponent with HasGameRef<ColoGamePage> {
 
   @override
   final String text;

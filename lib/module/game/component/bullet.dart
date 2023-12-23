@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:colo/component/bar.dart';
-import 'package:colo/component/riv.dart';
-import 'package:colo/game.dart';
-import 'package:colo/utils/audio.dart';
-import 'package:colo/widgets/particle.dart';
+import 'package:colo/module/game/component/bar.dart';
+import 'package:colo/module/game/component/riv.dart';
+import 'package:colo/module/game/page.dart';
+import 'package:colo/module/game/utils/audio.dart';
+import 'package:colo/module/game/widgets/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -12,7 +12,7 @@ import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bullet
-class Bullet extends CircleComponent with HasGameRef<ColoGame>, CollisionCallbacks {
+class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCallbacks {
   /// Color of the bullet
   final Color bulletColor;
   /// Bullet radius

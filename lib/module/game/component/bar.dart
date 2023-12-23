@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:colo/component/bullet.dart';
-import 'package:colo/component/riv.dart';
-import 'package:colo/game.dart';
-import 'package:colo/utils/audio.dart';
-import 'package:colo/widgets/particle.dart';
+import 'package:colo/module/game/component/bullet.dart';
+import 'package:colo/module/game/component/riv.dart';
+import 'package:colo/module/game/page.dart';
+import 'package:colo/module/game/utils/audio.dart';
+import 'package:colo/module/game/widgets/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -13,7 +13,7 @@ import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bar
-class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbacks {
+class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCallbacks {
   /// Color of the bar
   final Color color;
   /// Bar size
@@ -44,9 +44,15 @@ class Bar extends RectangleComponent with HasGameRef<ColoGame>, CollisionCallbac
         )
     );
     position = Vector2(_generateRandomDx(), 0);
-    final waveRiv = await loadArtboard(RiveFile.asset(game.manager.getBarRivAssetBasedOnColor(color: color)));
-    final riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
-    await add(riv);
+    if (!game.manager.disabled) {
+      final waveRiv = await loadArtboard(
+          RiveFile.asset(
+              game.manager.getBarRivAssetBasedOnColor(color: color)
+          )
+      );
+      final riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
+      await add(riv);
+    }
   }
 
   @override

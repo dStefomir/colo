@@ -1,4 +1,4 @@
-import 'package:colo/utils/vibration.dart';
+import 'package:colo/module/game/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/rendering.dart';

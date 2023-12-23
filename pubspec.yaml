@@ -34,11 +34,18 @@ dependencies:
 
   flutter:
     sdk: flutter
+  # Modular library
+  flutter_modular: ^6.3.2
   # 2d game engine library
   flame: ^1.12.0
   flame_rive: ^1.9.9
   # 2d game audio library
   flame_audio: ^2.1.6
+  # Hooks library
+  flutter_hooks: ^0.20.3
+  hooks_riverpod: ^2.4.9
+  # shared prefs library
+  shared_preferences: ^2.2.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

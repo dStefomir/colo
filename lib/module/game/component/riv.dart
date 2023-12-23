@@ -29,7 +29,7 @@ class RivAnimationComponent extends RiveComponent {
     if (useShadow) {
       decorator.addLast(
           Shadow3DDecorator(
-            angle: - 0.5,
+            angle: - 0.25,
             xShift: 1.2,
             yScale: 1.2,
             opacity: 0.5,

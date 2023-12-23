@@ -1,17 +1,17 @@
 import 'dart:math';
 
-import 'package:colo/component/background.dart';
-import 'package:colo/component/bar.dart';
-import 'package:colo/component/bullet.dart';
-import 'package:colo/component/color_button.dart';
-import 'package:colo/component/manager.dart';
-import 'package:colo/component/score.dart';
-import 'package:colo/utils/audio.dart';
+import 'package:colo/module/game/component/background.dart';
+import 'package:colo/module/game/component/bar.dart';
+import 'package:colo/module/game/component/bullet.dart';
+import 'package:colo/module/game/component/color_button.dart';
+import 'package:colo/module/game/component/manager.dart';
+import 'package:colo/module/game/component/score.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Size of the action buttons
 const colorfulBtnSize = 75.0;
@@ -47,7 +47,12 @@ const Map<String, Color> bulletColors = {
   'assets/bullet_green.riv': Colors.greenAccent,
 };
 /// Represents the game itself
-class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
+class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
+  /// Shared prefs
+  late SharedPreferences _sharedPreferences;
+  /// Is the game disabled or not.
+  /// Disabled means no touch and rules apply to the game.
+  late bool _disabled;
   /// Timer for updating the falling bars
   late Timer _barInterval;
   /// Gama manager component
@@ -55,26 +60,28 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
   /// Game score
   late Score _score;
 
-  @override
-  void onMount() {
-    super.onMount();
-    /// Loads the background music of the game
-    playLooped(asset: 'background.mp3', volume: 0.05);
+  ColoGamePage({required SharedPreferences sharedPrefs, bool disabled = false}) {
+    _sharedPreferences = sharedPrefs;
+    _disabled = disabled;
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
-    manager = GameManager();
+    manager = GameManager(sharedPreferences: _sharedPreferences, disabled: _disabled);
     _score = Score(text: '${manager.score}');
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
         [
           manager,
-          Background(asset: 'background.jpg'),
-          _renderBar(),
-          _score,
+          Background(
+              asset: !_disabled
+                  ? 'background.jpg'
+                  : 'disabled_background.jpg',
+          ),
+          if (!_disabled) _renderBar(),
+          if (!_disabled) _score,
         ]
     );
     /// ------------------------------------------------------------------------
@@ -82,8 +89,10 @@ class ColoGame extends FlameGame with TapDetector, HasCollisionDetection {
     /// Game looper
     _barInterval = Timer(barInterval, repeat: true);
     _barInterval.onTick = () async {
-      await add(_renderBar());
-      await add(_score);
+      if (!_disabled) {
+        await add(_renderBar());
+        await add(_score);
+      }
     };
   }
 

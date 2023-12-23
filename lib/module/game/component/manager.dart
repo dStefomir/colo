@@ -1,17 +1,23 @@
 import 'dart:math';
 
-import 'package:colo/component/color_button.dart';
-import 'package:colo/game.dart';
+import 'package:colo/module/game/component/color_button.dart';
+import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum GameLevel {
   easy, medium, hard
 }
 
 /// Manger for controlling the game rules
-class GameManager extends Component with HasGameRef<ColoGame> {
+class GameManager extends Component with HasGameRef<ColoGamePage> {
+  /// Is the game disabled or not.
+  /// Disabled means no touch and rules apply to the game.
+  final bool disabled;
+  /// Shared prefs
+  late SharedPreferences _sharedPreferences;
   /// Game colors structure
   late List<Color> _gameColors;
   /// Action buttons structure
@@ -23,8 +29,9 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   /// Multiplier for the falling speed of the bars
   late double _barFallingSpeedMultiplier;
 
-  GameManager() {
-    _level = GameLevel.easy;
+  GameManager({required SharedPreferences sharedPreferences, required this.disabled}) {
+    _sharedPreferences = sharedPreferences;
+    _level = disabled ? GameLevel.hard : GameLevel.easy;
     _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _barFallingSpeedMultiplier = 1;
@@ -32,14 +39,18 @@ class GameManager extends Component with HasGameRef<ColoGame> {
 
   @override
   Future<void> onLoad() async {
-    _actionButtons = await _renderActionButtons();
-    await game.addAll(_actionButtons);
+    if (!disabled) {
+      _actionButtons = await _renderActionButtons();
+      await game.addAll(_actionButtons);
+    }
   }
 
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    _increaseLevel();
+    if (!disabled) {
+      _increaseLevel();
+    }
   }
 
   /// Renders the action buttons
@@ -170,8 +181,8 @@ class GameManager extends Component with HasGameRef<ColoGame> {
       }
     }
     /// If its hard level and 20 more bars are destroyed - increase bar falling speed
-    if (_destroyedBars.value > 40 && _destroyedBars.value % 20 == 1) {
-      _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.0001;
+    if (_level == GameLevel.hard && _destroyedBars.value % 20 == 1) {
+      _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.002;
     }
   }
 
@@ -219,7 +230,14 @@ class GameManager extends Component with HasGameRef<ColoGame> {
   }
 
   /// Increase the current score
-  void increaseScore() => _destroyedBars.value = _destroyedBars.value + 1;
+  void increaseScore() {
+    _destroyedBars.value = _destroyedBars.value + 1;
+    if (_sharedPreferences.getInt('score') == null) {
+      _sharedPreferences.setInt('score', _destroyedBars.value);
+    } else if (_sharedPreferences.getInt('score') != null && (_sharedPreferences.getInt('score')! < _destroyedBars.value)) {
+      _sharedPreferences.setInt('score', _destroyedBars.value);
+    }
+  }
   /// Decrease the current score
   void decreaseScore() {
     _destroyedBars.value = _destroyedBars.value - 1;
@@ -228,7 +246,11 @@ class GameManager extends Component with HasGameRef<ColoGame> {
     }
   }
   /// Pauses the game
-  void gameOver() => game.pauseEngine();
+  void gameOver() {
+    if (!disabled) {
+      game.pauseEngine();
+    }
+  }
   /// Restarts the game
   void restartGame() => game.resumeEngine();
   /// Gets the game colors
