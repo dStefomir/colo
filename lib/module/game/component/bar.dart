@@ -82,7 +82,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   _destroyBar() {
     play(asset: 'blow.wav');
     game.manager.increaseScore();
-    game.remove(this);
+    game.manager.removeBar(bar: this);
     game.add(_generateParticle());
   }
 

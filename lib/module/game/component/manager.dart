@@ -23,8 +23,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   late List<Color> _gameColors;
   /// Action buttons structure
   late List<ColorfulButton> _actionButtons;
-  /// Falling bars structure
-  late List<Bar> _fallingBars;
   /// Notifier for the current score
   late ValueNotifier<int> _destroyedBars;
   /// Current game level
@@ -32,9 +30,8 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Multiplier for the falling speed of the bars
   late double _barFallingSpeedMultiplier;
 
-  GameManager({required SharedPreferences sharedPreferences, required List<Bar> fallingBars, required this.disabled}) {
+  GameManager({required SharedPreferences sharedPreferences, required this.disabled}) {
     _sharedPreferences = sharedPreferences;
-    _fallingBars = fallingBars;
     _level = disabled ? GameLevel.hard : GameLevel.easy;
     _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
@@ -192,7 +189,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   /// Removes a bar from the game
   void removeBar({required Bar bar}) {
-    _fallingBars.remove(bar);
+    game.fallingBars.remove(bar);
     game.remove(bar);
   }
   /// Gets a riv file bar color based on the game level
@@ -265,8 +262,8 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   void restartGame() {
     _destroyedBars.value = 0;
     game.overlays.remove('gameOver');
-    game.removeAll(_fallingBars);
     game.resumeEngine();
+    game.removeAll(game.fallingBars);
   }
   /// Gets the game colors
   List<Color> get gameColors => _gameColors;
