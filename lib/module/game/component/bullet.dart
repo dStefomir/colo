@@ -82,6 +82,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     removeFromParent();
     if (other is Bar && other.color != bulletColor) {
       /// Not successful bullet to bar
+      play(asset: 'mismatch.wav', volume: 0.5);
       game.add(
           ParticleSystemComponent(
               particle: Particle.generate(

@@ -72,8 +72,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     if (other is Bullet) {
       if (other.bulletColor == color) {
         _destroyBar();
-      } else {
-        _destroyBullet();
       }
     }
   }
@@ -84,13 +82,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     game.manager.increaseScore();
     game.manager.removeBar(bar: this);
     game.add(_generateParticle());
-  }
-
-  /// When the bullet is destroyed because of a wrong
-  /// color, also decrease the current score
-  _destroyBullet() {
-    play(asset: 'mismatch.wav', volume: 0.5);
-    game.manager.decreaseScore();
   }
 
   /// Generates a particle

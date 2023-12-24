@@ -54,6 +54,13 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     }
   }
 
+  /// Reset the state of the manager
+  void _resetState() {
+    _level = GameLevel.easy;
+    _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
+    _destroyedBars.value = 0;
+    _barFallingSpeedMultiplier = 1;
+  }
   /// Renders the action buttons
   Future<List<ColorfulButton>> _renderActionButtons() async {
     final List<MapEntry<Artboard, Color>> rivBoards = [];
@@ -150,7 +157,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       case GameLevel.medium:
         colors = 3;
         break;
-
       case GameLevel.hard:
         colors = 4;
         break;
@@ -186,12 +192,16 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.002;
     }
   }
+  /// Decrease the current score
+  void _decreaseScore() {
+    _destroyedBars.value = _destroyedBars.value - 1;
+    if (_destroyedBars.value < 0) {
+      gameOver();
+    }
+  }
 
   /// Removes a bar from the game
-  void removeBar({required Bar bar}) {
-    game.fallingBars.remove(bar);
-    game.remove(bar);
-  }
+  void removeBar({required Bar bar}) => game.remove(bar);
   /// Gets a riv file bar color based on the game level
   String getBarRivAssetBasedOnColor({required Color color}) {
     if (_level == GameLevel.easy || _level == GameLevel.medium) {
@@ -224,17 +234,21 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
     return dy;
   }
-
   /// What happens when a bullet color hit a falling bar
   /// with a different color
   void onBulletColorMiss() {
-    if (_level == GameLevel.medium) {
-      _destroyedBars.value = 0;
+    if (_level == GameLevel.easy) {
+      _decreaseScore();
+    } else if (_level == GameLevel.medium) {
+      if (_destroyedBars.value > 0) {
+        _destroyedBars.value = 0;
+      } else {
+        _decreaseScore();
+      }
     } else if (_level == GameLevel.hard) {
       gameOver();
     }
   }
-
   /// Increase the current score
   void increaseScore() {
     _destroyedBars.value = _destroyedBars.value + 1;
@@ -244,26 +258,24 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       _sharedPreferences.setInt('score', _destroyedBars.value);
     }
   }
-  /// Decrease the current score
-  void decreaseScore() {
-    _destroyedBars.value = _destroyedBars.value - 1;
-    if (_destroyedBars.value < 0) {
-      gameOver();
-    }
-  }
   /// Pauses the game
   void gameOver() {
     if (!disabled) {
-      gameRef.overlays.add('gameOver');
+      game.overlays.add('gameOver');
       game.pauseEngine();
     }
   }
   /// Restarts the game
-  void restartGame() {
-    _destroyedBars.value = 0;
+  Future<void> restartGame() async {
+    _resetState();
     game.overlays.remove('gameOver');
+    game.removeAll(game.children.whereType<Bar>().toList());
+    game.removeAll(game.children.whereType<ColorfulButton>().toList());
+
+    _actionButtons = await _renderActionButtons();
+    await game.addAll(_actionButtons);
+
     game.resumeEngine();
-    game.removeAll(game.fallingBars);
   }
   /// Gets the game colors
   List<Color> get gameColors => _gameColors;
