@@ -51,6 +51,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -76,6 +81,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/audio/
+    - assets/icon/
   fonts:
     - family: RenegadePursuit
       fonts:

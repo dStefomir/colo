@@ -8,7 +8,6 @@ import 'package:colo/module/game/component/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
-import 'package:flame/rendering.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -34,15 +33,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   
   @override
   Future<void> onLoad() async {
-    decorator.addLast(
-        Shadow3DDecorator(
-          angle: - 0.5,
-          xShift: 1.2,
-          yScale: 1.2,
-          opacity: 0.5,
-          blur: 1.5,
-        )
-    );
     position = Vector2(_generateRandomDx(), 0);
     if (!game.manager.disabled) {
       final waveRiv = await loadArtboard(
@@ -50,9 +40,19 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
               game.manager.getBarRivAssetBasedOnColor(color: color)
           )
       );
-      final riv = RivAnimationComponent(artBoard: waveRiv, size: barSize);
+
+      final riv = RivAnimationComponent(artBoard: waveRiv, size: size);
       await add(riv);
     }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final Rect rect = Rect.fromPoints(Offset(size.x + 2, size.y + 2), const Offset(5, 5));
+    canvas.drawRect(rect, Paint()
+      ..color = Colors.black
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0));
+    super.render(canvas);
   }
 
   @override

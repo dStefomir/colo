@@ -20,7 +20,7 @@ const bulletSize = 15.0;
 /// Bar speed easy mode
 const barVelocity = 100.0;
 /// Interval for the timer of the falling bars
-const barInterval = 0.8;
+const barInterval = 1.2;
 /// Velocity of the bullet
 const bulletVelocity = 500;
 /// Speed of the background parallax effect
@@ -130,7 +130,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
 
     return Bar(
       color: manager.gameColors[random.nextInt(manager.gameColors.length)],
-      barSize: Vector2(size.x / 2, 50),
+      barSize: Vector2(220, size.y / 15),
     );
   }
 }

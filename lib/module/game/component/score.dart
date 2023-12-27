@@ -12,18 +12,18 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
 
   Score({required this.text}) : super(
       anchor: Anchor.center,
-      textRenderer: TextPaint(
-        style: const TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontFamily: 'RenegadePursuit',
-            fontWeight: FontWeight.bold
-        ),
-      )
   );
 
   @override
   Future<void> onLoad() async {
+    textRenderer = TextPaint(
+      style: TextStyle(
+          color: Colors.white,
+          fontSize: game.size.y / 25,
+          fontFamily: 'RenegadePursuit',
+          fontWeight: FontWeight.bold
+      ),
+    );
     decorator.addLast(
         Shadow3DDecorator(
           angle: -0.5,

@@ -1,7 +1,6 @@
 import 'package:colo/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/rendering.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -31,15 +30,6 @@ class ColorfulButton extends RiveComponent {
   Future<void> onLoad() async{
     super.onLoad();
     priority = 1;
-    decorator.addLast(
-        Shadow3DDecorator(
-          angle: - 0.5,
-          xShift: 1.2,
-          yScale: 1.2,
-          opacity: 0.5,
-          blur: 1.5,
-        )
-    );
     final controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',
@@ -49,6 +39,14 @@ class ColorfulButton extends RiveComponent {
       final levelInput = controller.findInput<double>('Idle');
       levelInput?.value = 0;
     }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawCircle(Offset(buttonSize / 2, buttonSize / 2), buttonSize / 2.2, Paint()
+      ..color = color
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0));
+    super.render(canvas);
   }
 
   /// What happens when the button is clicked and not released

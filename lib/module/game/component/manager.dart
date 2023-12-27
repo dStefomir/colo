@@ -80,12 +80,12 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     return _gameColors.map((e) =>
         ColorfulButton(
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
-            buttonSize: colorfulBtnSize,
+            buttonSize: game.size.y / 10,
             color: e,
             btnPosition: () {
               const double padding = 10;
-              const double dX = colorfulBtnSize;
-              final double dY = game.size.y - (colorfulBtnSize + padding);
+              final double dX = game.size.y / 10;
+              final double dY = game.size.y - (game.size.y / 10 + padding);
 
               /// Game has two colors
               if (_gameColors.length == 2) {

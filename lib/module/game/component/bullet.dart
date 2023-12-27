@@ -33,8 +33,10 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   Future<void> onLoad() async {
     super.onLoad();
 
+    final lastBar = game.children.whereType<Bar>().first;
+
     play(asset: 'rocket.wav', volume: 0.05);
-    position = Vector2(game.size.x / 2, game.size.y);
+    position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
             game.manager.getBulletRivAssetBasedOnColor(color: bulletColor)
@@ -42,8 +44,8 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     );
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
-        position: Vector2(-150, -125),
-        useShadow: true,
+        size: game.size / 2,
+        position: Vector2((game.size.x / 4) * -1, (game.size.y / 3.9) * -1),
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );
@@ -55,6 +57,24 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     super.update(dt);
     final limit = game.manager.getBulletDyLimit();
     if (limit >= position.y) {
+      game.add(
+          ParticleSystemComponent(
+            particle: Particle.generate(
+              count: 50,
+              lifespan: 0.3,
+              generator: (i) => AcceleratedParticle(
+                acceleration: _getExplosionVector() * 3.0,
+                speed: _getExplosionVector() * 8.0,
+                position: Vector2((game.size / 2).x, position.y),
+                child: CustomParticle(
+                    radius: 1,
+                    paint: Paint()
+                      ..color = bulletColor
+                ),
+              ),
+            ),
+          )
+      );
       game.remove(this);
     }
     position.y = position.y - (bulletVelocity * dt);
@@ -82,7 +102,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     removeFromParent();
     if (other is Bar && other.color != bulletColor) {
       /// Not successful bullet to bar
-      play(asset: 'mismatch.wav', volume: 0.5);
+      play(asset: 'mismatch.wav', volume: 0.1);
       game.add(
           ParticleSystemComponent(
               particle: Particle.generate(
@@ -109,5 +129,12 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   _getRandomVector() {
     final random = Random();
     return (Vector2.random(random) - Vector2(0.5, -1)) * 100;
+  }
+
+  // This method generates a random vector with its angle
+  // between from 0 and 360 degrees.
+  _getExplosionVector() {
+    final random = Random();
+    return (Vector2.random(random) - Vector2.random(random)) * 500;
   }
 }
