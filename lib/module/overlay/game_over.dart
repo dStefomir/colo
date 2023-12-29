@@ -19,7 +19,7 @@ class GameOverDialog extends StatelessWidget {
       body: Blurrable(
         strength: 5,
         child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.transparent,
             height: double.infinity,
             width: double.infinity,
             child: Column(

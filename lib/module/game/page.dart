@@ -130,7 +130,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
 
     return Bar(
       color: manager.gameColors[random.nextInt(manager.gameColors.length)],
-      barSize: Vector2(220, size.y / 15),
+      barSize: Vector2(225, size.y / 15),
     );
   }
 }

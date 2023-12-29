@@ -32,7 +32,6 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   Future<void> onLoad() async {
     super.onLoad();
-
     final lastBar = game.children.whereType<Bar>().first;
 
     play(asset: 'rocket.wav', volume: 0.05);
@@ -45,7 +44,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
         size: game.size / 2,
-        position: Vector2((game.size.x / 4) * -1, (game.size.y / 3.9) * -1),
+        position: Vector2((game.size.x / 4) * -1, (game.size.y / 3.85) * -1),
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );
@@ -55,28 +54,11 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void update(double dt) {
     super.update(dt);
-    final limit = game.manager.getBulletDyLimit();
-    if (limit >= position.y) {
-      game.add(
-          ParticleSystemComponent(
-            particle: Particle.generate(
-              count: 50,
-              lifespan: 0.3,
-              generator: (i) => AcceleratedParticle(
-                acceleration: _getExplosionVector() * 3.0,
-                speed: _getExplosionVector() * 8.0,
-                position: Vector2((game.size / 2).x, position.y),
-                child: CustomParticle(
-                    radius: 1,
-                    paint: Paint()
-                      ..color = bulletColor
-                ),
-              ),
-            ),
-          )
-      );
-      game.remove(this);
+    /// Renders a barrier for the bullet based on the game level
+    if (game.manager.getBulletDyLimit() >= position.y) {
+      _renderBarrier();
     }
+    /// --------------------------------------------------------
     position.y = position.y - (bulletVelocity * dt);
     add(
         ParticleSystemComponent(
@@ -125,6 +107,47 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     super.onCollision(intersectionPoints, other);
   }
 
+  /// Renders a barrier for the bullet
+  void _renderBarrier() {
+    game.add(
+        ParticleSystemComponent(
+          particle: Particle.generate(
+            count: 10,
+            lifespan: 0.3,
+            generator: (i) => AcceleratedParticle(
+              acceleration: _getBarrierVector(),
+              speed: _getBarrierVector(),
+              position: Vector2(position.x, position.y),
+              child: CustomParticle(
+                  radius: 2,
+                  paint: Paint()
+                    ..color = bulletColor
+              ),
+            ),
+          ),
+        )
+    );
+    game.add(
+        ParticleSystemComponent(
+          particle: Particle.generate(
+            count: 10,
+            lifespan: 0.3,
+            generator: (i) => AcceleratedParticle(
+              acceleration: _getBarrierVector(right: false),
+              speed: _getBarrierVector(right: false),
+              position: Vector2(position.x, position.y),
+              child: CustomParticle(
+                  radius: 2,
+                  paint: Paint()
+                    ..color = bulletColor
+              ),
+            ),
+          ),
+        )
+    );
+    game.remove(this);
+  }
+
   /// Gets a random vector
   _getRandomVector() {
     final random = Random();
@@ -132,9 +155,8 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   }
 
   // This method generates a random vector with its angle
-  // between from 0 and 360 degrees.
-  _getExplosionVector() {
+  _getBarrierVector({bool right = true}) {
     final random = Random();
-    return (Vector2.random(random) - Vector2.random(random)) * 500;
+    return (Vector2(random.nextDouble(), random.nextInt(1).toDouble())) * (right == true ? 1000 : -1000);
   }
 }

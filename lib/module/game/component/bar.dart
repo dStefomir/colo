@@ -105,7 +105,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   /// Generates a random dx for the bar
   _generateRandomDx({int min = 30}) {
     final random = Random();
-
     return min + random.nextInt(((game.size.x / 2) - min + 1).toInt()).toDouble();
   }
 
