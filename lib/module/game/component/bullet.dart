@@ -32,9 +32,8 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    final lastBar = game.children.whereType<Bar>().first;
-
     play(asset: 'rocket.wav', volume: 0.05);
+    final lastBar = game.children.whereType<Bar>().first;
     position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
@@ -60,6 +59,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     }
     /// --------------------------------------------------------
     position.y = position.y - (bulletVelocity * dt);
+    final random = Random();
     add(
         ParticleSystemComponent(
             particle: Particle.generate(
@@ -70,7 +70,12 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
                 speed: _getRandomVector(),
                 child: CustomParticle(
                   radius: 1,
-                  paint: Paint()..color = bulletColor,
+                  paint: Paint()
+                    ..color = game.manager.gameColors[
+                      random.nextInt(
+                          game.manager.gameColors.length
+                      )
+                    ],
                   shadowColor: bulletColor
                 ),
               ),
@@ -109,6 +114,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
 
   /// Renders a barrier for the bullet
   void _renderBarrier() {
+    final random = Random();
     game.add(
         ParticleSystemComponent(
           particle: Particle.generate(
@@ -119,9 +125,14 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
               speed: _getBarrierVector(),
               position: Vector2(position.x, position.y),
               child: CustomParticle(
-                  radius: 2,
-                  paint: Paint()
-                    ..color = bulletColor
+                radius: 2,
+                paint: Paint()
+                  ..color = game.manager.gameColors[
+                    random.nextInt(
+                        game.manager.gameColors.length
+                    )
+                  ],
+                shadowColor: bulletColor
               ),
             ),
           ),
@@ -139,7 +150,12 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
               child: CustomParticle(
                   radius: 2,
                   paint: Paint()
-                    ..color = bulletColor
+                    ..color = game.manager.gameColors[
+                      random.nextInt(
+                          game.manager.gameColors.length
+                      )
+                    ],
+                  shadowColor: bulletColor
               ),
             ),
           ),

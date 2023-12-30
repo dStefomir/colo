@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/page.dart';
+import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
             buttonSize: game.size.y / 10,
             color: e,
             btnPosition: () {
-              const double padding = 10;
+              const double padding = 5;
               final double dX = game.size.y / 10;
               final double dY = game.size.y - (game.size.y / 10 + padding);
 
@@ -127,13 +128,13 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
                 } else if (_gameColors.indexOf(e) == 2) {
 
                   return Vector2(
-                      padding + dX,
+                      dX,
                       dY - colorfulBtnSize / 2
                   );
                 } else if (_gameColors.indexOf(e) == 3) {
 
                   return Vector2(
-                      game.size.x - ((padding + dX) * 1.85),
+                      game.size.x - ((padding + dX) * 1.89),
                       dY - colorfulBtnSize / 2
                   );
                 } else {
@@ -261,6 +262,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Pauses the game
   void gameOver() {
     if (!disabled) {
+      play(asset: 'game_over.wav', volume: 0.3);
       game.overlays.add('gameOver');
       game.pauseEngine();
     }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 /// Renders a custom particle with shadow
 class CustomParticle extends CircleParticle {
-
   /// Shadow color
   final Color shadowColor;
 

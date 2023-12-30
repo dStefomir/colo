@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 /// Renders a text score
 class Score extends TextComponent with HasGameRef<ColoGamePage> {
-
   @override
   final String text;
 

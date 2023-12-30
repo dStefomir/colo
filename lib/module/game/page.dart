@@ -20,7 +20,7 @@ const bulletSize = 15.0;
 /// Bar speed easy mode
 const barVelocity = 100.0;
 /// Interval for the timer of the falling bars
-const barInterval = 1.2;
+const barInterval = 0.9;
 /// Velocity of the bullet
 const bulletVelocity = 500;
 /// Speed of the background parallax effect
