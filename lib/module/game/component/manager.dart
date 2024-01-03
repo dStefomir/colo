@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
+import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,6 +65,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     _destroyedBars.value = 0;
     _barFallingSpeedMultiplier = 1;
   }
+
   /// Renders the action buttons
   Future<List<ColorfulButton>> _renderActionButtons() async {
     final List<MapEntry<Artboard, Color>> rivBoards = [];
@@ -148,6 +152,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
             })
     ).toList();
   }
+
   /// Gets the number of different colors in the game
   int _getGameColors() {
     int colors;
@@ -165,6 +170,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
     return colors;
   }
+
   /// Adds a button to the game
   Future<void> _addExtraActionButton() async {
     game.removeAll(_actionButtons);
@@ -172,13 +178,25 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     _actionButtons = await _renderActionButtons();
     game.addAll(_actionButtons);
   }
+
   /// Increases the game level
-  void _increaseLevel() {
+  void _increaseLevel() async {
     /// Sets medium level
     if (_destroyedBars.value == 10) {
       if (_actionButtons.length == 2) {
         _addExtraActionButton();
         _level = GameLevel.medium;
+        final background = game.children.whereType<Background>().where((element) => element.priority == -1).toList().first;
+        background.add(
+            MoveByEffect(
+                Vector2(0, game.size.y * - 1),
+                EffectController(
+                  duration: 0.5,
+                  curve: Curves.fastOutSlowIn,
+                ),
+                onComplete: () => game.remove(background)
+            )
+        );
       }
     }
     /// Sets hard level
@@ -186,13 +204,25 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       if (_actionButtons.length == 3) {
         _addExtraActionButton();
         _level = GameLevel.hard;
+        final background = game.children.whereType<Background>().where((element) => element.priority == -2).toList().first;
+        background.add(
+            MoveByEffect(
+                Vector2(0, game.size.y * - 1),
+                EffectController(
+                  duration: 0.5,
+                  curve: Curves.fastOutSlowIn,
+                ),
+                onComplete: () => game.remove(background)
+            )
+        );
       }
     }
     /// If its hard level and 20 more bars are destroyed - increase bar falling speed
-    if (_level == GameLevel.hard && _destroyedBars.value % 20 == 1) {
+    if (_level == GameLevel.hard && _destroyedBars.value % 20 == 1 && _barFallingSpeedMultiplier < 1.57) {
       _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.002;
     }
   }
+
   /// Decrease the current score
   void _decreaseScore() {
     _destroyedBars.value = _destroyedBars.value - 1;
@@ -201,8 +231,66 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     }
   }
 
+  /// Gets a background asset based on the game level
+  String getBackgroundAsset() {
+    String asset;
+
+    switch(_level) {
+      case GameLevel.easy:
+        asset = 'background_easy.jpg';
+        break;
+      case GameLevel.medium:
+        asset = 'background_medium.jpg';
+        break;
+      case GameLevel.hard:
+        asset = 'background_hard.jpg';
+        break;
+    }
+
+    return asset;
+  }
+
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => game.remove(bar);
+
+  /// Gets bar explosion lifespan for particles
+  double getBarExplosionLifespan() {
+    double lifespan;
+
+    switch (_level) {
+      case GameLevel.easy:
+        lifespan = 0.3;
+        break;
+      case GameLevel.medium:
+        lifespan = 1.5;
+        break;
+      case GameLevel.hard:
+        lifespan = 1.5 * _barFallingSpeedMultiplier;
+        break;
+    }
+
+    return lifespan;
+  }
+
+  /// Gets bar explosion count for particles
+  int getBarExplosionParticles() {
+    int count;
+
+    switch (_level) {
+      case GameLevel.easy:
+        count = 50;
+        break;
+      case GameLevel.medium:
+        count = 100;
+        break;
+      case GameLevel.hard:
+        count = (100 * _barFallingSpeedMultiplier).toInt();
+        break;
+    }
+
+    return count;
+  }
+
   /// Gets a riv file bar color based on the game level
   String getBarRivAssetBasedOnColor({required Color color}) {
     if (_level == GameLevel.easy || _level == GameLevel.medium) {
@@ -213,10 +301,13 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
     return barColors.keys.toList()[random.nextInt(barColors.length)];
   }
+
   /// Gets a riv file bullet color based on the game level
   String getBulletRivAssetBasedOnColor({required Color color}) => bulletColors.entries.firstWhere((element) => element.value == color).key;
+
   /// Gets a riv file button color based on the game level
   String getButtonRivAssetBasedOnColor({required Color color}) => buttonColors.entries.firstWhere((element) => element.value == color).key;
+
   /// Gets a dy limit for the bullet based on the game level
   double getBulletDyLimit() {
     double dy;
@@ -235,6 +326,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
     return dy;
   }
+
   /// What happens when a bullet color hit a falling bar
   /// with a different color
   void onBulletColorMiss() {
@@ -250,6 +342,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       gameOver();
     }
   }
+
   /// Increase the current score
   void increaseScore() {
     _destroyedBars.value = _destroyedBars.value + 1;
@@ -259,6 +352,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       _sharedPreferences.setInt('score', _destroyedBars.value);
     }
   }
+
   /// Pauses the game
   void gameOver() {
     if (!disabled) {
@@ -267,24 +361,30 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       game.pauseEngine();
     }
   }
+
   /// Restarts the game
   Future<void> restartGame() async {
     _resetState();
     game.overlays.remove('gameOver');
-    game.removeAll(game.children.whereType<Bar>().toList());
-    game.removeAll(game.children.whereType<ColorfulButton>().toList());
+    game.removeAll(game.children.whereType<Bullet>());
+    game.removeAll(game.children.whereType<Bar>());
+    game.removeAll(game.children.whereType<ColorfulButton>());
 
     _actionButtons = await _renderActionButtons();
     await game.addAll(_actionButtons);
 
     game.resumeEngine();
   }
+
   /// Gets the game colors
   List<Color> get gameColors => _gameColors;
+
   /// Gets the action buttons
   List<ColorfulButton> get actionButtons => _actionButtons;
+
   /// Gets the current score
   int get score => _destroyedBars.value;
+
   /// Gets the bar falling speed multiplier
   double get barFallingSpeedMultiplier => _barFallingSpeedMultiplier;
 }

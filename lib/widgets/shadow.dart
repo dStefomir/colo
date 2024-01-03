@@ -29,7 +29,7 @@ class ShadowWidget extends StatelessWidget {
   Widget build(BuildContext context) =>
       Container(
         decoration: BoxDecoration(
-          borderRadius: shouldHaveBorderRadius ? const BorderRadius.all(Radius.circular(25.0)) : null,
+          borderRadius: shouldHaveBorderRadius ? const BorderRadius.all(Radius.circular(45.0)) : null,
           boxShadow: [
             BoxShadow(
               color: shadowColor,

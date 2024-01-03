@@ -1,6 +1,5 @@
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
-import 'package:flame/rendering.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 
@@ -18,19 +17,17 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
     textRenderer = TextPaint(
       style: TextStyle(
           color: Colors.white,
+          shadows: const <Shadow>[
+            Shadow(
+              offset: Offset(1.0, 1.0),
+              blurRadius: 3.0,
+              color: Colors.black,
+            ),
+          ],
           fontSize: game.size.y / 25,
           fontFamily: 'RenegadePursuit',
           fontWeight: FontWeight.bold
       ),
-    );
-    decorator.addLast(
-        Shadow3DDecorator(
-          angle: -0.5,
-          xShift: 1.2,
-          yScale: 1.2,
-          opacity: 0.5,
-          blur: 1.5,
-        )
     );
     position = Vector2(game.size.x / 2, 70);
   }

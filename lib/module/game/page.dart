@@ -24,7 +24,7 @@ const barInterval = 0.9;
 /// Velocity of the bullet
 const bulletVelocity = 500;
 /// Speed of the background parallax effect
-const backgroundParallax = 25.0;
+const backgroundParallax = 45.0;
 /// Game button colors
 const Map<String, Color> buttonColors = {
   'assets/button_purple.riv' : Colors.deepPurpleAccent,
@@ -75,10 +75,20 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     await addAll(
         [
           manager,
+          if (!_disabled) Background(
+              disabled: _disabled,
+              asset: 'background_hard.jpg',
+              priority: -3
+          ),
+          if (!_disabled) Background(
+              disabled: _disabled,
+              asset: 'background_medium.jpg',
+              priority: -2
+          ),
           Background(
-              asset: !_disabled
-                  ? 'background.jpg'
-                  : 'disabled_background.jpg',
+              disabled: _disabled,
+              asset: 'background_easy.jpg',
+              priority: -1
           ),
           if (!_disabled) _renderBar(),
           if (!_disabled) _score,
@@ -87,7 +97,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     /// ------------------------------------------------------------------------
 
     /// Game looper
-    _barInterval = Timer(barInterval, repeat: true);
+    _barInterval = Timer(barInterval / manager.barFallingSpeedMultiplier, repeat: true);
     _barInterval.onTick = () async {
       if (!_disabled) {
         await add(_renderBar());
@@ -99,6 +109,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   @override
   void update(double dt) {
     super.update(dt);
+    _barInterval.limit = barInterval / manager.barFallingSpeedMultiplier;
     _barInterval.update(dt);
     /// Updates the text score component
     _score.text = '${manager.score}';

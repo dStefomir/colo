@@ -87,8 +87,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   /// Generates a particle
   _generateParticle() => ParticleSystemComponent(
     particle: Particle.generate(
-      count: 50,
-      lifespan: 0.3,
+      count: game.manager.getBarExplosionParticles(),
+      lifespan: game.manager.getBarExplosionLifespan(),
       generator: (i) => AcceleratedParticle(
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,

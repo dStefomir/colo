@@ -7,24 +7,27 @@ import 'package:flame/parallax.dart';
 
 /// Renders a background
 class Background extends ParallaxComponent<ColoGamePage> {
+  /// is the game disabled or not
+  final bool disabled;
   /// Asset for the background
   final String asset;
-  /// Fit for the background
-  final LayerFill fill;
+  /// Priority for the background component
+  @override
+  final int priority;
 
-  Background({required this.asset, this.fill = LayerFill.height});
+  Background({required this.disabled, required this.asset, required this.priority});
 
   @override
   Future<void> onLoad() async {
-    final background = await Flame.images.load(asset);
+    final background = await Flame.images.load(disabled ? 'background_disabled.jpg' : asset);
     parallax = Parallax(
         [
           ParallaxLayer(
-            ParallaxImage(
+              ParallaxImage(
                 background,
-                fill: fill,
+                fill: LayerFill.height,
                 filterQuality: FilterQuality.high,
-            )
+              )
           )
         ]
     );

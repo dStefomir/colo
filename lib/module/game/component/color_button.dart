@@ -29,6 +29,15 @@ class ColorfulButton extends RiveComponent {
   @override
   Future<void> onLoad() async{
     super.onLoad();
+    await add(
+        MoveByEffect(
+            Vector2(0, -10),
+            EffectController(
+              duration: 1.5,
+              curve: Curves.decelerate,
+            ),
+        )
+    );
     priority = 1;
     final controller = StateMachineController.fromArtboard(
       artboard,
@@ -44,7 +53,7 @@ class ColorfulButton extends RiveComponent {
   @override
   void render(Canvas canvas) {
     canvas.drawCircle(Offset(buttonSize / 2, buttonSize / 2), buttonSize / 2.2, Paint()
-      ..color = color
+      ..color = Colors.black
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0));
     super.render(canvas);
   }

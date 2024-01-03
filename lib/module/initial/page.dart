@@ -1,6 +1,7 @@
 import 'package:colo/module/game/page.dart';
 import 'package:colo/widgets/animation.dart';
 import 'package:colo/widgets/button.dart';
+import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -53,17 +54,20 @@ class InitialPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(bottom: size.height / 12),
-              child: NormalButton(
-                gradientColors: barColors.values.toList(),
-                text: const StyledText(
-                  family: 'RenegadePursuit',
-                  text: 'Start',
-                  fontSize: 20,
-                  align: TextAlign.start,
-                  color: Colors.white,
-                  weight: FontWeight.bold,
+              child: ShadowWidget(
+                shouldHaveBorderRadius: true,
+                child: NormalButton(
+                  gradientColors: barColors.values.toList(),
+                  text: const StyledText(
+                    family: 'RenegadePursuit',
+                    text: 'Start',
+                    fontSize: 20,
+                    align: TextAlign.start,
+                    color: Colors.white,
+                    weight: FontWeight.bold,
+                  ),
+                  onClick: () => Modular.to.popAndPushNamed('/game'),
                 ),
-                onClick: () => Modular.to.popAndPushNamed('/game'),
               ),
             ),
           ),
