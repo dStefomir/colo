@@ -37,7 +37,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
-            game.manager.getBulletRivAssetBasedOnColor(color: bulletColor)
+            game.manager.bulletManager.getBulletRivAssetBasedOnColor(color: bulletColor)
         )
     );
     final riv = RivAnimationComponent(
@@ -72,7 +72,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   void update(double dt) {
     super.update(dt);
     /// Renders a barrier for the bullet based on the game level
-    if (game.manager.getBulletDyLimit() >= position.y) {
+    if (game.manager.bulletManager.getBulletDyLimit() >= position.y) {
       _renderBarrier();
     }
     /// --------------------------------------------------------

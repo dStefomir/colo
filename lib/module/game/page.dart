@@ -4,7 +4,7 @@ import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
-import 'package:colo/module/game/component/manager.dart';
+import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/score.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -121,7 +121,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     try {
       final ColorfulButton actionButton = children.whereType<ColorfulButton>().firstWhere((element) => element.containsPoint(info.eventPosition.global));
       if (actionButton.type == ButtonType.color) {
-        final Color buttonColor = manager.gameColors[manager.actionButtons.indexOf(actionButton)];
+        final Color buttonColor = manager.gameColors[manager.buttonManager.actionButtons.indexOf(actionButton)];
         add(
             Bullet(
                 bulletColor: buttonColor,
@@ -144,7 +144,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     final random = Random();
 
     return Bar(
-      color: manager.gameColors[random.nextInt(manager.gameColors.length)],
+      color: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
       barSize: Vector2(225, size.y / 15),
     );
   }

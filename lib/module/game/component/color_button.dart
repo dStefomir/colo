@@ -93,8 +93,8 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
       await game.add(
           ParticleSystemComponent(
             particle: Particle.generate(
-              count: game.manager.getBarExplosionParticles(),
-              lifespan: game.manager.getBarExplosionLifespan(),
+              count: game.manager.barManager.getBarExplosionParticles(),
+              lifespan: game.manager.barManager.getBarExplosionLifespan(),
               generator: (i) => AcceleratedParticle(
                 acceleration: _getRandomVector() * 3.0,
                 speed: _getRandomVector() * 8.0,

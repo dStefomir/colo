@@ -30,14 +30,14 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
         )
       ]
   );
-  
+
   @override
   Future<void> onLoad() async {
     position = Vector2(_generateRandomDx(), 0);
     if (!game.manager.disabled) {
       final waveRiv = await loadArtboard(
           RiveFile.asset(
-              game.manager.getBarRivAssetBasedOnColor(color: color)
+              game.manager.barManager.getBarRivAssetBasedOnColor(color: color)
           )
       );
 
@@ -49,9 +49,12 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void render(Canvas canvas) {
     final Rect rect = Rect.fromPoints(Offset(size.x + 2, size.y + 2), const Offset(5, 5));
-    canvas.drawRect(rect, Paint()
-      ..color = Colors.black
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0));
+    canvas.drawRect(
+        rect,
+        Paint()
+          ..color = Colors.black
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0)
+    );
     super.render(canvas);
   }
 
@@ -61,7 +64,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     position.y += (barVelocity * dt) * game.manager.barFallingSpeedMultiplier;
 
     if (position.y > game.size.y) {
-      game.manager.removeBar(bar: this);
+      game.manager.barManager.removeBar(bar: this);
       game.manager.gameOver();
     }
   }
@@ -80,15 +83,15 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   destroyBar() {
     play(asset: 'blow.wav');
     game.manager.increaseScore();
-    game.manager.removeBar(bar: this);
+    game.manager.barManager.removeBar(bar: this);
     game.add(_generateParticle());
   }
 
   /// Generates a particle
   _generateParticle() => ParticleSystemComponent(
     particle: Particle.generate(
-      count: game.manager.getBarExplosionParticles(),
-      lifespan: game.manager.getBarExplosionLifespan(),
+      count: game.manager.barManager.getBarExplosionParticles(),
+      lifespan: game.manager.barManager.getBarExplosionLifespan(),
       generator: (i) => AcceleratedParticle(
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,
@@ -105,7 +108,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   /// Generates a random dx for the bar
   _generateRandomDx({int min = 30}) {
     final random = Random();
-    return min + random.nextInt(((game.size.x / 2) - min + 1).toInt()).toDouble();
+    return min + random.nextInt(((game.size.x / 2.5) - min + 1).toInt()).toDouble();
   }
 
   // This method generates a random vector with its angle
