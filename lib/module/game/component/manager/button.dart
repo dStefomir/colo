@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
@@ -26,11 +28,13 @@ class ButtonManager extends Component {
     final GameManager manager = parent as GameManager;
     // If its hard level add a bomb button if there is none already
     if (manager.level == GameLevel.hard) {
-      _bombInterval ??= Timer(35, repeat: true, onTick: () async {
+      final random = Random();
+      _bombInterval ??= Timer(random.nextInt(35).toDouble(), repeat: true, onTick: () async {
         final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
         if (bombs.isEmpty) {
           game.add(await addActionButtonBomb());
-      }
+        }
+        _bombInterval!.limit = random.nextInt(35).toDouble();
       });
       _bombInterval?.update(dt);
     }

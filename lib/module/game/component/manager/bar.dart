@@ -8,7 +8,17 @@ import 'package:flutter/material.dart';
 
 /// Manger for controlling the bar rules
 class BarManager extends Component {
+  /// Renders the falling bars
+  Bar renderBar() {
+    final ColoGamePage game = parent!.parent as ColoGamePage;
+    final GameManager manager = parent as GameManager;
+    final random = Random();
 
+    return Bar(
+      barColor: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
+      barSize: Vector2(225, game.size.y / 15),
+    );
+  }
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);
   /// Generate a different shades of color

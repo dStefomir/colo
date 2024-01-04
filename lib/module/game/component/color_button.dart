@@ -36,7 +36,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   );
 
   @override
-  Future<void> onLoad() async{
+  Future<void> onLoad() async {
     super.onLoad();
     await add(
         MoveByEffect(

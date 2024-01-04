@@ -90,7 +90,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
               asset: 'background_easy.jpg',
               priority: -1
           ),
-          if (!_disabled) _renderBar(),
+          if (!_disabled) manager.barManager.renderBar(),
           if (!_disabled) _score,
         ]
     );
@@ -100,7 +100,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     _barInterval = Timer(barInterval / manager.barFallingSpeedMultiplier, repeat: true);
     _barInterval.onTick = () async {
       if (!_disabled) {
-        await add(_renderBar());
+        await add(manager.barManager.renderBar());
         await add(_score);
       }
     };
@@ -137,15 +137,5 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
         print("No button was clicked");
       }
     }
-  }
-
-  /// Renders the falling bars
-  _renderBar() {
-    final random = Random();
-
-    return Bar(
-      barColor: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
-      barSize: Vector2(225, size.y / 15),
-    );
   }
 }
