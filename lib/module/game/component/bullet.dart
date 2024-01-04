@@ -100,7 +100,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     removeFromParent();
-    if (other is Bar && other.color != bulletColor) {
+    if (other is Bar && other.barColor != bulletColor) {
       /// Not successful bullet to bar
       play(asset: 'mismatch.wav', volume: 0.1);
       game.add(

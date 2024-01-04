@@ -11,6 +11,20 @@ class BarManager extends Component {
 
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);
+  /// Generate a different shades of color
+  Color generateShade({required Color baseColor, required double factor}) {
+    factor = factor.clamp(-1.0, 0.3);
+    final int red = (baseColor.red * (1 + factor)).round().clamp(0, 255);
+    final int green = (baseColor.green * (1 + factor)).round().clamp(0, 255);
+    final int blue = (baseColor.blue * (1 + factor)).round().clamp(0, 255);
+
+    return Color.fromARGB(
+      baseColor.alpha,
+      red,
+      green,
+      blue,
+    );
+  }
   /// Gets bar explosion lifespan for particles
   double getBarExplosionLifespan() {
     double lifespan;

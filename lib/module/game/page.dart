@@ -144,7 +144,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     final random = Random();
 
     return Bar(
-      color: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
+      barColor: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
       barSize: Vector2(225, size.y / 15),
     );
   }

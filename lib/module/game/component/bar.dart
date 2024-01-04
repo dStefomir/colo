@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:colo/module/game/component/bullet.dart';
+import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
@@ -14,14 +15,14 @@ import 'package:flutter/material.dart';
 /// Renders a bar
 class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCallbacks {
   /// Color of the bar
-  final Color color;
+  final Color barColor;
   /// Bar size
   final Vector2 barSize;
 
-  Bar({required this.color, required this.barSize}) : super(
+  Bar({required this.barColor, required this.barSize}) : super(
       size: barSize,
       paint: Paint()
-        ..color = color
+        ..color = barColor
         ..filterQuality = FilterQuality.high
         ..isAntiAlias = true,
       children: [
@@ -34,10 +35,14 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   Future<void> onLoad() async {
     position = Vector2(_generateRandomDx(), 0);
+    if (game.manager.level == GameLevel.hard) {
+      final random = Random();
+      paint.color = game.manager.barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
+    }
     if (!game.manager.disabled) {
       final waveRiv = await loadArtboard(
           RiveFile.asset(
-              game.manager.barManager.getBarRivAssetBasedOnColor(color: color)
+              game.manager.barManager.getBarRivAssetBasedOnColor(color: barColor)
           )
       );
 
@@ -73,7 +78,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Bullet) {
-      if (other.bulletColor == color) {
+      if (other.bulletColor == barColor) {
         destroyBar();
       }
     }
@@ -99,7 +104,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
         child: CustomParticle(
             radius: 3,
             paint: Paint()
-              ..color = color
+              ..color = barColor
         ),
       ),
     ),
