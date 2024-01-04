@@ -71,13 +71,13 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     super.onCollisionStart(intersectionPoints, other);
     if (other is Bullet) {
       if (other.bulletColor == color) {
-        _destroyBar();
+        destroyBar();
       }
     }
   }
 
   /// Destroys a bar
-  _destroyBar() {
+  destroyBar() {
     play(asset: 'blow.wav');
     game.manager.increaseScore();
     game.manager.removeBar(bar: this);

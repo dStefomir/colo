@@ -77,7 +77,6 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     }
     /// --------------------------------------------------------
     position.y = position.y - (bulletVelocity * dt);
-    final random = Random();
     add(
         ParticleSystemComponent(
             particle: Particle.generate(
@@ -89,11 +88,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
                 child: CustomParticle(
                   radius: 1,
                   paint: Paint()
-                    ..color = game.manager.gameColors[
-                      random.nextInt(
-                          game.manager.gameColors.length
-                      )
-                    ],
+                    ..color = Colors.black,
                   shadowColor: bulletColor
                 ),
               ),

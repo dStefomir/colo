@@ -36,7 +36,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   GameManager({required SharedPreferences sharedPreferences, required this.disabled}) {
     _sharedPreferences = sharedPreferences;
-    _level = disabled ? GameLevel.hard : GameLevel.easy;
+    _level = disabled ? GameLevel.hard : GameLevel.hard;
     _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _barFallingSpeedMultiplier = 1;
@@ -85,8 +85,8 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     return _gameColors.map((e) =>
         ColorfulButton(
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
+            type: ButtonType.color,
             buttonSize: game.size.y / 10,
-            color: e,
             btnPosition: () {
               const double padding = 5;
               final double dX = game.size.y / 10;
@@ -153,6 +153,26 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     ).toList();
   }
 
+  /// Adds a bomb button to the game
+  Future<ColorfulButton> _addActionButtonBomb() async {
+    final bomb = await loadArtboard(RiveFile.asset('assets/button_bomb.riv'));
+
+    return ColorfulButton(
+        artBoard: bomb,
+        type: ButtonType.bomb,
+        buttonSize: game.size.y / 10,
+        btnPosition: () {
+          const double padding = 5;
+          final double dY = game.size.y - (game.size.y / 10 + padding);
+
+         return Vector2(
+              game.size.x / 2.5,
+              dY - colorfulBtnSize * 1.2
+          );
+        }
+    );
+  }
+
   /// Gets the number of different colors in the game
   int _getGameColors() {
     int colors;
@@ -173,8 +193,8 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   /// Adds a button to the game
   Future<void> _addExtraActionButton() async {
-    game.removeAll(_actionButtons);
-    _gameColors = [..._gameColors, barColors.values.toList()[_getGameColors()]];
+    game.removeAll(game.children.whereType<ColorfulButton>());
+    _gameColors = List.generate(_getGameColors(), (index) => barColors.values.toList()[index]);
     _actionButtons = await _renderActionButtons();
     game.addAll(_actionButtons);
   }
@@ -184,7 +204,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     /// Sets medium level
     if (_destroyedBars.value == 10) {
       if (_actionButtons.length == 2) {
-        _addExtraActionButton();
+        await _addExtraActionButton();
         _level = GameLevel.medium;
         final background = game.children.whereType<Background>().where((element) => element.priority == -1).toList().first;
         background.add(
@@ -202,7 +222,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     /// Sets hard level
     if (_destroyedBars.value == 30) {
       if (_actionButtons.length == 3) {
-        _addExtraActionButton();
+        await _addExtraActionButton();
         _level = GameLevel.hard;
         final background = game.children.whereType<Background>().where((element) => element.priority == -2).toList().first;
         background.add(
@@ -215,6 +235,13 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
                 onComplete: () => game.remove(background)
             )
         );
+      }
+    }
+    // If its hard level add a bomb button if there is none already
+    if (_level == GameLevel.hard) {
+      final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
+      if (bombs.isEmpty) {
+        game.add(await _addActionButtonBomb());
       }
     }
     /// If its hard level and 20 more bars are destroyed - increase bar falling speed

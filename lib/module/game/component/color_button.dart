@@ -1,25 +1,34 @@
+import 'dart:math';
+
+import 'package:colo/module/game/component/particle.dart';
+import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame/particles.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
+enum ButtonType {
+  color, bomb
+}
+
 /// Renders a colorful button
-class ColorfulButton extends RiveComponent {
+class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   /// Art board for the riv component
   final Artboard artBoard;
-  /// Color of the button
-  final Color color;
   /// Position of the button
   final Vector2 Function() btnPosition;
   /// Height of the button
   final double buttonSize;
+  /// What type the button should be
+  final ButtonType type;
 
   ColorfulButton({
     required this.artBoard,
     required this.buttonSize,
-    required this.color,
-    required this.btnPosition
+    required this.btnPosition,
+    required this.type
   }) : super(
     artboard: artBoard,
     size: Vector2(buttonSize, buttonSize),
@@ -60,24 +69,55 @@ class ColorfulButton extends RiveComponent {
 
   /// What happens when the button is clicked and not released
   void handleClick() async {
-    await add(
-        MoveByEffect(
-            Vector2(0, 10),
-            EffectController(
-              duration: 0.2,
-              curve: Curves.decelerate,
+    if (type == ButtonType.color) {
+      await add(
+          MoveByEffect(
+              Vector2(0, 10),
+              EffectController(
+                duration: 0.2,
+                curve: Curves.decelerate,
+              ),
+              onComplete: () =>
+                  add(
+                      MoveByEffect(
+                        Vector2(0, -10),
+                        EffectController(
+                          duration: 0.2,
+                          curve: Curves.decelerate,
+                        ),
+                      )
+                  )
+          )
+      );
+    } else {
+      await game.add(
+          ParticleSystemComponent(
+            particle: Particle.generate(
+              count: game.manager.getBarExplosionParticles(),
+              lifespan: game.manager.getBarExplosionLifespan(),
+              generator: (i) => AcceleratedParticle(
+                acceleration: _getRandomVector() * 3.0,
+                speed: _getRandomVector() * 8.0,
+                position: Vector2((game.size / 2).x, position.y),
+                child: CustomParticle(
+                    radius: 3,
+                    shadowColor: Colors.black87,
+                    paint: Paint()
+                      ..color = Colors.black
+                ),
+              ),
             ),
-            onComplete: () => add(
-                MoveByEffect(
-                  Vector2(0, -10),
-                  EffectController(
-                    duration: 0.2,
-                    curve: Curves.decelerate,
-                  ),
-                )
-            )
-        )
-    );
+          )
+      );
+      removeFromParent();
+    }
     vibrate();
+  }
+
+  // This method generates a random vector with its angle
+  // between from 0 and 360 degrees.
+  _getRandomVector() {
+    final random = Random();
+    return (Vector2.random(random) - Vector2.random(random)) * 500;
   }
 }

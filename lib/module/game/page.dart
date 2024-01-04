@@ -119,15 +119,19 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   void onTapUp(TapUpInfo info) {
     super.onTapUp(info);
     try {
-      final ColorfulButton actionButton = manager.actionButtons.firstWhere((element) => element.containsPoint(info.eventPosition.global));
-      final Color buttonColor = manager.gameColors[manager.actionButtons.indexOf(actionButton)];
+      final ColorfulButton actionButton = children.whereType<ColorfulButton>().firstWhere((element) => element.containsPoint(info.eventPosition.global));
+      if (actionButton.type == ButtonType.color) {
+        final Color buttonColor = manager.gameColors[manager.actionButtons.indexOf(actionButton)];
+        add(
+            Bullet(
+                bulletColor: buttonColor,
+                bulletSize: bulletSize
+            )
+        );
+      } else {
+        children.whereType<Bar>().forEach((element) => element.destroyBar());
+      }
       actionButton.handleClick();
-      add(
-          Bullet(
-              bulletColor: buttonColor,
-              bulletSize: bulletSize
-          )
-      );
     } catch (e) {
       if (kDebugMode) {
         print("No button was clicked");
