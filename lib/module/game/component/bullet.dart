@@ -8,7 +8,6 @@ import 'package:colo/module/game/component/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
-import 'package:flame/rendering.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -36,15 +35,6 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     play(asset: 'rocket.wav', volume: 0.05);
     final lastBar = game.children.whereType<Bar>().first;
     position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
-    decorator.addLast(
-        Shadow3DDecorator(
-          angle: 0,
-          xShift: 1.2,
-          yScale: 1.01,
-          opacity: 1,
-          blur: 2.5,
-        )
-    );
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
             game.manager.getBulletRivAssetBasedOnColor(color: bulletColor)
@@ -58,6 +48,24 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
         animationKey: 'All'
     );
     await add(riv);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final Rect rect = Rect.fromPoints(
+        Offset((bulletSize / 4) * -1 , (size.y / 1.3) * -1),
+        Offset(bulletSize / 2 , size.y)
+    );
+    canvas.drawRRect(RRect.fromRectAndCorners(
+        rect,
+        topLeft: const Radius.circular(35),
+        topRight: const Radius.circular(35),
+        bottomLeft: const Radius.circular(35),
+        bottomRight: const Radius.circular(35)
+    ), Paint()
+      ..color = Colors.black54
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3));
+    super.render(canvas);
   }
 
   @override
