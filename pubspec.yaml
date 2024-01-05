@@ -43,6 +43,7 @@ dependencies:
   flame_audio: ^2.1.6
   # Hooks library
   flutter_hooks: ^0.20.4
+  flutter_riverpod: ^2.4.9
   hooks_riverpod: ^2.4.9
   # shared prefs library
   shared_preferences: ^2.2.2

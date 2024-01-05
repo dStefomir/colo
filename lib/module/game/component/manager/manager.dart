@@ -5,6 +5,7 @@ import 'package:colo/module/game/component/manager/background.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
 import 'package:colo/module/game/component/manager/button.dart';
+import 'package:colo/module/game/component/score.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
@@ -20,7 +21,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Is the game disabled or not.
   /// Disabled means no touch and rules apply to the game.
   final bool disabled;
-  /// Bar manager
+  /// Sub managers -------------------------------------------------------------
   late BarManager _barManager;
   /// Bullet manager
   late BulletManager _bulletManager;
@@ -28,6 +29,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   late ButtonManager _buttonManager;
   /// Background manager
   late BackgroundManager _backgroundManager;
+  /// --------------------------------------------------------------------------
   /// Shared prefs
   late SharedPreferences _sharedPreferences;
   /// Game colors structure
@@ -36,15 +38,21 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   late ValueNotifier<int> _destroyedBars;
   /// Current game level
   late GameLevel _level;
+  /// Selected game level
+  late GameLevel _selectedLevel;
   /// Multiplier for the falling speed of the bars
   late double _barFallingSpeedMultiplier;
+  /// Game score
+  late Score _score;
 
-  GameManager({required SharedPreferences sharedPreferences, required this.disabled}) {
+  GameManager({required SharedPreferences sharedPreferences, required this.disabled, GameLevel? level}) {
     _sharedPreferences = sharedPreferences;
-    _level = disabled ? GameLevel.hard : GameLevel.hard;
+    _selectedLevel = level ?? GameLevel.easy;
+    _level = disabled ? GameLevel.hard : level ?? GameLevel.easy;
     _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _barFallingSpeedMultiplier = 1;
+    _score = Score(text: '${_destroyedBars.value}');
   }
 
   @override
@@ -58,6 +66,10 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       await add(_bulletManager);
       await add(_buttonManager);
       await add(_backgroundManager);
+
+      if (_level == GameLevel.hard) {
+        game.add(_score);
+      }
     }
   }
 
@@ -66,6 +78,10 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     super.update(dt);
     if (!disabled) {
       _increaseLevel();
+      /// Updates the text score component
+      if (_level == GameLevel.hard) {
+        _score.text = '${_destroyedBars.value}';
+      }
     }
   }
 
@@ -80,15 +96,21 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   /// Restarts the game
   Future<void> restartGame() async {
-    _level = GameLevel.easy;
     _destroyedBars.value = 0;
     _barFallingSpeedMultiplier = 1;
     game.overlays.remove('gameOver');
+    if (_level == GameLevel.hard) {
+      game.remove(_score);
+    }
+    _level = _selectedLevel;
     game.removeAll(game.children.whereType<Bullet>());
     game.removeAll(game.children.whereType<Bar>());
     game.removeAll(game.children.whereType<ColorfulButton>());
     _buttonManager.restartState();
     game.resumeEngine();
+    if (_level == GameLevel.hard) {
+      game.add(_score);
+    }
   }
 
   /// Gets the number of different colors in the game
@@ -121,10 +143,12 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Increase the current score
   void increaseScore() {
     _destroyedBars.value = _destroyedBars.value + 1;
-    if (_sharedPreferences.getInt('score') == null) {
-      _sharedPreferences.setInt('score', _destroyedBars.value);
-    } else if (_sharedPreferences.getInt('score') != null && (_sharedPreferences.getInt('score')! < _destroyedBars.value)) {
-      _sharedPreferences.setInt('score', _destroyedBars.value);
+    if (_level == GameLevel.hard) {
+      if (_sharedPreferences.getInt('score') == null) {
+        _sharedPreferences.setInt('score', _destroyedBars.value);
+      } else if (_sharedPreferences.getInt('score') != null && (_sharedPreferences.getInt('score')! < _destroyedBars.value)) {
+        _sharedPreferences.setInt('score', _destroyedBars.value);
+      }
     }
   }
 
@@ -139,18 +163,20 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Increases the game level
   void _increaseLevel() async {
     /// Sets medium level
-    if (_destroyedBars.value == 10) {
+    if (_destroyedBars.value == 10 && _level == GameLevel.easy) {
       if (_buttonManager.actionButtons.length == 2) {
-        await _buttonManager.addExtraActionButton();
         _level = GameLevel.medium;
+        await _buttonManager.addExtraActionButton();
         _backgroundManager.removeCurrentBackground(priorityOfCurrent: -1);
       }
     }
     /// Sets hard level
-    if (_destroyedBars.value == 30) {
+    if (_destroyedBars.value == 30 && _level == GameLevel.medium) {
       if (_buttonManager.actionButtons.length == 3) {
-        await _buttonManager.addExtraActionButton();
         _level = GameLevel.hard;
+        await _buttonManager.addExtraActionButton();
+        _destroyedBars.value = 0;
+        await game.add(_score);
         _backgroundManager.removeCurrentBackground(priorityOfCurrent: -2);
       }
     }

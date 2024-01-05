@@ -5,7 +5,7 @@ import 'package:colo/widgets/button.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
 
-
+/// Renders the game over overlay
 class GameOverDialog extends StatelessWidget {
   /// What happens when the restart button is pressed
   final void Function() onRestart;

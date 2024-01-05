@@ -53,13 +53,20 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   late bool _disabled;
   /// Gama manager component
   late GameManager manager;
-  /// Game score
-  late Score _score;
+  /// Selected game level
+  GameLevel? _level;
   /// Timer for updating the falling bars
   Timer? _barInterval;
 
-  ColoGamePage({required SharedPreferences sharedPrefs, bool disabled = false}) {
+  ColoGamePage({required SharedPreferences sharedPrefs, String? level, bool disabled = false}) {
     _sharedPreferences = sharedPrefs;
+    if (level == 'easy') {
+      _level = GameLevel.easy;
+    } else if (level == 'medium') {
+      _level = GameLevel.medium;
+    } else if (level == 'hard') {
+      _level = GameLevel.hard;
+    }
     _disabled = disabled;
   }
 
@@ -67,8 +74,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> onLoad() async {
     super.onLoad();
 
-    manager = GameManager(sharedPreferences: _sharedPreferences, disabled: _disabled);
-    _score = Score(text: '${manager.score}');
+    manager = GameManager(sharedPreferences: _sharedPreferences, level: _level, disabled: _disabled);
     /// ---------------- Adds components to the game ---------------------------
     await addAll(
         [
@@ -88,7 +94,6 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
               asset: 'background_easy.jpg',
               priority: -1
           ),
-          if (!_disabled) _score,
         ]
     );
     /// ------------------------------------------------------------------------
@@ -106,8 +111,6 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     super.update(dt);
     _barInterval?.limit = barInterval / manager.barFallingSpeedMultiplier;
     _barInterval?.update(dt);
-    /// Updates the text score component
-    _score.text = '${manager.score}';
   }
 
   @override

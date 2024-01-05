@@ -53,6 +53,7 @@ class MainModule extends Module {
               },
               game: ColoGamePage(
                     sharedPrefs: sharedPrefs,
+                    level: r.args.queryParams['level'],
                     disabled: false
                 ),
             )
