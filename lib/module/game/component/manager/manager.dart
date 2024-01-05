@@ -41,7 +41,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   GameManager({required SharedPreferences sharedPreferences, required this.disabled}) {
     _sharedPreferences = sharedPreferences;
-    _level = disabled ? GameLevel.hard : GameLevel.easy;
+    _level = disabled ? GameLevel.hard : GameLevel.hard;
     _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _barFallingSpeedMultiplier = 1;

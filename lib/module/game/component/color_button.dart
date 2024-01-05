@@ -23,6 +23,8 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   final double buttonSize;
   /// What type the button should be
   final ButtonType type;
+  /// Effect of the button
+  MoveEffect? effect;
 
   ColorfulButton({
     required this.artBoard,
@@ -38,16 +40,8 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    await add(
-        MoveByEffect(
-            Vector2(0, -10),
-            EffectController(
-              duration: 1.5,
-              curve: Curves.decelerate,
-            ),
-        )
-    );
     priority = 1;
+    effect = _initEffect();
     final controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',
@@ -65,6 +59,17 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
       ..color = Colors.black
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0));
     super.render(canvas);
+  }
+
+
+  @override
+  Future<void> update(double dt) async {
+    super.update(dt);
+    if (effect != null) {
+      await add(effect!);
+    } else {
+      effect = _initEffect();
+    }
   }
 
   /// What happens when the button is clicked and not released
@@ -113,6 +118,24 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
     }
     vibrate();
   }
+
+  /// Initializes the moving effect of the buttons
+  MoveEffect _initEffect() => MoveByEffect(
+      Vector2(0, -6),
+      EffectController(
+        duration: 1.5,
+        curve: Curves.linear,
+      ),
+      onComplete: () => add(MoveByEffect(
+          Vector2(0, 6),
+          EffectController(
+            duration: 1.5,
+            curve: Curves.linear,
+          ),
+          onComplete: () => effect = null
+      )
+      )
+  );
 
   // This method generates a random vector with its angle
   // between from 0 and 360 degrees.

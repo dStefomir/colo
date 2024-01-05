@@ -62,10 +62,10 @@ class ButtonManager extends Component {
         ColorfulButton(
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
             type: ButtonType.color,
-            buttonSize: game.size.y / 10,
+            buttonSize: colorfulBtnSize,
             btnPosition: () {
               const double padding = 5;
-              final double dX = game.size.y / 10;
+              const double dX = colorfulBtnSize + (padding * 2);
               final double dY = game.size.y - (game.size.y / 10 + padding);
 
               /// Game has two colors
@@ -76,7 +76,7 @@ class ButtonManager extends Component {
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX + padding),
+                      game.size.x - (dX - padding),
                       dY
                   );
                 }
@@ -89,13 +89,13 @@ class ButtonManager extends Component {
                 } else if (gameColors.indexOf(e) == 2) {
 
                   return Vector2(
-                      (padding + dX) * 0.99,
+                      dX - padding,
                       dY - colorfulBtnSize / 2
                   );
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX + padding),
+                      game.size.x - (dX - padding),
                       dY
                   );
                 }
@@ -108,19 +108,19 @@ class ButtonManager extends Component {
                 } else if (gameColors.indexOf(e) == 2) {
 
                   return Vector2(
-                      dX,
+                      dX - padding,
                       dY - colorfulBtnSize / 2
                   );
                 } else if (gameColors.indexOf(e) == 3) {
 
                   return Vector2(
-                      game.size.x - ((padding + dX) * 1.89),
+                      game.size.x - ((dX - padding) * 1.95),
                       dY - colorfulBtnSize / 2
                   );
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX + padding),
+                      game.size.x - (dX - padding),
                       dY
                   );
                 }
@@ -136,13 +136,13 @@ class ButtonManager extends Component {
     return ColorfulButton(
         artBoard: bomb,
         type: ButtonType.bomb,
-        buttonSize: game.size.y / 10,
+        buttonSize: colorfulBtnSize,
         btnPosition: () {
           const double padding = 5;
           final double dY = game.size.y - (game.size.y / 10 + padding);
 
           return Vector2(
-              (game.size.x / 2.5) - (padding / 2),
+              (game.size.x / 2) - (colorfulBtnSize / 2),
               dY - colorfulBtnSize * 1.2
           );
         }
