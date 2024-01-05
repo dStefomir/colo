@@ -4,6 +4,7 @@ import 'package:colo/core/page.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/page.dart';
 import 'package:colo/module/overlay/game_over.dart';
+import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/animation.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +27,14 @@ class MainModule extends Module {
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
             pageName: 'Initial',
-            onPopInvoked: (canPop) => exit(0),
+            onPopInvoked: (_, ref) {
+              final bool? isOverlayVisible = ref.read(overlayVisibilityProvider(const Key('game_mode')));
+              if (isOverlayVisible != null && isOverlayVisible == true) {
+                ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false);
+              } else {
+                exit(0);
+              }
+            },
             render: (sharedPrefs) => InitialPage(
                 sharedPrefs: sharedPrefs
             )
@@ -38,7 +46,7 @@ class MainModule extends Module {
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
             pageName: 'Game',
-            onPopInvoked: (canPop) => Modular.to.popAndPushNamed(_initialPageRoute),
+            onPopInvoked: (_, __) => Modular.to.popAndPushNamed(_initialPageRoute),
             render: (sharedPrefs) => GameWidget(
               overlayBuilderMap: {
                 'gameOver': (BuildContext context, ColoGamePage game) => SlideTransitionAnimation(

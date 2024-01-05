@@ -21,15 +21,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Is the game disabled or not.
   /// Disabled means no touch and rules apply to the game.
   final bool disabled;
-  /// Sub managers -------------------------------------------------------------
-  late BarManager _barManager;
-  /// Bullet manager
-  late BulletManager _bulletManager;
-  /// Button manager
-  late ButtonManager _buttonManager;
-  /// Background manager
-  late BackgroundManager _backgroundManager;
-  /// --------------------------------------------------------------------------
   /// Shared prefs
   late SharedPreferences _sharedPreferences;
   /// Game colors structure
@@ -40,10 +31,17 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   late GameLevel _level;
   /// Selected game level
   late GameLevel _selectedLevel;
-  /// Multiplier for the falling speed of the bars
-  late double _barFallingSpeedMultiplier;
   /// Game score
   late Score _score;
+  /// Sub managers -------------------------------------------------------------
+  late BarManager _barManager;
+  /// Bullet manager
+  late BulletManager _bulletManager;
+  /// Button manager
+  late ButtonManager _buttonManager;
+  /// Background manager
+  late BackgroundManager _backgroundManager;
+  /// --------------------------------------------------------------------------
 
   GameManager({required SharedPreferences sharedPreferences, required this.disabled, GameLevel? level}) {
     _sharedPreferences = sharedPreferences;
@@ -51,7 +49,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     _level = disabled ? GameLevel.hard : level ?? GameLevel.easy;
     _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
-    _barFallingSpeedMultiplier = 1;
     _score = Score(text: '${_destroyedBars.value}');
   }
 
@@ -97,7 +94,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Restarts the game
   Future<void> restartGame() async {
     _destroyedBars.value = 0;
-    _barFallingSpeedMultiplier = 1;
     game.overlays.remove('gameOver');
     if (_level == GameLevel.hard) {
       game.remove(_score);
@@ -107,6 +103,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     game.removeAll(game.children.whereType<Bar>());
     game.removeAll(game.children.whereType<ColorfulButton>());
     _buttonManager.restartState();
+    _barManager.restartState();
     game.resumeEngine();
     if (_level == GameLevel.hard) {
       game.add(_score);
@@ -180,10 +177,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
         _backgroundManager.removeCurrentBackground(priorityOfCurrent: -2);
       }
     }
-    /// If its hard level and 20 more bars are destroyed - increase bar falling speed
-    if (_level == GameLevel.hard && _destroyedBars.value % 20 == 1 && _barFallingSpeedMultiplier < 1.57) {
-      _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.002;
-    }
   }
 
   /// Gets the bar manager
@@ -198,6 +191,4 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   GameLevel get level => _level;
   /// Gets the current score
   int get score => _destroyedBars.value;
-  /// Gets the bar falling speed multiplier
-  double get barFallingSpeedMultiplier => _barFallingSpeedMultiplier;
 }

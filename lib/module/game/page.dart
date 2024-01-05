@@ -99,7 +99,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     /// ------------------------------------------------------------------------
 
     if (!_disabled) {
-      _barInterval = Timer(barInterval / manager.barFallingSpeedMultiplier, repeat: true);
+      _barInterval = Timer(barInterval / manager.barManager.barFallingSpeedMultiplier, repeat: true);
       _barInterval!.onTick = () async {
         await add(_renderBar());
       };
@@ -109,7 +109,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   @override
   void update(double dt) {
     super.update(dt);
-    _barInterval?.limit = barInterval / manager.barFallingSpeedMultiplier;
+    _barInterval?.limit = barInterval / manager.barManager.barFallingSpeedMultiplier;
     _barInterval?.update(dt);
   }
 

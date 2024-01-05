@@ -29,7 +29,7 @@ class ButtonManager extends Component {
       _bombInterval ??= Timer(0.01, repeat: true, onTick: () {
         final random = Random();
         _addBomb();
-        _bombInterval!.limit = random.nextInt(50).toDouble();
+        _bombInterval!.limit = random.nextInt(120).toDouble();
       });
       _bombInterval?.update(dt);
     } else {
@@ -42,10 +42,10 @@ class ButtonManager extends Component {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
 
-    final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
+    final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb);
     if (bombs.isEmpty && manager.level == GameLevel.hard) {
       game.add(await addActionButtonBomb());
-  }
+    }
   }
 
   /// Renders the action buttons
@@ -170,8 +170,8 @@ class ButtonManager extends Component {
   void restartState() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     _actionButtons = await _renderActionButtons();
-    _addBomb();
     game.addAll(_actionButtons);
+    _addBomb();
   }
   /// Getter for the colorful buttons
   List<ColorfulButton> get actionButtons => _actionButtons;

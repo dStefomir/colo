@@ -1,10 +1,11 @@
 import 'package:colo/widgets/load.dart';
 import 'package:colo/widgets/page.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Responsible for wrapping all pages and handling the app bar and the app drawer
-class CorePage extends StatelessWidget {
+class CorePage extends HookConsumerWidget {
   /// Specifies the page path
   final String pageName;
   /// Should resize when keyboard pops
@@ -12,7 +13,7 @@ class CorePage extends StatelessWidget {
   /// Renders the holding page
   final Widget Function(SharedPreferences) render;
   /// What happens if the page is popped
-  final void Function(bool)? onPopInvoked;
+  final void Function(bool, WidgetRef)? onPopInvoked;
 
   const CorePage({
     Key? key,
@@ -23,13 +24,17 @@ class CorePage extends StatelessWidget {
   }) : super(key: key);
 
   /// Renders the default page widget
-  Widget _renderDefaultPage(BuildContext context) => MainScaffold(
+  Widget _renderDefaultPage(BuildContext context, WidgetRef ref) => MainScaffold(
     body: FutureBuilder<SharedPreferences>(
         future: SharedPreferences.getInstance(),
         builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
           if (snapshot.hasData) {
             return PopScope(
-                onPopInvoked: onPopInvoked,
+                onPopInvoked: (shouldPop) {
+                  if (onPopInvoked != null) {
+                    onPopInvoked!(shouldPop, ref);
+                  }
+                },
                 canPop: false,
                 child: render(snapshot.data!)
             );
@@ -48,7 +53,7 @@ class CorePage extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) => _renderDefaultPage(context);
+  Widget build(BuildContext context, WidgetRef ref) => _renderDefaultPage(context, ref);
 }
 
 /// Scaffold wrapper for each page

@@ -14,22 +14,23 @@ class InitialPage extends HookConsumerWidget {
   const InitialPage({super.key, required this.sharedPrefs});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-
-    return GestureDetector(
-      onTap: () => ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          AbsorbPointer(
-            absorbing: true,
-            child: GameWidget(
-                game: ColoGamePage(sharedPrefs: sharedPrefs, disabled: true)
-            ),
+  Widget build(BuildContext context, WidgetRef ref) => GestureDetector(
+    onTap: () {
+      if (ref.read(overlayVisibilityProvider(const Key('game_mode'))) != null) {
+        ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false);
+      }
+    },
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        AbsorbPointer(
+          absorbing: true,
+          child: GameWidget(
+              game: ColoGamePage(sharedPrefs: sharedPrefs, disabled: true)
           ),
-          InitialPageBody(sharedPrefs: sharedPrefs)
-        ],
-      ),
-    );
-  }
+        ),
+        InitialPageBody(sharedPrefs: sharedPrefs)
+      ],
+    ),
+  );
 }

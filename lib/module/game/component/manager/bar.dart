@@ -12,11 +12,37 @@ class BarManager extends Component {
   late Color colorForSameBar;
   /// Numbers of same bars rendered
   late int _numberOfSameBars;
+  /// Multiplier for the falling speed of the bars
+  late double _barFallingSpeedMultiplier;
+  /// Timer for increasing the bar falling speed
+  Timer? _barFallingSpeedInterval;
 
   BarManager() {
     colorForSameBar = Colors.white;
     _numberOfSameBars = 0;
+    _barFallingSpeedMultiplier = 1;
   }
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    final GameManager manager = parent as GameManager;
+    _barFallingSpeedInterval ??= Timer(30, repeat: true, onTick: () {
+      /// If its hard level and 20 more bars are destroyed - increase bar falling speed
+      if (manager.level == GameLevel.hard) {
+        _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.2;
+      }
+    });
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    _barFallingSpeedInterval?.update(dt);
+  }
+
+  /// Reset the state of the manager
+  void restartState() => _barFallingSpeedMultiplier = 1;
 
   /// Gets a color for a bar
   Color getBarColor() {
@@ -63,7 +89,7 @@ class BarManager extends Component {
         lifespan = 1.5;
         break;
       case GameLevel.hard:
-        lifespan = 1.5 * manager.barFallingSpeedMultiplier;
+        lifespan = 1.5 * _barFallingSpeedMultiplier;
         break;
     }
 
@@ -82,7 +108,7 @@ class BarManager extends Component {
         count = 100;
         break;
       case GameLevel.hard:
-        count = (100 * manager.barFallingSpeedMultiplier).toInt();
+        count = (100 * _barFallingSpeedMultiplier).toInt();
         break;
     }
 
@@ -99,4 +125,7 @@ class BarManager extends Component {
 
     return barColors.keys.toList()[random.nextInt(barColors.length)];
   }
+
+  /// Gets the bar falling speed multiplier
+  double get barFallingSpeedMultiplier => _barFallingSpeedMultiplier;
 }

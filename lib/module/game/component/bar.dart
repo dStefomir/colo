@@ -66,7 +66,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void update(double dt) {
     super.update(dt);
-    position.y += (barVelocity * dt) * game.manager.barFallingSpeedMultiplier;
+    position.y += (barVelocity * dt) * game.manager.barManager.barFallingSpeedMultiplier;
 
     if (position.y > game.size.y) {
       game.manager.barManager.removeBar(bar: this);
