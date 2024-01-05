@@ -8,16 +8,31 @@ import 'package:flutter/material.dart';
 
 /// Manger for controlling the bar rules
 class BarManager extends Component {
-  /// Renders the falling bars
-  Bar renderBar() {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
+  /// Color used for the same bars
+  late Color colorForSameBar;
+  /// Numbers of same bars rendered
+  late int _numberOfSameBars;
+
+  BarManager() {
+    colorForSameBar = Colors.white;
+    _numberOfSameBars = 0;
+  }
+
+  /// Gets a color for a bar
+  Color getBarColor() {
     final GameManager manager = parent as GameManager;
     final random = Random();
 
-    return Bar(
-      barColor: List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())],
-      barSize: Vector2(225, game.size.y / 15),
-    );
+    if (_numberOfSameBars > 0) {
+      _numberOfSameBars--;
+
+      return colorForSameBar;
+    } else if (manager.level == GameLevel.hard && manager.score % random.nextDouble() == 1) {
+      colorForSameBar = List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
+      _numberOfSameBars = 8;
+    }
+
+    return List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
   }
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);

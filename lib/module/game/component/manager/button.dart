@@ -20,7 +20,6 @@ class ButtonManager extends Component {
     await (parent!.parent as ColoGamePage).addAll(_actionButtons);
   }
 
-
   @override
   Future<void> update(double dt) async {
     super.update(dt);
@@ -29,12 +28,12 @@ class ButtonManager extends Component {
     // If its hard level add a bomb button if there is none already
     if (manager.level == GameLevel.hard) {
       final random = Random();
-      _bombInterval ??= Timer(random.nextInt(35).toDouble(), repeat: true, onTick: () async {
+      _bombInterval ??= Timer(0.1, repeat: true, onTick: () async {
         final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
         if (bombs.isEmpty) {
           game.add(await addActionButtonBomb());
         }
-        _bombInterval!.limit = random.nextInt(35).toDouble();
+        _bombInterval!.limit = random.nextInt(50).toDouble();
       });
       _bombInterval?.update(dt);
     }

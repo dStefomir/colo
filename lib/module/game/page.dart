@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
@@ -53,12 +51,12 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Is the game disabled or not.
   /// Disabled means no touch and rules apply to the game.
   late bool _disabled;
-  /// Timer for updating the falling bars
-  late Timer _barInterval;
   /// Gama manager component
   late GameManager manager;
   /// Game score
   late Score _score;
+  /// Timer for updating the falling bars
+  Timer? _barInterval;
 
   ColoGamePage({required SharedPreferences sharedPrefs, bool disabled = false}) {
     _sharedPreferences = sharedPrefs;
@@ -90,27 +88,24 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
               asset: 'background_easy.jpg',
               priority: -1
           ),
-          if (!_disabled) manager.barManager.renderBar(),
           if (!_disabled) _score,
         ]
     );
     /// ------------------------------------------------------------------------
 
-    /// Game looper
-    _barInterval = Timer(barInterval / manager.barFallingSpeedMultiplier, repeat: true);
-    _barInterval.onTick = () async {
-      if (!_disabled) {
-        await add(manager.barManager.renderBar());
-        await add(_score);
-      }
-    };
+    if (!_disabled) {
+      _barInterval = Timer(barInterval / manager.barFallingSpeedMultiplier, repeat: true);
+      _barInterval!.onTick = () async {
+        await add(_renderBar());
+      };
+    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    _barInterval.limit = barInterval / manager.barFallingSpeedMultiplier;
-    _barInterval.update(dt);
+    _barInterval?.limit = barInterval / manager.barFallingSpeedMultiplier;
+    _barInterval?.update(dt);
     /// Updates the text score component
     _score.text = '${manager.score}';
   }
@@ -138,4 +133,10 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
       }
     }
   }
+
+  /// Renders the falling bars
+  _renderBar() => Bar(
+    barColor: manager.barManager.getBarColor(),
+    barSize: Vector2(225, size.y / 15),
+  );
 }

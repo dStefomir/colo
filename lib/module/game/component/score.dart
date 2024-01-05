@@ -30,5 +30,6 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
       ),
     );
     position = Vector2(game.size.x / 2, 70);
+    priority = 1;
   }
 }
