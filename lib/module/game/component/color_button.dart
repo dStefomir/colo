@@ -75,7 +75,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   /// What happens when the button is clicked and not released
   void handleClick() async {
     if (type == ButtonType.color) {
-      await add(
+      add(
           MoveByEffect(
               Vector2(0, 10),
               EffectController(
@@ -95,7 +95,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
           )
       );
     } else {
-      await game.add(
+      game.add(
           ParticleSystemComponent(
             particle: Particle.generate(
               count: game.manager.barManager.getBarExplosionParticles(),

@@ -23,20 +23,29 @@ class ButtonManager extends Component {
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
     // If its hard level add a bomb button if there is none already
     if (manager.level == GameLevel.hard) {
-      final random = Random();
-      _bombInterval ??= Timer(0.1, repeat: true, onTick: () async {
-        final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
-        if (bombs.isEmpty) {
-          game.add(await addActionButtonBomb());
-        }
+      _bombInterval ??= Timer(0.01, repeat: true, onTick: () {
+        final random = Random();
+        _addBomb();
         _bombInterval!.limit = random.nextInt(50).toDouble();
       });
       _bombInterval?.update(dt);
+    } else {
+      _bombInterval = null;
     }
+  }
+
+  /// Adds a bomb to the game
+  void _addBomb() async {
+    final ColoGamePage game = parent!.parent as ColoGamePage;
+    final GameManager manager = parent as GameManager;
+
+    final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb).toList();
+    if (bombs.isEmpty && manager.level == GameLevel.hard) {
+      game.add(await addActionButtonBomb());
+  }
   }
 
   /// Renders the action buttons
@@ -151,7 +160,6 @@ class ButtonManager extends Component {
   /// Adds a button to the game
   Future<void> addExtraActionButton() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
-
     game.removeAll(game.children.whereType<ColorfulButton>());
     _actionButtons = await _renderActionButtons();
     game.addAll(_actionButtons);
@@ -162,6 +170,7 @@ class ButtonManager extends Component {
   void restartState() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     _actionButtons = await _renderActionButtons();
+    _addBomb();
     game.addAll(_actionButtons);
   }
   /// Getter for the colorful buttons

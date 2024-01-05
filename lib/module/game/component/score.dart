@@ -34,7 +34,7 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
     priority = 1;
     add(
         MoveByEffect(
-            Vector2(0, 20),
+            Vector2(0, game.size.y / 18),
             EffectController(
               duration: 0.5,
               curve: Curves.decelerate,
