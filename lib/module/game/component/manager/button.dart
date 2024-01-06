@@ -44,7 +44,7 @@ class ButtonManager extends Component {
 
     final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb);
     if (bombs.isEmpty && manager.level == GameLevel.hard) {
-      game.add(await addActionButtonBomb());
+      await game.add(await addActionButtonBomb());
     }
   }
 
@@ -169,9 +169,12 @@ class ButtonManager extends Component {
   /// Restart the state of the game buttons
   void restartState() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
+    final GameManager manager = parent as GameManager;
     _actionButtons = await _renderActionButtons();
-    game.addAll(_actionButtons);
-    _addBomb();
+    await game.addAll(_actionButtons);
+    if (manager.level == GameLevel.hard) {
+      await game.add(await addActionButtonBomb());
+    }
   }
   /// Getter for the colorful buttons
   List<ColorfulButton> get actionButtons => _actionButtons;
