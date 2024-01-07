@@ -46,7 +46,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   GameManager({required SharedPreferences sharedPreferences, required this.disabled, GameLevel? level}) {
     _sharedPreferences = sharedPreferences;
     _selectedLevel = level ?? GameLevel.easy;
-    _level = disabled ? GameLevel.hard : level ?? GameLevel.easy;
+    _level = disabled ? GameLevel.easy : level ?? GameLevel.easy;
     _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index]);
     _destroyedBars = ValueNotifier(0);
     _score = Score(text: '${_destroyedBars.value}');
@@ -54,20 +54,20 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   @override
   Future<void> onLoad() async {
+    _backgroundManager = BackgroundManager();
     if (!disabled) {
       _barManager = BarManager();
       _bulletManager = BulletManager();
       _buttonManager = ButtonManager();
-      _backgroundManager = BackgroundManager();
       await add(_barManager);
       await add(_bulletManager);
       await add(_buttonManager);
-      await add(_backgroundManager);
 
       if (_level == GameLevel.hard) {
         game.add(_score);
       }
     }
+    await add(_backgroundManager);
   }
 
   @override

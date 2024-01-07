@@ -44,22 +44,11 @@ class BarManager extends Component {
   /// Reset the state of the manager
   void restartState() => _barFallingSpeedMultiplier = 1;
 
-  /// Gets a color for a bar
-  Color getBarColor() {
-    final GameManager manager = parent as GameManager;
-    final random = Random();
-
-    if (_numberOfSameBars > 0) {
-      _numberOfSameBars--;
-
-      return colorForSameBar;
-    } else if (manager.level == GameLevel.hard && manager.score % random.nextDouble() == 1) {
-      colorForSameBar = List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
-      _numberOfSameBars = 8;
-    }
-
-    return List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
-  }
+  /// Renders a falling bar
+  renderBar() => Bar(
+    barColor: _getBarColor(),
+    barSize: Vector2(255, 64),
+  );
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);
   /// Generate a different shades of color
@@ -124,6 +113,23 @@ class BarManager extends Component {
     final random = Random();
 
     return barColors.keys.toList()[random.nextInt(barColors.length)];
+  }
+
+  /// Gets a color for a bar
+  Color _getBarColor() {
+    final GameManager manager = parent as GameManager;
+    final random = Random();
+
+    if (_numberOfSameBars > 0) {
+      _numberOfSameBars--;
+
+      return colorForSameBar;
+    } else if (manager.level == GameLevel.hard && manager.score % random.nextDouble() == 1) {
+      colorForSameBar = List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
+      _numberOfSameBars = 8;
+    }
+
+    return List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
   }
 
   /// Gets the bar falling speed multiplier

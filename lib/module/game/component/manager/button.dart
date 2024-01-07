@@ -28,23 +28,24 @@ class ButtonManager extends Component {
     if (manager.level == GameLevel.hard) {
       _bombInterval ??= Timer(0.01, repeat: true, onTick: () {
         final random = Random();
-        _addBomb();
+        _orAddBomb();
         _bombInterval!.limit = random.nextInt(120).toDouble();
       });
       _bombInterval?.update(dt);
     } else {
+      _bombInterval?.stop();
       _bombInterval = null;
     }
   }
 
   /// Adds a bomb to the game
-  void _addBomb() async {
+  void _orAddBomb() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
 
     final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb);
     if (bombs.isEmpty && manager.level == GameLevel.hard) {
-      await game.add(await addActionButtonBomb());
+      await game.add(await _addActionButtonBomb());
     }
   }
 
@@ -138,7 +139,7 @@ class ButtonManager extends Component {
     ).toList();
   }
   /// Adds a bomb button to the game
-  Future<ColorfulButton> addActionButtonBomb() async {
+  Future<ColorfulButton> _addActionButtonBomb() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     final bomb = await loadArtboard(RiveFile.asset('assets/button_bomb.riv'));
 
@@ -173,7 +174,7 @@ class ButtonManager extends Component {
     _actionButtons = await _renderActionButtons();
     await game.addAll(_actionButtons);
     if (manager.level == GameLevel.hard) {
-      await game.add(await addActionButtonBomb());
+      await game.add(await _addActionButtonBomb());
     }
   }
   /// Getter for the colorful buttons

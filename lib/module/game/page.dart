@@ -1,9 +1,7 @@
-import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
-import 'package:colo/module/game/component/score.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -75,33 +73,12 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
     super.onLoad();
 
     manager = GameManager(sharedPreferences: _sharedPreferences, level: _level, disabled: _disabled);
-    /// ---------------- Adds components to the game ---------------------------
-    await addAll(
-        [
-          manager,
-          if (!_disabled) Background(
-              disabled: _disabled,
-              asset: 'background_hard.jpg',
-              priority: -3
-          ),
-          if (!_disabled) Background(
-              disabled: _disabled,
-              asset: 'background_medium.jpg',
-              priority: -2
-          ),
-          Background(
-              disabled: _disabled,
-              asset: 'background_easy.jpg',
-              priority: -1
-          ),
-        ]
-    );
-    /// ------------------------------------------------------------------------
+    await add(manager);
 
     if (!_disabled) {
       _barInterval = Timer(barInterval / manager.barManager.barFallingSpeedMultiplier, repeat: true);
       _barInterval!.onTick = () async {
-        await add(_renderBar());
+        await add(manager.barManager.renderBar());
       };
     }
   }
@@ -136,10 +113,4 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
       }
     }
   }
-
-  /// Renders the falling bars
-  _renderBar() => Bar(
-    barColor: manager.barManager.getBarColor(),
-    barSize: Vector2(255, 64),
-  );
 }
