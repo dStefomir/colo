@@ -1,9 +1,11 @@
+import 'package:colo/core/admob.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/module/main_module.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
@@ -12,12 +14,15 @@ void main() async {
   await Flame.device.fullScreen();
   /// Sets the device orientation
   await Flame.device.setOrientation(DeviceOrientation.portraitUp);
+  /// Initializes admob
+  await MobileAds.instance.initialize();
+  final adMob = AdMob();
   /// Plays the game background music
   playLooped(asset: 'background.mp3', volume: 0.05);
 
   runApp(
       ModularApp(
-          module: MainModule(),
+          module: MainModule(adMob: adMob),
           child: ProviderScope(
               child: _MyApp()
           )

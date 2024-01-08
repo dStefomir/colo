@@ -1,3 +1,4 @@
+import 'package:colo/core/admob.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/game_mode.dart';
 import 'package:colo/module/overlay/provider.dart';
@@ -7,6 +8,7 @@ import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,8 +16,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class InitialPageBody extends HookConsumerWidget {
   /// Shared prefs
   final SharedPreferences sharedPrefs;
+  /// Adds
+  final AdMob adMob;
 
-  const InitialPageBody({super.key, required this.sharedPrefs});
+  const InitialPageBody({super.key, required this.sharedPrefs, required this.adMob});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,6 +92,20 @@ class InitialPageBody extends HookConsumerWidget {
               weight: FontWeight.bold,
               clip: false,
               useShadow: true,
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 60,
+            child: AdWidget(
+                ad: BannerAd(
+                  size: AdSize.fullBanner,
+                  adUnitId: adMob.bannerAdUnitId!,
+                  request: const AdRequest(),
+                  listener: adMob.bannerListener
+                )..load()
             ),
           ),
         ),

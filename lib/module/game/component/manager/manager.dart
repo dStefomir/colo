@@ -83,6 +83,17 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   }
 
   /// Pauses the game
+  void handleGamePause() {
+    if (!game.paused) {
+      game.overlays.add('gamePause');
+      game.pauseEngine();
+    } else {
+      game.overlays.remove('gamePause');
+      game.resumeEngine();
+    }
+  }
+
+  /// Pauses the game
   void gameOver() {
     if (!disabled) {
       play(asset: 'game_over.wav', volume: 0.3);

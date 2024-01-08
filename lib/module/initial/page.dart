@@ -1,3 +1,4 @@
+import 'package:colo/core/admob.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/body.dart';
 import 'package:colo/module/overlay/provider.dart';
@@ -10,8 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class InitialPage extends HookConsumerWidget {
   /// Shared prefs
   final SharedPreferences sharedPrefs;
+  /// Adds
+  final AdMob adMob;
 
-  const InitialPage({super.key, required this.sharedPrefs});
+  const InitialPage({super.key, required this.sharedPrefs, required this.adMob});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => GestureDetector(
@@ -29,7 +32,7 @@ class InitialPage extends HookConsumerWidget {
               game: ColoGamePage(sharedPrefs: sharedPrefs, disabled: true)
           ),
         ),
-        InitialPageBody(sharedPrefs: sharedPrefs)
+        InitialPageBody(sharedPrefs: sharedPrefs, adMob: adMob)
       ],
     ),
   );

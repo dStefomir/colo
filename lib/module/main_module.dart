@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:colo/core/admob.dart';
 import 'package:colo/core/page.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/page.dart';
 import 'package:colo/module/overlay/game_over.dart';
+import 'package:colo/module/overlay/game_pause.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/animation.dart';
 import 'package:flame/game.dart';
@@ -15,6 +17,11 @@ const String _gamePageRoute = '/game';
 
 /// Represents the main module of the app
 class MainModule extends Module {
+  /// Adds
+  final AdMob adMob;
+
+  MainModule({required this.adMob});
+
   // Provide a list of dependencies to inject into the project
   @override
   void binds(i) {}
@@ -36,7 +43,8 @@ class MainModule extends Module {
               }
             },
             render: (sharedPrefs) => InitialPage(
-                sharedPrefs: sharedPrefs
+                sharedPrefs: sharedPrefs,
+                adMob: adMob
             )
         )
     );
@@ -55,8 +63,15 @@ class MainModule extends Module {
                   getEnd: () => const Offset(0, 0),
                   child: GameOverDialog(
                       onRestart: () async => game.manager.restartGame(),
-                      bestScore: sharedPrefs.getInt('score') ?? game.manager.score
+                      bestScore: sharedPrefs.getInt('score') ?? game.manager.score,
+                      adMob: adMob
                   ),
+                ),
+                'gamePause': (BuildContext context, ColoGamePage game) => FadeAnimation(
+                    start: 0,
+                    end: 1,
+                    duration: const Duration(milliseconds: 1000),
+                    child: GamePauseDialog(onUnpause: () => game.manager.handleGamePause())
                 )
               },
               game: ColoGamePage(
