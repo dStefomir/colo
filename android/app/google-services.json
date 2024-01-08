@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "685658688710",
+    "project_id": "colost-bafdf",
+    "storage_bucket": "colost-bafdf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685658688710:android:3e0939295f7ffea9d39bc7",
+        "android_client_info": {
+          "package_name": "com.example.colo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPhpuIvUQ8xPuwUGLXjd2cudRKI5821Nw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

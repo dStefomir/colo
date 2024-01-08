@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,10 @@ void main() async {
   await Flame.device.fullScreen();
   /// Sets the device orientation
   await Flame.device.setOrientation(DeviceOrientation.portraitUp);
+  /// Initializes firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   /// Initializes admob
   await MobileAds.instance.initialize();
   final adMob = AdMob();
