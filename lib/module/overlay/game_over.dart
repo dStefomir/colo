@@ -1,4 +1,4 @@
-import 'package:colo/core/admob.dart';
+import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
@@ -12,7 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 /// Renders the game over overlay
 class GameOverDialog extends HookConsumerWidget {
   /// Adds
-  final AdMob adMob;
+  final AdMobService adMob;
   /// What happens when the restart button is pressed
   final void Function() onRestart;
   /// Best game score

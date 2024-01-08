@@ -1,15 +1,21 @@
 import 'dart:io';
 
-import 'package:colo/core/admob.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
+import 'package:colo/core/service/auth.dart';
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/page.dart';
 import 'package:colo/module/overlay/game_over.dart';
 import 'package:colo/module/overlay/game_pause.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/animation.dart';
+import 'package:colo/widgets/load.dart';
+import 'package:colo/widgets/page.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 const String _initialPageRoute = '/';
@@ -18,9 +24,11 @@ const String _gamePageRoute = '/game';
 /// Represents the main module of the app
 class MainModule extends Module {
   /// Adds
-  final AdMob adMob;
+  final AdMobService adMob;
+  /// Auth
+  final AuthService auth;
 
-  MainModule({required this.adMob});
+  MainModule({required this.adMob, required this.auth});
 
   // Provide a list of dependencies to inject into the project
   @override
@@ -42,9 +50,28 @@ class MainModule extends Module {
                 exit(0);
               }
             },
-            render: (sharedPrefs) => InitialPage(
-                sharedPrefs: sharedPrefs,
-                adMob: adMob
+            /// Creates a stream build to listen for events in the fire store.
+            /// If there are any new events - it will reload the InitialPage with new data.
+            render: (sharedPrefs) => StreamBuilder(
+                stream: FirebaseFirestore.instance.collection("users").doc(auth.currentUser?.uid).snapshots(),
+                builder: (_, snapshot) {
+                  if (snapshot.hasData) {
+                    final account = Account.fromSnapshot(snapshot.data);
+
+                    return InitialPage(
+                        sharedPrefs: sharedPrefs,
+                        adMob: adMob,
+                        auth: auth,
+                        account: account
+                    );
+                  }
+
+                  return const BackgroundPage(
+                      child: Center(
+                        child: LoadingIndicator(color: Colors.purple)
+                      )
+                  );
+                }
             )
         )
     );

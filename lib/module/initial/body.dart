@@ -1,4 +1,6 @@
-import 'package:colo/core/admob.dart';
+import 'package:colo/core/service/admob.dart';
+import 'package:colo/core/service/auth.dart';
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/game_mode.dart';
 import 'package:colo/module/overlay/provider.dart';
@@ -11,15 +13,20 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:colo/core/extension/string.dart';
 
 /// Renders the Initial page body content
 class InitialPageBody extends HookConsumerWidget {
   /// Shared prefs
   final SharedPreferences sharedPrefs;
   /// Adds
-  final AdMob adMob;
+  final AdMobService adMob;
+  /// Auth
+  final AuthService auth;
+  /// User account
+  final Account account;
 
-  const InitialPageBody({super.key, required this.sharedPrefs, required this.adMob});
+  const InitialPageBody({super.key, required this.sharedPrefs, required this.adMob, required this.auth, required this.account});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,9 +41,49 @@ class InitialPageBody extends HookConsumerWidget {
           getEnd: () => const Offset(0, 0),
           duration: const Duration(milliseconds: 1000),
           child: Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+                padding: EdgeInsets.only(top: size.height / 18),
+                child: StyledText(
+                  text: 'Account Type: ${account.accountType?.capitalize()}',
+                  fontSize: 14,
+                  align: TextAlign.start,
+                  letterSpacing: 2,
+                  gradientColors: barColors.values.toList(),
+                  weight: FontWeight.bold,
+                  useShadow: true,
+                )
+            ),
+          ),
+        ),
+        SlideTransitionAnimation(
+          getStart: () => const Offset(0, -1),
+          getEnd: () => const Offset(0, 0),
+          duration: const Duration(milliseconds: 1000),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+                padding: EdgeInsets.only(top: size.height / 11),
+                child: StyledText(
+                  text: auth.currentUser!.uid,
+                  fontSize: 14,
+                  align: TextAlign.start,
+                  letterSpacing: 2,
+                  gradientColors: barColors.values.toList(),
+                  weight: FontWeight.bold,
+                  useShadow: true,
+                )
+            ),
+          ),
+        ),
+        SlideTransitionAnimation(
+          getStart: () => const Offset(0, -1),
+          getEnd: () => const Offset(0, 0),
+          duration: const Duration(milliseconds: 1000),
+          child: Align(
             alignment: Alignment.center,
             child: Padding(
-                padding: EdgeInsets.only(bottom: size.height / 1.5),
+                padding: EdgeInsets.only(bottom: size.height / 1.7),
                 child: StyledText(
                   family: 'RenegadePursuit',
                   text: 'Colost',

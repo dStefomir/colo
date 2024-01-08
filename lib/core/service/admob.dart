@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// Wrapper for the admob
-class AdMob {
+class AdMobService {
   /// Listener for the banner add
   late BannerAdListener _bannerListener;
 
-  AdMob() {
+  AdMobService() {
     _bannerListener = BannerAdListener(
         onAdLoaded: (ad) {
           if (kDebugMode) {

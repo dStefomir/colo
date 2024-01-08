@@ -1,4 +1,5 @@
-import 'package:colo/core/admob.dart';
+import 'package:colo/core/service/admob.dart';
+import 'package:colo/core/service/auth.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/module/main_module.dart';
 import 'package:flame/flame.dart';
@@ -20,15 +21,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  /// Initializes admob
+  /// Initializes auth service
+  final authService = AuthService();
+  await authService.getOrCreateUser();
+  /// Initializes admob service
   await MobileAds.instance.initialize();
-  final adMob = AdMob();
+  final adMobService = AdMobService();
   /// Plays the game background music
   playLooped(asset: 'background.mp3', volume: 0.05);
 
   runApp(
       ModularApp(
-          module: MainModule(adMob: adMob),
+          module: MainModule(adMob: adMobService, auth: authService),
           child: ProviderScope(
               child: _MyApp()
           )
