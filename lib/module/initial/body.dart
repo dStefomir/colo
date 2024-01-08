@@ -69,7 +69,11 @@ class InitialPageBody extends HookConsumerWidget {
                   fontSize: 14,
                   align: TextAlign.start,
                   letterSpacing: 2,
-                  gradientColors: barColors.values.toList(),
+                  gradientColors: List.generate(barColors.values.length, (index) {
+                    final color = barColors.values.toList()[index];
+
+                    return Color.fromRGBO(color.red, color.green, color.blue, 0.6);
+                  }),
                   weight: FontWeight.bold,
                   useShadow: true,
                 )
