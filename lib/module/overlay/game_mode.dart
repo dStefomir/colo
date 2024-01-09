@@ -171,9 +171,9 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _renderGameLevelSelector(level: GameLevel.easy, size: size.width),
-        _renderGameLevelSelector(level: GameLevel.medium, size: size.width),
-        _renderGameLevelSelector(level: GameLevel.hard, size: size.width),
+        _renderGameLevelSelector(level: GameLevel.easy, size: size.width < size.height ? size.width : size.height),
+        _renderGameLevelSelector(level: GameLevel.medium, size: size.width < size.height ? size.width : size.height),
+        _renderGameLevelSelector(level: GameLevel.hard, size: size.width < size.height ? size.width : size.height),
       ],
     );
     final bool? shouldShowGameModeDialog = ref.watch(overlayVisibilityProvider(const Key('game_mode')));

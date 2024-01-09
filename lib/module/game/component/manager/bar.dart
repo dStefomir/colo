@@ -41,6 +41,14 @@ class BarManager extends Component {
     _barFallingSpeedInterval?.update(dt);
   }
 
+  @override
+  Future<void> onGameResize(Vector2 size) async {
+    super.onGameResize(size);
+    final ColoGamePage game = parent!.parent as ColoGamePage;
+
+    game.removeAll(game.children.whereType<Bar>());
+  }
+
   /// Reset the state of the manager
   void restartState() => _barFallingSpeedMultiplier = 1;
 

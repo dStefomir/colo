@@ -11,26 +11,7 @@ class BackgroundManager extends Component {
   @override
   Future<void> onLoad() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
-    final GameManager manager = parent as GameManager;
-    game.addAll(
-        [
-          if (!manager.disabled) Background(
-              disabled: manager.disabled,
-              asset: 'background_hard.jpg',
-              priority: -3
-          ),
-          if (!manager.disabled && (manager.level != GameLevel.hard)) Background(
-              disabled: manager.disabled,
-              asset: 'background_medium.jpg',
-              priority: -2
-          ),
-          if (manager.disabled || manager.level == GameLevel.easy) Background(
-              disabled: manager.disabled,
-              asset: 'background_easy.jpg',
-              priority: -1
-          ),
-        ]
-    );
+    game.addAll(availableBackgrounds());
   }
 
   /// Removes the current background layer
@@ -47,5 +28,28 @@ class BackgroundManager extends Component {
             onComplete: () => game.remove(background)
         )
     );
+  }
+
+  /// Gets all available backgrounds
+  List<Background> availableBackgrounds() {
+    final GameManager manager = parent as GameManager;
+
+    return [
+      if (!manager.disabled) Background(
+          disabled: manager.disabled,
+          asset: 'background_hard.jpg',
+          priority: -3
+      ),
+      if (!manager.disabled && (manager.level != GameLevel.hard)) Background(
+          disabled: manager.disabled,
+          asset: 'background_medium.jpg',
+          priority: -2
+      ),
+      if (manager.disabled || manager.level == GameLevel.easy) Background(
+          disabled: manager.disabled,
+          asset: 'background_easy.jpg',
+          priority: -1
+      ),
+    ];
   }
 }

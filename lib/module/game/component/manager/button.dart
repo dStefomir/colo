@@ -15,9 +15,15 @@ class ButtonManager extends Component {
   Timer? _bombInterval;
 
   @override
-  Future<void> onLoad() async {
-    _actionButtons = await _renderActionButtons();
-    await (parent!.parent as ColoGamePage).addAll(_actionButtons);
+  void onLoad() => _loadButtons();
+
+  @override
+  Future<void> onGameResize(Vector2 size) async {
+    super.onGameResize(size);
+    final ColoGamePage game = parent!.parent as ColoGamePage;
+
+    game.removeAll(game.children.whereType<ColorfulButton>());
+    _loadButtons();
   }
 
   @override
@@ -36,6 +42,12 @@ class ButtonManager extends Component {
       _bombInterval?.stop();
       _bombInterval = null;
     }
+  }
+
+  /// Loads the game buttons
+  void _loadButtons() async {
+    _actionButtons = await _renderActionButtons();
+    await (parent!.parent as ColoGamePage).addAll(_actionButtons);
   }
 
   /// Adds a bomb to the game
@@ -76,7 +88,7 @@ class ButtonManager extends Component {
             btnPosition: () {
               const double padding = 5;
               const double dX = colorfulBtnSize + (padding * 2);
-              final double dY = game.size.y - (game.size.y / 10 + padding);
+              final double dY = game.size.y - (game.size.y / (game.size.y > game.size.x ? 10 : 5) + padding);
 
               /// Game has two colors
               if (gameColors.length == 2) {
@@ -149,8 +161,7 @@ class ButtonManager extends Component {
         buttonSize: colorfulBtnSize,
         btnPosition: () {
           const double padding = 5;
-          final double dY = game.size.y - (game.size.y / 10 + padding);
-
+          final double dY = game.size.y - (game.size.y / (game.size.y > game.size.x ? 10 : 5) + padding);
           return Vector2(
               (game.size.x / 2) - (colorfulBtnSize / 2),
               dY - colorfulBtnSize * 1.2

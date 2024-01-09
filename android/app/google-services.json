@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "685658688710",
-    "project_id": "colost-bafdf",
-    "storage_bucket": "colost-bafdf.appspot.com"
+    "project_number": "1031419778810",
+    "project_id": "colost-7d7d3",
+    "storage_bucket": "colost-7d7d3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:685658688710:android:3e0939295f7ffea9d39bc7",
+        "mobilesdk_app_id": "1:1031419778810:android:069ac615f661a70fc71b43",
         "android_client_info": {
-          "package_name": "com.example.colo"
+          "package_name": "eu.bsdsoft.colo"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDPhpuIvUQ8xPuwUGLXjd2cudRKI5821Nw"
+          "current_key": "AIzaSyBu39KG42f1YTOzx9-_KXJFdNviLz291lk"
         }
       ],
       "services": {

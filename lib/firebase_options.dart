@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPhpuIvUQ8xPuwUGLXjd2cudRKI5821Nw',
-    appId: '1:685658688710:android:3e0939295f7ffea9d39bc7',
-    messagingSenderId: '685658688710',
-    projectId: 'colost-bafdf',
-    storageBucket: 'colost-bafdf.appspot.com',
+    apiKey: 'AIzaSyBu39KG42f1YTOzx9-_KXJFdNviLz291lk',
+    appId: '1:1031419778810:android:069ac615f661a70fc71b43',
+    messagingSenderId: '1031419778810',
+    projectId: 'colost-7d7d3',
+    storageBucket: 'colost-7d7d3.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB3KvSnWIelsjYrgi5TF2hb3c4Wk7Nj4GE',
-    appId: '1:685658688710:ios:788b3813559b0100d39bc7',
-    messagingSenderId: '685658688710',
-    projectId: 'colost-bafdf',
-    storageBucket: 'colost-bafdf.appspot.com',
-    iosBundleId: 'com.example.colo',
+    apiKey: 'AIzaSyCGdZJAi5aHLg-CLZ3uEfvcNO9oLgjJExU',
+    appId: '1:1031419778810:ios:55ebe1dd98726561c71b43',
+    messagingSenderId: '1031419778810',
+    projectId: 'colost-7d7d3',
+    storageBucket: 'colost-7d7d3.appspot.com',
+    iosBundleId: 'eu.bsdsoft.colo',
   );
 }

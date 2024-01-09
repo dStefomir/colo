@@ -13,7 +13,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:colo/core/extension/string.dart';
 
 /// Renders the Initial page body content
 class InitialPageBody extends HookConsumerWidget {
@@ -43,27 +42,7 @@ class InitialPageBody extends HookConsumerWidget {
           child: Align(
             alignment: Alignment.topCenter,
             child: Padding(
-                padding: EdgeInsets.only(top: size.height / 18),
-                child: StyledText(
-                  text: 'Account Type: ${account.accountType?.capitalize()}',
-                  fontSize: 14,
-                  align: TextAlign.start,
-                  letterSpacing: 2,
-                  gradientColors: barColors.values.toList(),
-                  weight: FontWeight.bold,
-                  useShadow: true,
-                )
-            ),
-          ),
-        ),
-        SlideTransitionAnimation(
-          getStart: () => const Offset(0, -1),
-          getEnd: () => const Offset(0, 0),
-          duration: const Duration(milliseconds: 1000),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-                padding: EdgeInsets.only(top: size.height / 11),
+                padding: EdgeInsets.only(top: size.height / 22),
                 child: StyledText(
                   text: auth.currentUser!.uid,
                   fontSize: 14,
@@ -109,7 +88,7 @@ class InitialPageBody extends HookConsumerWidget {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(bottom: size.height / 12),
+              padding: EdgeInsets.only(bottom: size.height / 6),
               child: ShadowWidget(
                 shouldHaveBorderRadius: true,
                 child: NormalButton(
@@ -160,12 +139,12 @@ class InitialPageBody extends HookConsumerWidget {
             ),
           ),
         ),
-        Align(
+        if (shouldShowGameModeDialog != null) Align(
           alignment: Alignment.bottomCenter,
           child: SlideTransitionAnimation(
               duration: const Duration(milliseconds: 1000),
-              getStart: () => shouldShowGameModeDialog != null && shouldShowGameModeDialog == true ? const Offset(0, 1) : const Offset(0, 0),
-              getEnd: () => shouldShowGameModeDialog != null && shouldShowGameModeDialog == true ? const Offset(0, 0) : const Offset(0, 10),
+              getStart: () => shouldShowGameModeDialog == true ? const Offset(0, 1) : const Offset(0, 0),
+              getEnd: () => shouldShowGameModeDialog == true ? const Offset(0, 0) : const Offset(0, 10),
               whenTo: (controller) {
                 useValueChanged(shouldShowGameModeDialog, (_, __) async {
                   controller.reset();

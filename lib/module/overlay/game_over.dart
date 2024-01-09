@@ -40,7 +40,7 @@ class GameOverDialog extends HookConsumerWidget {
         body: Blurrable(
           strength: 5,
           child: Container(
-              color: Colors.transparent,
+              color: Colors.black,
               height: double.infinity,
               width: double.infinity,
               child: Column(
@@ -67,6 +67,7 @@ class GameOverDialog extends HookConsumerWidget {
                         padding: const EdgeInsets.all(15.0),
                         child: NormalButton(
                           gradientColors: barColors.values.toList(),
+                          color: Colors.cyan,
                           text: const StyledText(
                             family: 'RenegadePursuit',
                             text: 'Try again',

@@ -15,8 +15,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Opens the app in fullscreen mode
   await Flame.device.fullScreen();
-  /// Sets the device orientation
-  await Flame.device.setOrientation(DeviceOrientation.portraitUp);
   /// Initializes firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
