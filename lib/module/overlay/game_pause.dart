@@ -1,20 +1,24 @@
 import 'dart:async';
 
 import 'package:colo/core/page.dart';
+import 'package:colo/core/service/admob.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/utils/vibration.dart';
 import 'package:colo/widgets/blur.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /// Renders the game pause overlay
 class GamePauseDialog extends HookConsumerWidget {
+  /// Ads
+  final AdMobService adMob;
   /// Unpauses the game
   final void Function() onUnpause;
 
-  const GamePauseDialog({super.key, required this.onUnpause});
+  const GamePauseDialog({super.key, required this.onUnpause, required this.adMob});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MainScaffold(
@@ -42,20 +46,39 @@ class GamePauseDialog extends HookConsumerWidget {
               color: Colors.black,
               height: double.infinity,
               width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  StyledText(
-                    family: 'RenegadePursuit',
-                    text: '${ref.read(secondsToUnpauseProvider) ?? 'Paused'}',
-                    fontSize: 40,
-                    align: TextAlign.start,
-                    letterSpacing: 5,
-                    gradientColors: barColors.values.toList(),
-                    weight: FontWeight.bold,
-                    useShadow: true,
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      StyledText(
+                        family: 'RenegadePursuit',
+                        text: '${ref.read(secondsToUnpauseProvider) ?? 'Paused'}',
+                        fontSize: 40,
+                        align: TextAlign.start,
+                        letterSpacing: 5,
+                        gradientColors: barColors.values.toList(),
+                        weight: FontWeight.bold,
+                        useShadow: true,
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      height: 60,
+                      child: AdWidget(
+                          ad: BannerAd(
+                              size: AdSize.fullBanner,
+                              adUnitId: adMob.bannerAdUnitId!,
+                              request: const AdRequest(),
+                              listener: adMob.bannerListener
+                          )..load()
+                      ),
+                    ),
                   ),
                 ],
               )

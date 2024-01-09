@@ -14,7 +14,6 @@ import 'package:colo/widgets/animation.dart';
 import 'package:colo/widgets/load.dart';
 import 'package:colo/widgets/page.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -98,7 +97,10 @@ class MainModule extends Module {
                     start: 0,
                     end: 1,
                     duration: const Duration(milliseconds: 1000),
-                    child: GamePauseDialog(onUnpause: () => game.manager.handleGamePause())
+                    child: GamePauseDialog(
+                        adMob: adMob,
+                        onUnpause: () => game.manager.handleGamePause()
+                    )
                 )
               },
               game: ColoGamePage(
