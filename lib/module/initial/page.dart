@@ -34,6 +34,9 @@ class InitialPage extends HookConsumerWidget {
       if (ref.read(overlayVisibilityProvider(const Key('game_mode'))) != null) {
         ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false);
       }
+      if (ref.read(overlayVisibilityProvider(const Key('game_store'))) != null) {
+        ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
+      }
     },
     child: Stack(
       fit: StackFit.expand,

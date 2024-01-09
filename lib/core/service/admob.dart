@@ -38,19 +38,20 @@ class AdMobService {
 
   /// Get an banner add id
   String? get bannerAdUnitId {
-    if (kReleaseMode) {
-      if (Platform.isIOS) {
-        return "ca-app-pub-2745355777679464/2009413172";
-      } else {
-        return "ca-app-pub-2745355777679464/6222375956";
-      }
-    } else {
-      if (Platform.isIOS) {
-        return "ca-app-pub-3940256099942544/6300978111";
-      } else {
-        return "ca-app-pub-3940256099942544/6300978111";
-      }
-    }
+    // if (kReleaseMode) {
+    //   if (Platform.isIOS) {
+    //     return "ca-app-pub-2745355777679464/2009413172";
+    //   } else {
+    //     return "ca-app-pub-2745355777679464/6222375956";
+    //   }
+    // } else {
+    //   if (Platform.isIOS) {
+    //     return "ca-app-pub-3940256099942544/6300978111";
+    //   } else {
+    //     return "ca-app-pub-3940256099942544/6300978111";
+    //   }
+    // }
+    return "ca-app-pub-3940256099942544/6300978111";
   }
 
   /// Gets a listener for the interstitial ad
@@ -78,18 +79,19 @@ class AdMobService {
 
   /// Get an interstitial add id
   String? get interstitialAdUnitId {
-    if (kReleaseMode) {
-      if (Platform.isIOS) {
-        return "ca-app-pub-2745355777679464/2123348840";
-      } else {
-        return "ca-app-pub-2745355777679464/5822349880";
-      }
-    } else {
-      if (Platform.isIOS) {
-        return "ca-app-pub-3940256099942544/1033173712";
-      } else {
-        return "ca-app-pub-3940256099942544/1033173712";
-      }
-    }
+    // if (kReleaseMode) {
+    //   if (Platform.isIOS) {
+    //     return "ca-app-pub-2745355777679464/2123348840";
+    //   } else {
+    //     return "ca-app-pub-2745355777679464/5822349880";
+    //   }
+    // } else {
+    //   if (Platform.isIOS) {
+    //     return "ca-app-pub-3940256099942544/1033173712";
+    //   } else {
+    //     return "ca-app-pub-3940256099942544/1033173712";
+    //   }
+    // }
+    return "ca-app-pub-3940256099942544/1033173712";
   }
 }

@@ -1,0 +1,130 @@
+{
+  "identifier" : "A0B22166",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6475682627",
+      "localizations" : [
+        {
+          "description" : "Choose difficulty before starting the game.",
+          "displayName" : "Game difficulty",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "difficulty_select",
+      "referenceName" : "Choose difficulty before starting",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "6475683401",
+      "localizations" : [
+        {
+          "description" : "All game features with ad free experience.",
+          "displayName" : "Premium",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "premium",
+      "referenceName" : "Premium",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6475682948",
+      "localizations" : [
+        {
+          "description" : "Remove all ads within the game.",
+          "displayName" : "Remove ads",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "game_ads",
+      "referenceName" : "Remove game ads",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6475682993",
+      "localizations" : [
+        {
+          "description" : "Remove rocket limiter in all difficulties.",
+          "displayName" : "Remove rocket limiter",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "rocket_limiter",
+      "referenceName" : "Remove rocket limiter",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6474639217",
+    "_developerTeamID" : "49WENL2C8J",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 726502818.55297995,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

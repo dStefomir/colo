@@ -42,4 +42,10 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
         )
     );
   }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    position = Vector2(size.x / 2, 0);
+  }
 }

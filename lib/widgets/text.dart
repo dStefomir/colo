@@ -21,7 +21,7 @@ class StyledText extends StatelessWidget {
   /// Should the widget clip the text or not
   final bool clip;
   /// Padding applied to the text widget
-  final double padding;
+  final EdgeInsetsGeometry padding;
   /// Space between characters
   final double letterSpacing;
   /// Should the text be in italic style;
@@ -44,7 +44,7 @@ class StyledText extends StatelessWidget {
     this.decoration,
     this.useShadow = false,
     this.clip = true,
-    this.padding = 15,
+    this.padding = const EdgeInsets.all(15),
     this.letterSpacing = 4,
     this.italic = false,
     this.align = TextAlign.center,
@@ -55,7 +55,7 @@ class StyledText extends StatelessWidget {
   /// Renders the widget
   Widget _renderText(BuildContext context) =>
       Padding(
-        padding: EdgeInsets.all(padding),
+        padding: padding,
         child: Text(
             text,
             textAlign: align,

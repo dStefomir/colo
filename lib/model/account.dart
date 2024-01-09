@@ -10,6 +10,6 @@ class Account {
   Map<String, dynamic> toJson() => {'account_type': accountType, "updated": updated};
 
   Account.fromSnapshot(snapshot) :
-      accountType = snapshot.data()?['account_type'],
-      updated = snapshot.data()?['updated']?.toDate();
+      accountType = snapshot?.data()?['account_type'],
+      updated = snapshot?.data()?['updated']?.toDate();
 }

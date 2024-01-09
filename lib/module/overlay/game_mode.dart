@@ -2,6 +2,8 @@ import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
+import 'package:colo/widgets/button.dart';
+import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
@@ -50,93 +52,108 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
     Widget selector;
     switch (level) {
       case GameLevel.easy:
-        selector = Card(
-          color: Colors.white.withOpacity(0.25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _renderRiv(asset: 'assets/button_purple.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_red.riv', width: size),
-                ],
-              ),
-              StyledText(
-                family: 'RenegadePursuit',
-                text: 'Easy',
-                fontSize: 30,
-                align: TextAlign.start,
-                letterSpacing: 20,
-                gradientColors: barColors.values.toList(),
-                weight: FontWeight.bold,
-                padding: 0,
-                italic: true,
-                useShadow: true,
-              )
-            ],
+        selector = ShadowWidget(
+          child: Card(
+            color: Colors.black,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 15),
+                  child: Row(
+                    children: [
+                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_red.riv', width: size),
+                    ],
+                  ),
+                ),
+                StyledText(
+                  family: 'RenegadePursuit',
+                  text: 'Easy',
+                  fontSize: 30,
+                  align: TextAlign.start,
+                  letterSpacing: 20,
+                  gradientColors: barColors.values.toList(),
+                  weight: FontWeight.bold,
+                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  italic: true,
+                  useShadow: true,
+                )
+              ],
+            ),
           ),
         );
       case GameLevel.medium:
-        selector = Card(
-          color: Colors.white.withOpacity(0.25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _renderRiv(asset: 'assets/button_purple.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_red.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_blue.riv', width: size),
-                ],
-              ),
-              StyledText(
-                family: 'RenegadePursuit',
-                text: 'Medium',
-                fontSize: 30,
-                align: TextAlign.start,
-                letterSpacing: 20,
-                gradientColors: barColors.values.toList(),
-                weight: FontWeight.bold,
-                padding: 0,
-                italic: true,
-                useShadow: true,
-              )
-            ],
+        selector = ShadowWidget(
+          child: Card(
+            color: Colors.black,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 15),
+                  child: Row(
+                    children: [
+                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_red.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
+                    ],
+                  ),
+                ),
+                StyledText(
+                  family: 'RenegadePursuit',
+                  text: 'Medium',
+                  fontSize: 30,
+                  align: TextAlign.start,
+                  letterSpacing: 20,
+                  gradientColors: barColors.values.toList(),
+                  weight: FontWeight.bold,
+                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  italic: true,
+                  useShadow: true,
+                )
+              ],
+            ),
           ),
         );
       case GameLevel.hard:
-        selector = Card(
-          color: Colors.white.withOpacity(0.25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _renderRiv(asset: 'assets/button_purple.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_red.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_blue.riv', width: size),
-                  const SizedBox(width: 10,),
-                  _renderRiv(asset: 'assets/button_green.riv', width: size),
-                ],
-              ),
-              StyledText(
-                family: 'RenegadePursuit',
-                text: 'Hard',
-                fontSize: 30,
-                align: TextAlign.start,
-                letterSpacing: 20,
-                gradientColors: barColors.values.toList(),
-                weight: FontWeight.bold,
-                padding: 0,
-                italic: true,
-                useShadow: true,
-              )
-            ],
+        selector = ShadowWidget(
+          child: Card(
+            color: Colors.black,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 15),
+                  child: Row(
+                    children: [
+                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_red.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
+                      const SizedBox(width: 10,),
+                      _renderRiv(asset: 'assets/button_green.riv', width: size),
+                    ],
+                  ),
+                ),
+                StyledText(
+                  family: 'RenegadePursuit',
+                  text: 'Hard',
+                  fontSize: 30,
+                  align: TextAlign.start,
+                  letterSpacing: 20,
+                  gradientColors: barColors.values.toList(),
+                  weight: FontWeight.bold,
+                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  italic: true,
+                  useShadow: true,
+                )
+              ],
+            ),
           ),
         );
     }
@@ -166,15 +183,31 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final dialogWidget = Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _renderGameLevelSelector(level: GameLevel.easy, size: size.width < size.height ? size.width : size.height),
-        _renderGameLevelSelector(level: GameLevel.medium, size: size.width < size.height ? size.width : size.height),
-        _renderGameLevelSelector(level: GameLevel.hard, size: size.width < size.height ? size.width : size.height),
-      ],
+    final dialogWidget = SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Spacer(),
+              DefaultButton(
+                  onClick: () => ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false),
+                  color: Colors.black,
+                  svgColor: Colors.white,
+                  borderColor: Colors.black,
+                  icon: 'assets/svgs/close.svg'
+              ),
+            ],
+          ),
+          _renderGameLevelSelector(level: GameLevel.easy, size: size.width < size.height ? size.width : size.height),
+          _renderGameLevelSelector(level: GameLevel.medium, size: size.width < size.height ? size.width : size.height),
+          _renderGameLevelSelector(level: GameLevel.hard, size: size.width < size.height ? size.width : size.height),
+        ],
+      ),
     );
     final bool? shouldShowGameModeDialog = ref.watch(overlayVisibilityProvider(const Key('game_mode')));
     return shouldShowGameModeDialog != null && shouldShowGameModeDialog ? Blurrable(
