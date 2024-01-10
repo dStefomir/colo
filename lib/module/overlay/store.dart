@@ -1,3 +1,4 @@
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
@@ -10,17 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-/// In app purchases ids
-const List<String> _productIds = [
-  'difficulty_select',
-  'premium',
-  'game_ads',
-  'rocket_limiter'
-];
+/// --------------------- Products ---------------------------------------------
+const _productPremium = 'premium';
+const _productDifficulty = 'difficulty_select';
+const _productNoAds = 'game_ads';
+const _productRocketLimiter = 'rocket_limiter';
+/// ----------------------------------------------------------------------------
 
+/// Renders the game store overlay
 class GameStoreDialog extends HookConsumerWidget {
 
-  const GameStoreDialog({super.key});
+  /// User account
+  final Account account;
+
+  const GameStoreDialog({super.key, required this.account});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,8 +56,24 @@ class GameStoreDialog extends HookConsumerWidget {
                 )
             );
           } else {
+            /// Generates the in app purchases
+            Set<String> formProductIds() {
+              final List<String> productIds = [_productPremium];
+              if (account.difficultySelect != true) {
+                productIds.add(_productDifficulty);
+              }
+              if (account.noAds != true) {
+                productIds.add(_productNoAds);
+              }
+              if (account.rocketLimiter != true) {
+                productIds.add(_productRocketLimiter);
+              }
+
+              return productIds.toSet();
+            }
+
             return FutureBuilder<ProductDetailsResponse>(
-                future: purchases.queryProductDetails(_productIds.toSet()),
+                future: purchases.queryProductDetails(formProductIds()),
                 builder: (context, details) {
                   String? error;
                   if (!snapshot.hasData) {
@@ -184,6 +204,9 @@ class _GameStoreBody extends HookConsumerWidget {
                             weight: FontWeight.bold,
                           ),
                           onClick: () async {
+                            if (product.id == _productPremium) {
+                              ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
+                            }
                             final wasPurchaseSuccessful = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
                             if (kDebugMode) {
                               print(wasPurchaseSuccessful);

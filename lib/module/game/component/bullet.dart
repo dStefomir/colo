@@ -17,8 +17,10 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   final Color bulletColor;
   /// Bullet radius
   final double bulletSize;
+  /// Should have a bullet limiter or not
+  final bool shouldRemoveLimiter;
 
-  Bullet({required this.bulletColor, required this.bulletSize}) : super(
+  Bullet({required this.bulletColor, required this.bulletSize, required this.shouldRemoveLimiter}) : super(
     paint: Paint()
       ..color = Colors.transparent
       ..filterQuality = FilterQuality.high
@@ -72,7 +74,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   void update(double dt) {
     super.update(dt);
     /// Renders a barrier for the bullet based on the game level
-    if (game.manager.bulletManager.getBulletDyLimit() >= position.y) {
+    if (!shouldRemoveLimiter && game.manager.bulletManager.getBulletDyLimit() >= position.y) {
       _renderBarrier();
     }
     /// --------------------------------------------------------

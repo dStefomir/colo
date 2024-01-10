@@ -1,3 +1,4 @@
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
@@ -45,6 +46,8 @@ const Map<String, Color> bulletColors = {
 class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Shared prefs
   late SharedPreferences _sharedPreferences;
+  /// User account
+  late Account _account;
   /// Is the game disabled or not.
   /// Disabled means no touch and rules apply to the game.
   late bool _disabled;
@@ -55,8 +58,9 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Timer for updating the falling bars
   Timer? _barInterval;
 
-  ColoGamePage({required SharedPreferences sharedPrefs, String? level, bool disabled = false}) {
+  ColoGamePage({required SharedPreferences sharedPrefs, required Account account, String? level, bool disabled = false}) {
     _sharedPreferences = sharedPrefs;
+    _account = account;
     if (level == 'easy') {
       _level = GameLevel.easy;
     } else if (level == 'medium') {
@@ -100,7 +104,8 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
           add(
               Bullet(
                   bulletColor: buttonColor,
-                  bulletSize: bulletSize
+                  bulletSize: bulletSize,
+                  shouldRemoveLimiter: _account.rocketLimiter
               )
           );
         } else {

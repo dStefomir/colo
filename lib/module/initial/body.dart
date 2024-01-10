@@ -11,6 +11,7 @@ import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,7 +77,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    SlideTransitionAnimation(
+    if (account.premium != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -132,9 +133,13 @@ class InitialPageBody extends HookConsumerWidget {
               asset: 'assets/svgs/game.svg',
               assetPaddingBottom: 10,
               onClick: () {
-                final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
-                if (isGameStoreOpened == null || !isGameStoreOpened) {
-                  ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
+                if (account.premium == true || account.difficultySelect == true) {
+                  final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
+                  if (isGameStoreOpened == null || !isGameStoreOpened) {
+                    ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
+                  }
+                } else {
+                  Modular.to.popAndPushNamed('/game?level=easy');
                 }
               },
             ),
@@ -163,7 +168,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    Align(
+    if (account.noAds != true) Align(
       alignment: Alignment.bottomCenter,
       child: SizedBox(
         height: 60,
@@ -227,7 +232,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    SlideTransitionAnimation(
+    if (account.premium != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -283,9 +288,13 @@ class InitialPageBody extends HookConsumerWidget {
               asset: 'assets/svgs/game.svg',
               assetPaddingBottom: 10,
               onClick: () {
-                final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
-                if (isGameStoreOpened == null || !isGameStoreOpened) {
-                  ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
+                if (account.premium == true || account.difficultySelect == true) {
+                  final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
+                  if (isGameStoreOpened == null || !isGameStoreOpened) {
+                    ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
+                  }
+                } else {
+                  Modular.to.popAndPushNamed('/game?level=easy');
                 }
               },
             ),
@@ -314,7 +323,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    Align(
+    if (account.premium != true || account.noAds != true) Align(
       alignment: Alignment.bottomCenter,
       child: SizedBox(
         height: 60,
@@ -353,7 +362,7 @@ class InitialPageBody extends HookConsumerWidget {
                   controller.forward();
                 });
               },
-              child: const GameStoreDialog()
+              child: GameStoreDialog(account: account)
           ),
         ),
         if (shouldShowGameModeDialog != null) Align(

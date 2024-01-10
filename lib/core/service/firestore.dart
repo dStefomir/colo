@@ -13,7 +13,7 @@ class FireStoreService {
         .instance
         .collection("users")
         .doc(userId)
-        .set({"difficulty_select": true});
+        .update({"difficulty_select": true});
     _updateCommonFields();
   }
 
@@ -23,8 +23,10 @@ class FireStoreService {
         .instance
         .collection("users")
         .doc(userId)
-        .set(
+        .update(
         {
+          "account_type": "premium",
+          "premium": true,
           "difficulty_select": true,
           "game_ads": true,
           "rocket_limiter": true
@@ -38,7 +40,7 @@ class FireStoreService {
         .instance
         .collection("users")
         .doc(userId)
-        .set({"game_ads": true});
+        .update({"game_ads": true});
     _updateCommonFields();
   }
 
@@ -48,7 +50,7 @@ class FireStoreService {
         .instance
         .collection("users")
         .doc(userId)
-        .set({"rocket_limiter": true});
+        .update({"rocket_limiter": true});
     _updateCommonFields();
   }
 

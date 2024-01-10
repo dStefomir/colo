@@ -15,15 +15,9 @@ class ButtonManager extends Component {
   Timer? _bombInterval;
 
   @override
-  void onLoad() => _loadButtons();
-
-  @override
-  Future<void> onGameResize(Vector2 size) async {
-    super.onGameResize(size);
-    final ColoGamePage game = parent!.parent as ColoGamePage;
-
-    game.removeAll(game.children.whereType<ColorfulButton>());
-    _loadButtons();
+  Future<void> onLoad() async {
+    _actionButtons = await _renderActionButtons();
+    await (parent!.parent as ColoGamePage).addAll(_actionButtons);
   }
 
   @override
@@ -42,12 +36,6 @@ class ButtonManager extends Component {
       _bombInterval?.stop();
       _bombInterval = null;
     }
-  }
-
-  /// Loads the game buttons
-  void _loadButtons() async {
-    _actionButtons = await _renderActionButtons();
-    await (parent!.parent as ColoGamePage).addAll(_actionButtons);
   }
 
   /// Adds a bomb to the game

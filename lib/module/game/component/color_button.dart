@@ -54,6 +54,12 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   }
 
   @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    position = btnPosition();
+  }
+
+  @override
   void render(Canvas canvas) {
     canvas.drawCircle(Offset(buttonSize / 2, buttonSize / 2), buttonSize / 2.2, Paint()
       ..color = Colors.black

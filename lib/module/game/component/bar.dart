@@ -100,7 +100,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
       generator: (i) => AcceleratedParticle(
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,
-        position: Vector2((game.size / 2).x, position.y),
+        position: Vector2(size.x, position.y),
         child: CustomParticle(
             radius: 3,
             paint: Paint()

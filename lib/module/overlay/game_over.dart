@@ -1,5 +1,6 @@
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
@@ -11,6 +12,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /// Renders the game over overlay
 class GameOverDialog extends HookConsumerWidget {
+  /// User account
+  final Account account;
   /// Adds
   final AdMobService adMob;
   /// What happens when the restart button is pressed
@@ -18,7 +21,7 @@ class GameOverDialog extends HookConsumerWidget {
   /// Best game score
   final int bestScore;
 
-  const GameOverDialog({super.key, required this.adMob, required this.bestScore, required this.onRestart});
+  const GameOverDialog({super.key, required this.account, required this.adMob, required this.bestScore, required this.onRestart});
 
   void _createInterstitialAd({required WidgetRef ref}) {
     InterstitialAd.load(
@@ -34,7 +37,9 @@ class GameOverDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final InterstitialAd? ad = ref.watch(interstitialAdProvider);
-    _createInterstitialAd(ref: ref);
+    if (account.noAds != true) {
+      _createInterstitialAd(ref: ref);
+    }
 
     return MainScaffold(
         body: Blurrable(
@@ -77,13 +82,17 @@ class GameOverDialog extends HookConsumerWidget {
                             weight: FontWeight.bold,
                           ),
                           onClick: () {
-                            if (ad != null) {
-                              ad.fullScreenContentCallback = adMob.interstitialCallback(
-                                  createAdd: () => _createInterstitialAd(ref: ref),
-                                  onDismissed: onRestart
-                              );
-                              ad.show();
-                              ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                            if (account.noAds != true) {
+                              if (ad != null) {
+                                ad.fullScreenContentCallback = adMob.interstitialCallback(
+                                    createAdd: () => _createInterstitialAd(ref: ref),
+                                    onDismissed: onRestart
+                                );
+                                ad.show();
+                                ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                              }
+                            } else {
+                              onRestart();
                             }
                           }
                         ),

@@ -1,6 +1,5 @@
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/service/auth.dart';
-import 'package:colo/core/service/firestore.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/body.dart';
@@ -45,7 +44,7 @@ class InitialPage extends HookConsumerWidget {
         AbsorbPointer(
           absorbing: true,
           child: GameWidget(
-              game: ColoGamePage(sharedPrefs: sharedPrefs, disabled: true)
+              game: ColoGamePage(sharedPrefs: sharedPrefs, account: account, disabled: true)
           ),
         ),
         InitialPageBody(

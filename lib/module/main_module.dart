@@ -42,6 +42,7 @@ class MainModule extends Module {
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
             pageName: 'Initial',
+            userId: auth.currentUser!.uid,
             onPopInvoked: (_, ref) {
               final bool? isOverlayVisible = ref.read(overlayVisibilityProvider(const Key('game_mode')));
               if (isOverlayVisible != null && isOverlayVisible == true) {
@@ -50,28 +51,11 @@ class MainModule extends Module {
                 exit(0);
               }
             },
-            /// Creates a stream build to listen for events in the fire store.
-            /// If there are any new events - it will reload the InitialPage with new data.
-            render: (sharedPrefs) => StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("users").doc(auth.currentUser?.uid).snapshots(),
-                builder: (_, snapshot) {
-                  if (snapshot.hasData) {
-                    final account = Account.fromSnapshot(snapshot.data);
-
-                    return InitialPage(
-                        sharedPrefs: sharedPrefs,
-                        adMob: adMob,
-                        auth: auth,
-                        account: account
-                    );
-                  }
-
-                  return const BackgroundPage(
-                      child: Center(
-                        child: LoadingIndicator(color: Colors.purple)
-                      )
-                  );
-                }
+            render: (sharedPrefs, account) => InitialPage(
+                sharedPrefs: sharedPrefs,
+                adMob: adMob,
+                auth: auth,
+                account: account
             )
         )
     );
@@ -81,8 +65,9 @@ class MainModule extends Module {
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
             pageName: 'Game',
+            userId: auth.currentUser!.uid,
             onPopInvoked: (_, __) => Modular.to.popAndPushNamed(_initialPageRoute),
-            render: (sharedPrefs) => GameWidget(
+            render: (sharedPrefs, account) => GameWidget(
               overlayBuilderMap: {
                 'gameOver': (BuildContext context, ColoGamePage game) => SlideTransitionAnimation(
                   duration: const Duration(milliseconds: 1000),
@@ -91,6 +76,7 @@ class MainModule extends Module {
                   child: GameOverDialog(
                       onRestart: () async => game.manager.restartGame(),
                       bestScore: sharedPrefs.getInt('score') ?? game.manager.score,
+                      account: account,
                       adMob: adMob
                   ),
                 ),
@@ -106,6 +92,7 @@ class MainModule extends Module {
               },
               game: ColoGamePage(
                     sharedPrefs: sharedPrefs,
+                    account: account,
                     level: r.args.queryParams['level'],
                     disabled: false
                 ),
