@@ -21,13 +21,9 @@ class AuthService {
 
   /// Sets an default account type
   _initializeFireStoreAccount() async {
-    final account = Account();
-    account.accountType = 'free';
-    account.updated = DateTime.now();
-
     await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser?.uid)
-        .set(account.toJson());
+        .set(Account().toJson());
   }
 }
