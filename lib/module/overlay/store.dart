@@ -6,7 +6,6 @@ import 'package:colo/widgets/button.dart';
 import 'package:colo/widgets/load.dart';
 import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -207,10 +206,7 @@ class _GameStoreBody extends HookConsumerWidget {
                             if (product.id == _productPremium) {
                               ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
                             }
-                            final wasPurchaseSuccessful = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
-                            if (kDebugMode) {
-                              print(wasPurchaseSuccessful);
-                            }
+                            await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
                           }
                       ),
                     )
@@ -218,7 +214,33 @@ class _GameStoreBody extends HookConsumerWidget {
                 ),
               ),
             );
-          }).toList()
+          }).toList(),
+          ShadowWidget(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () async {
+                    await InAppPurchase.instance.restorePurchases();
+                    ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
+                    },
+                  child: const Card(
+                    color: Colors.black,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: StyledText(
+                        text: 'Restore purchases',
+                        fontSize: 18,
+                        align: TextAlign.center,
+                        clip: false,
+                        letterSpacing: 2,
+                        color: Colors.red,
+                        weight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+          )
         ],
       ),
     );
