@@ -29,6 +29,34 @@ class GameStoreDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final purchases = InAppPurchase.instance;
 
+    /// Render btn for restoring purchases
+    Widget renderRestorePurchasesBtn() => ShadowWidget(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () async {
+              await InAppPurchase.instance.restorePurchases();
+              ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
+            },
+            child: const Card(
+              color: Colors.black,
+              child: SizedBox(
+                width: double.infinity,
+                child: StyledText(
+                  text: 'Restore purchases',
+                  fontSize: 18,
+                  align: TextAlign.center,
+                  clip: false,
+                  letterSpacing: 2,
+                  color: Colors.red,
+                  weight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        )
+    );
+
     return FutureBuilder<bool>(
         future: purchases.isAvailable(),
         builder: (context, snapshot) {
@@ -57,7 +85,10 @@ class GameStoreDialog extends HookConsumerWidget {
           } else {
             /// Generates the in app purchases
             Set<String> formProductIds() {
-              final List<String> productIds = [_productPremium];
+              final List<String> productIds = [];
+              if (account.noAds != true || account.rocketLimiter != true || account.difficultySelect != true) {
+                productIds.add(_productPremium);
+              }
               if (account.difficultySelect != true) {
                 productIds.add(_productDifficulty);
               }
@@ -97,24 +128,30 @@ class GameStoreDialog extends HookConsumerWidget {
                   }
 
                   if (error != null) {
-                    return ShadowWidget(
-                      child: Container(
-                        color: Colors.black54,
-                        width: double.infinity,
-                        child: StyledText(
-                          text: error,
-                          fontSize: 25,
-                          clip: false,
-                          align: TextAlign.center,
-                          letterSpacing: 2,
-                          gradientColors: barColors.values.toList(),
-                          weight: FontWeight.bold,
-                          useShadow: true,
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ShadowWidget(
+                          child: Container(
+                            color: Colors.black54,
+                            width: double.infinity,
+                            child: StyledText(
+                              text: error,
+                              fontSize: 25,
+                              clip: false,
+                              align: TextAlign.center,
+                              letterSpacing: 2,
+                              gradientColors: barColors.values.toList(),
+                              weight: FontWeight.bold,
+                              useShadow: true,
+                            ),
+                          ),
                         ),
-                      ),
+                        renderRestorePurchasesBtn()
+                      ],
                     );
                   }
-                  return _GameStoreBody(products: products);
+                  return _GameStoreBody(products: products, renderRestorePurchases: renderRestorePurchasesBtn());
                 }
             );
           }
@@ -127,7 +164,9 @@ class _GameStoreBody extends HookConsumerWidget {
   /// Available products for sale
   final List<ProductDetails> products;
 
-  const _GameStoreBody({required this.products});
+  final Widget renderRestorePurchases;
+
+  const _GameStoreBody({required this.products, required this.renderRestorePurchases});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -215,32 +254,7 @@ class _GameStoreBody extends HookConsumerWidget {
               ),
             );
           }).toList(),
-          ShadowWidget(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () async {
-                    await InAppPurchase.instance.restorePurchases();
-                    ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
-                    },
-                  child: const Card(
-                    color: Colors.black,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: StyledText(
-                        text: 'Restore purchases',
-                        fontSize: 18,
-                        align: TextAlign.center,
-                        clip: false,
-                        letterSpacing: 2,
-                        color: Colors.red,
-                        weight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-          )
+          renderRestorePurchases
         ],
       ),
     );

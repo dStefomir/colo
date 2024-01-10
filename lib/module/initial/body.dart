@@ -1,3 +1,4 @@
+import 'package:colo/core/extension/string.dart';
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/service/auth.dart';
 import 'package:colo/model/account.dart';
@@ -31,24 +32,20 @@ class InitialPageBody extends HookConsumerWidget {
 
   /// Renders the portrait layout
   List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size}) => [
-    SlideTransitionAnimation(
+    if (account.premium == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-            padding: EdgeInsets.only(top: size.height / 8),
+            padding: EdgeInsets.only(top: size.height / 7),
             child: StyledText(
-              text: auth.currentUser!.uid,
+              text: account.accountType.capitalize(),
               fontSize: 14,
               align: TextAlign.start,
               letterSpacing: 2,
-              gradientColors: List.generate(barColors.values.length, (index) {
-                final color = barColors.values.toList()[index];
-
-                return Color.fromRGBO(color.red, color.green, color.blue, 0.6);
-              }),
+              gradientColors: barColors.values.toList(),
               weight: FontWeight.bold,
               useShadow: true,
             )
@@ -186,7 +183,7 @@ class InitialPageBody extends HookConsumerWidget {
 
   /// Renders the landscape layout
   List<Widget> _renderLandscapeMode({required WidgetRef ref, required Size size}) => [
-    SlideTransitionAnimation(
+    if (account.premium == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -195,15 +192,11 @@ class InitialPageBody extends HookConsumerWidget {
         child: Padding(
             padding: EdgeInsets.only(top: size.height / 6),
             child: StyledText(
-              text: auth.currentUser!.uid,
+              text: account.accountType.capitalize(),
               fontSize: 14,
               align: TextAlign.start,
               letterSpacing: 2,
-              gradientColors: List.generate(barColors.values.length, (index) {
-                final color = barColors.values.toList()[index];
-
-                return Color.fromRGBO(color.red, color.green, color.blue, 0.6);
-              }),
+              gradientColors: barColors.values.toList(),
               weight: FontWeight.bold,
               useShadow: true,
             )
