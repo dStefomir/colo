@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:colo/core/page.dart';
 import 'package:colo/core/service/admob.dart';
+import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/utils/vibration.dart';
@@ -13,12 +14,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /// Renders the game pause overlay
 class GamePauseDialog extends HookConsumerWidget {
+  /// User account
+  final Account account;
   /// Ads
   final AdMobService adMob;
   /// Unpauses the game
   final void Function() onUnpause;
 
-  const GamePauseDialog({super.key, required this.onUnpause, required this.adMob});
+  const GamePauseDialog({super.key, required this.onUnpause, required this.account, required this.adMob});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MainScaffold(
@@ -66,7 +69,7 @@ class GamePauseDialog extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  Align(
+                  if (account.noAds != true) Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(
                       height: 60,

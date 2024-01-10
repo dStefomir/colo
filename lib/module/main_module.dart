@@ -86,6 +86,7 @@ class MainModule extends Module {
                     duration: const Duration(milliseconds: 1000),
                     child: GamePauseDialog(
                         adMob: adMob,
+                        account: account,
                         onUnpause: () => game.manager.handleGamePause()
                     )
                 )

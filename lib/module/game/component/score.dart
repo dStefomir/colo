@@ -1,6 +1,5 @@
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +14,8 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
 
   @override
   Future<void> onLoad() async {
+    /// Determine the biggest side of the display
+    final biggestSide = game.size.y > game.size.x ? game.size.y : game.size.x;
     textRenderer = TextPaint(
       style: TextStyle(
           color: Colors.white,
@@ -25,7 +26,7 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
               color: Colors.black,
             ),
           ],
-          fontSize: game.size.y / 25,
+          fontSize: biggestSide / 25,
           fontFamily: 'RenegadePursuit',
           fontWeight: FontWeight.bold
       ),
@@ -36,15 +37,6 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    position = Vector2(size.x / 2, 0);
-    add(
-        MoveByEffect(
-          Vector2(0, game.size.y / 18),
-          EffectController(
-            duration: 0.5,
-            curve: Curves.decelerate,
-          ),
-        )
-    );
+    position = Vector2(game.size.x / 2, game.size.y / 18);
   }
 }
