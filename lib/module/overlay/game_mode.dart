@@ -197,7 +197,7 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
               DefaultButton(
                   onClick: () => ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false),
                   color: Colors.black,
-                  svgColor: Colors.white,
+                  svgColor: Colors.pink.withOpacity(0.5),
                   borderColor: Colors.black,
                   icon: 'assets/svgs/close.svg'
               ),

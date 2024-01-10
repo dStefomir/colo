@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
 import 'package:colo/core/service/auth.dart';
+import 'package:colo/core/service/firestore.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/page.dart';

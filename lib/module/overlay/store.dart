@@ -5,6 +5,7 @@ import 'package:colo/widgets/button.dart';
 import 'package:colo/widgets/load.dart';
 import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -126,67 +127,75 @@ class _GameStoreBody extends HookConsumerWidget {
               DefaultButton(
                   onClick: () => ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false),
                   color: Colors.black,
-                  svgColor: Colors.white,
+                  svgColor: Colors.pink.withOpacity(0.5),
                   borderColor: Colors.black,
                   icon: 'assets/svgs/close.svg'
               ),
             ],
           ),
-          ...products.map((product) => ShadowWidget(
-            child: Card(
-              color: Colors.black,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 200,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StyledText(
-                          text: product.title,
-                          fontSize: 18,
-                          align: TextAlign.start,
-                          clip: false,
-                          letterSpacing: 2,
-                          gradientColors: barColors.values.toList(),
-                          weight: FontWeight.bold,
-                        ),
-                        StyledText(
-                          text: product.description,
-                          fontSize: 12,
-                          clip: false,
-                          padding: const EdgeInsets.only(left: 15, bottom: 15),
-                          align: TextAlign.start,
-                          letterSpacing: 2,
-                          gradientColors: barColors.values.toList(),
-                        )
-                      ],
+          ...products.map((product) {
+            final purchaseParam = PurchaseParam(productDetails: product);
+            return ShadowWidget(
+              child: Card(
+                color: Colors.black,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StyledText(
+                            text: product.title,
+                            fontSize: 18,
+                            align: TextAlign.start,
+                            clip: false,
+                            letterSpacing: 2,
+                            gradientColors: barColors.values.toList(),
+                            weight: FontWeight.bold,
+                          ),
+                          StyledText(
+                            text: product.description,
+                            fontSize: 12,
+                            clip: false,
+                            padding: const EdgeInsets.only(left: 15, bottom: 15),
+                            align: TextAlign.start,
+                            letterSpacing: 2,
+                            gradientColors: barColors.values.toList(),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15, top: 20),
-                    child: NormalButton(
-                        color: Colors.pink.withOpacity(0.3),
-                        text: StyledText(
-                          family: 'RenegadePursuit',
-                          gradientColors: barColors.values.toList(),
-                          text: product.price,
-                          fontSize: 13,
-                          align: TextAlign.start,
-                          color: Colors.white,
-                          weight: FontWeight.bold,
-                        ),
-                        onClick: () {}
-                    ),
-                  )
-                ],
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15, top: 20),
+                      child: NormalButton(
+                          color: Colors.pink.withOpacity(0.3),
+                          text: StyledText(
+                            family: 'RenegadePursuit',
+                            gradientColors: barColors.values.toList(),
+                            text: product.price,
+                            fontSize: 13,
+                            align: TextAlign.start,
+                            color: Colors.white,
+                            weight: FontWeight.bold,
+                          ),
+                          onClick: () async {
+                            final wasPurchaseSuccessful = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+                            if (kDebugMode) {
+                              print(wasPurchaseSuccessful);
+                            }
+                          }
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          )).toList()
+            );
+          }).toList()
         ],
       ),
     );

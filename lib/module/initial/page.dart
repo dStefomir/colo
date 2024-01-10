@@ -1,5 +1,6 @@
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/service/auth.dart';
+import 'package:colo/core/service/firestore.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/body.dart';
