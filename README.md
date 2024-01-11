@@ -1,16 +1,4 @@
-# colo
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Embark on a vibrant and thrilling journey in Colost where your reflexes and precision are put to the test! 
+As colorful bars gracefully descend, you must skillfully launch rockets of matching hues to create explosive combinations. 
+The more accurate your shots, the higher your score. 
+With dazzling visuals, rhythmic gameplay, and an ever-increasing challenge, Colost promises an immersive experience of color, coordination, and endless fun.
