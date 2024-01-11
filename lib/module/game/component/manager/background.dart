@@ -37,17 +37,17 @@ class BackgroundManager extends Component {
     return [
       if (!manager.disabled) Background(
           disabled: manager.disabled,
-          asset: 'background_hard.jpg',
+          asset: 'background_hard.png',
           priority: -3
       ),
       if (!manager.disabled && (manager.level != GameLevel.hard)) Background(
           disabled: manager.disabled,
-          asset: 'background_medium.jpg',
+          asset: 'background_medium.png',
           priority: -2
       ),
       if (manager.disabled || manager.level == GameLevel.easy) Background(
           disabled: manager.disabled,
-          asset: 'background_easy.jpg',
+          asset: 'background_easy.png',
           priority: -1
       ),
     ];

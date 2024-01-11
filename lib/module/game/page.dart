@@ -20,7 +20,7 @@ const barInterval = 1;
 /// Velocity of the bullet
 const bulletVelocity = 500;
 /// Speed of the background parallax effect
-const backgroundParallax = 45.0;
+const backgroundParallax = 25.0;
 /// Game button colors
 const Map<String, Color> buttonColors = {
   'assets/button_purple.riv' : Colors.deepPurpleAccent,

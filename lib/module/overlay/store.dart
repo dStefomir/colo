@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
@@ -9,6 +11,7 @@ import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 /// --------------------- Products ---------------------------------------------
 const _productPremium = 'premium';
@@ -192,7 +195,12 @@ class _GameStoreBody extends HookConsumerWidget {
             ],
           ),
           ...products.map((product) {
-            final purchaseParam = PurchaseParam(productDetails: product);
+            late PurchaseParam purchaseParam;
+            if (Platform.isAndroid) {
+              purchaseParam = GooglePlayPurchaseParam(productDetails: product);
+            } else {
+              purchaseParam = PurchaseParam(productDetails: product);
+            }
             return ShadowWidget(
               child: Card(
                 color: Colors.black,
