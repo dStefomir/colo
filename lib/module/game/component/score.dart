@@ -18,7 +18,12 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
     final biggestSide = game.size.y > game.size.x ? game.size.y : game.size.x;
     textRenderer = TextPaint(
       style: TextStyle(
-          color: Colors.white,
+          foreground: Paint()..shader = LinearGradient(
+            colors: barColors.values.toList(),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            tileMode: TileMode.clamp,
+          ).createShader(Rect.fromPoints(const Offset(50, 0), Offset(size.x, size.y))),
           shadows: const <Shadow>[
             Shadow(
               offset: Offset(1.0, 1.0),
