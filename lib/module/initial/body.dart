@@ -57,6 +57,26 @@ class InitialPageBody extends HookConsumerWidget {
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
       child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+            padding: EdgeInsets.only(top: size.height / 8.5),
+            child: StyledText(
+              text: auth.currentUser!.uid,
+              fontSize: 14,
+              align: TextAlign.start,
+              letterSpacing: 2,
+              gradientColors: barColors.values.toList(),
+              weight: FontWeight.bold,
+              useShadow: true,
+            )
+        ),
+      ),
+    ),
+    SlideTransitionAnimation(
+      getStart: () => const Offset(0, -1),
+      getEnd: () => const Offset(0, 0),
+      duration: const Duration(milliseconds: 1000),
+      child: Align(
         alignment: Alignment.center,
         child: Padding(
             padding: EdgeInsets.only(bottom: size.height / 1.25),
@@ -190,9 +210,29 @@ class InitialPageBody extends HookConsumerWidget {
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-            padding: EdgeInsets.only(top: size.height / 6),
+            padding: EdgeInsets.only(top: size.height / 5),
             child: StyledText(
               text: account.accountType.capitalize(),
+              fontSize: 14,
+              align: TextAlign.start,
+              letterSpacing: 2,
+              gradientColors: barColors.values.toList(),
+              weight: FontWeight.bold,
+              useShadow: true,
+            )
+        ),
+      ),
+    ),
+    SlideTransitionAnimation(
+      getStart: () => const Offset(0, -1),
+      getEnd: () => const Offset(0, 0),
+      duration: const Duration(milliseconds: 1000),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+            padding: EdgeInsets.only(top: size.height / 6.5),
+            child: StyledText(
+              text: auth.currentUser!.uid,
               fontSize: 14,
               align: TextAlign.start,
               letterSpacing: 2,

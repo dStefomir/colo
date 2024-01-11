@@ -44,7 +44,7 @@ class GameStoreDialog extends HookConsumerWidget {
             child: const Card(
               color: Colors.black,
               child: SizedBox(
-                width: double.infinity,
+                width: 300,
                 child: StyledText(
                   text: 'Restore purchases',
                   fontSize: 18,
@@ -179,7 +179,7 @@ class _GameStoreBody extends HookConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -205,39 +205,11 @@ class _GameStoreBody extends HookConsumerWidget {
               child: Card(
                 color: Colors.black,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 200,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          StyledText(
-                            text: product.title,
-                            fontSize: 18,
-                            align: TextAlign.start,
-                            clip: false,
-                            letterSpacing: 2,
-                            gradientColors: barColors.values.toList(),
-                            weight: FontWeight.bold,
-                          ),
-                          StyledText(
-                            text: product.description,
-                            fontSize: 12,
-                            clip: false,
-                            padding: const EdgeInsets.only(left: 15, bottom: 15),
-                            align: TextAlign.start,
-                            letterSpacing: 2,
-                            gradientColors: barColors.values.toList(),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
                     Padding(
-                      padding: const EdgeInsets.only(right: 15, top: 20),
+                      padding: const EdgeInsets.only(left: 15),
                       child: NormalButton(
                           color: Colors.pink.withOpacity(0.3),
                           text: StyledText(
@@ -256,13 +228,42 @@ class _GameStoreBody extends HookConsumerWidget {
                             await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
                           }
                       ),
-                    )
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StyledText(
+                            text: product.title,
+                            fontSize: 18,
+                            align: TextAlign.start,
+                            clip: false,
+                            maxLines: 4,
+                            letterSpacing: 2,
+                            gradientColors: barColors.values.toList(),
+                            weight: FontWeight.bold,
+                          ),
+                          StyledText(
+                            text: product.description,
+                            fontSize: 12,
+                            clip: false,
+                            maxLines: 4,
+                            padding: const EdgeInsets.only(left: 15, bottom: 15),
+                            align: TextAlign.start,
+                            letterSpacing: 2,
+                            gradientColors: barColors.values.toList(),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             );
           }).toList(),
-          renderRestorePurchases
+          renderRestorePurchases,
+          const SizedBox(height: 10,)
         ],
       ),
     );
