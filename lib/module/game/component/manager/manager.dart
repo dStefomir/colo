@@ -171,7 +171,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Increases the game level
   void _increaseLevel() async {
     /// Sets medium level
-    if (_destroyedBars.value == 1 && _level == GameLevel.easy) {
+    if (_destroyedBars.value == 10 && _level == GameLevel.easy) {
       if (_buttonManager.actionButtons.length == 2) {
         _level = GameLevel.medium;
         await _buttonManager.addExtraActionButton();

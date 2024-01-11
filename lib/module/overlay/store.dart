@@ -221,12 +221,9 @@ class _GameStoreBody extends HookConsumerWidget {
                             color: Colors.white,
                             weight: FontWeight.bold,
                           ),
-                          onClick: () async {
-                            if (product.id == _productPremium) {
-                              ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
-                            }
-                            await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
-                          }
+                          onClick: () => InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam).then((value) =>
+                              ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false)
+                          )
                       ),
                     ),
                     Expanded(

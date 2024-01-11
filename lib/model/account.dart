@@ -34,7 +34,7 @@ class Account {
 
   /// Getter for the account type
   String get accountType {
-    if (premium != null && premium == true) {
+    if (premium != null && premium == true || (_difficultySelect == true && _noAds == true && _rocketLimiter == true)) {
       return 'premium';
     }
 

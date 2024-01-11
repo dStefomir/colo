@@ -32,7 +32,7 @@ class InitialPageBody extends HookConsumerWidget {
 
   /// Renders the portrait layout
   List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size}) => [
-    if (account.premium == true) SlideTransitionAnimation(
+    if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -94,7 +94,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    if (account.premium != true) SlideTransitionAnimation(
+    if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -203,7 +203,7 @@ class InitialPageBody extends HookConsumerWidget {
 
   /// Renders the landscape layout
   List<Widget> _renderLandscapeMode({required WidgetRef ref, required Size size}) => [
-    if (account.premium == true) SlideTransitionAnimation(
+    if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),
@@ -265,7 +265,7 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
-    if (account.premium != true) SlideTransitionAnimation(
+    if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
       duration: const Duration(milliseconds: 1000),

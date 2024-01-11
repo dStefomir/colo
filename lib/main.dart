@@ -17,8 +17,6 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Opens the app in fullscreen mode
-  await Flame.device.fullScreen();
   /// Initializes firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -80,7 +78,7 @@ class _MyAppState extends State<_MyApp> {
   @override
   Widget build(BuildContext context) => MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: "Colo",
+      title: "Colost",
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,
   );
