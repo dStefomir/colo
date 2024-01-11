@@ -7,13 +7,6 @@ import 'package:flutter/material.dart';
 /// Manger for controlling the bullet rules
 class BulletManager extends Component {
 
-  @override
-  Future<void> onGameResize(Vector2 size) async {
-    super.onGameResize(size);
-    final ColoGamePage game = parent!.parent as ColoGamePage;
-    game.removeAll(game.children.whereType<Bullet>());
-  }
-
   /// Gets a riv file bullet color based on the game level
   String getBulletRivAssetBasedOnColor({required Color color}) => bulletColors.entries.firstWhere((element) => element.value == color).key;
   /// Gets a dy limit for the bullet based on the game level
