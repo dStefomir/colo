@@ -37,10 +37,10 @@ dependencies:
   # Modular library
   flutter_modular: ^6.3.2
   # 2d game engine library
-  flame: ^1.13.1
-  flame_rive: ^1.9.9
+  flame: ^1.14.0
+  flame_rive: ^1.9.10
   # 2d game audio library
-  flame_audio: ^2.1.6
+  flame_audio: ^2.1.7
   # Hooks library
   flutter_hooks: ^0.20.4
   flutter_riverpod: ^2.4.9

@@ -46,7 +46,7 @@ class GamePauseDialog extends HookConsumerWidget {
             }
           },
           child: Container(
-              color: Colors.black,
+              color: Colors.transparent,
               height: double.infinity,
               width: double.infinity,
               child: Stack(

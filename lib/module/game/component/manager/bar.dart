@@ -16,6 +16,8 @@ class BarManager extends Component {
   late double _barFallingSpeedMultiplier;
   /// Timer for increasing the bar falling speed
   Timer? _barFallingSpeedInterval;
+  /// Timer for updating the falling bars
+  Timer? _barInterval;
 
   BarManager() {
     colorForSameBar = Colors.white;
@@ -26,6 +28,7 @@ class BarManager extends Component {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
     _barFallingSpeedInterval ??= Timer(30, repeat: true, onTick: () {
       /// If its hard level and 20 more bars are destroyed - increase bar falling speed
@@ -33,11 +36,20 @@ class BarManager extends Component {
         _barFallingSpeedMultiplier = _barFallingSpeedMultiplier + 0.2;
       }
     });
+    if (!manager.disabled) {
+      _barInterval = Timer(barInterval / manager.barManager.barFallingSpeedMultiplier, repeat: true);
+      _barInterval!.onTick = () async {
+        await game.add(manager.barManager.renderBar());
+      };
+    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+    final GameManager manager = parent as GameManager;
+    _barInterval?.limit = barInterval / manager.barManager.barFallingSpeedMultiplier;
+    _barInterval?.update(dt);
     _barFallingSpeedInterval?.update(dt);
   }
 
@@ -49,8 +61,10 @@ class BarManager extends Component {
     barColor: _getBarColor(),
     barSize: Vector2(255, 64),
   );
+
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);
+
   /// Generate a different shades of color
   Color generateShade({required Color baseColor, required double factor}) {
     factor = factor.clamp(-1.0, 0.3);
@@ -65,6 +79,7 @@ class BarManager extends Component {
       blue,
     );
   }
+
   /// Gets bar explosion lifespan for particles
   double getBarExplosionLifespan() {
     double lifespan;
@@ -84,6 +99,7 @@ class BarManager extends Component {
 
     return lifespan;
   }
+
   /// Gets bar explosion count for particles
   int getBarExplosionParticles() {
     int count;
@@ -103,6 +119,7 @@ class BarManager extends Component {
 
     return count;
   }
+
   /// Gets a riv file bar color based on the game level
   String getBarRivAssetBasedOnColor({required Color color}) {
     final GameManager manager = parent as GameManager;

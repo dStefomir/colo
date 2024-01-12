@@ -68,6 +68,7 @@ class ButtonManager extends Component {
           )
       );
     }
+
     return gameColors.map((e) =>
         ColorfulButton(
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
@@ -138,6 +139,7 @@ class ButtonManager extends Component {
             })
     ).toList();
   }
+
   /// Adds a bomb button to the game
   Future<ColorfulButton> _addActionButtonBomb() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
@@ -157,6 +159,7 @@ class ButtonManager extends Component {
         }
     );
   }
+
   /// Adds a button to the game
   Future<void> addExtraActionButton() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
@@ -164,8 +167,10 @@ class ButtonManager extends Component {
     _actionButtons = await _renderActionButtons();
     game.addAll(_actionButtons);
   }
+
   /// Gets a riv file button color based on the game level
   String getButtonRivAssetBasedOnColor({required Color color}) => buttonColors.entries.firstWhere((element) => element.value == color).key;
+
   /// Restart the state of the game buttons
   void restartState() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
@@ -176,6 +181,7 @@ class ButtonManager extends Component {
       await game.add(await _addActionButtonBomb());
     }
   }
+
   /// Getter for the colorful buttons
   List<ColorfulButton> get actionButtons => _actionButtons;
 }

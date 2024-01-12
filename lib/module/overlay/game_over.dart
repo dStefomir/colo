@@ -45,7 +45,7 @@ class GameOverDialog extends HookConsumerWidget {
         body: Blurrable(
           strength: 5,
           child: Container(
-              color: Colors.black,
+              color: Colors.transparent,
               height: double.infinity,
               width: double.infinity,
               child: Column(

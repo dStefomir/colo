@@ -3,7 +3,6 @@ import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
-import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -55,10 +54,12 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   late GameManager manager;
   /// Selected game level
   GameLevel? _level;
-  /// Timer for updating the falling bars
-  Timer? _barInterval;
 
-  ColoGamePage({required SharedPreferences sharedPrefs, required Account account, String? level, bool disabled = false}) {
+  ColoGamePage({
+    required SharedPreferences sharedPrefs,
+    required Account account,
+    String? level, bool disabled = false
+  }) {
     _sharedPreferences = sharedPrefs;
     _account = account;
     if (level == 'easy') {
@@ -77,20 +78,6 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
 
     manager = GameManager(sharedPreferences: _sharedPreferences, level: _level, disabled: _disabled);
     await add(manager);
-
-    if (!_disabled) {
-      _barInterval = Timer(barInterval / manager.barManager.barFallingSpeedMultiplier, repeat: true);
-      _barInterval!.onTick = () async {
-        await add(manager.barManager.renderBar());
-      };
-    }
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    _barInterval?.limit = barInterval / manager.barManager.barFallingSpeedMultiplier;
-    _barInterval?.update(dt);
   }
 
   @override

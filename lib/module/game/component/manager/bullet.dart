@@ -1,4 +1,3 @@
-import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';

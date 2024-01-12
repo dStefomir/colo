@@ -17,7 +17,7 @@ class BackgroundManager extends Component {
   /// Removes the current background layer
   void removeCurrentBackground({required int priorityOfCurrent}) {
     final ColoGamePage game = parent!.parent as ColoGamePage;
-    final background = game.children.whereType<Background>().where((element) => element.priority == priorityOfCurrent).toList().first;
+    final background = game.children.whereType<Background>().last;
     background.add(
         MoveByEffect(
             Vector2(0, game.size.y * - 1),
@@ -38,18 +38,18 @@ class BackgroundManager extends Component {
       if (!manager.disabled) Background(
           disabled: manager.disabled,
           asset: 'background_hard.png',
-          priority: -3
+          priority: -1
       ),
-      if (!manager.disabled && (manager.level != GameLevel.hard)) Background(
+      if (!manager.disabled) Background(
           disabled: manager.disabled,
           asset: 'background_medium.png',
-          priority: -2
+          priority: -1
       ),
-      if (manager.disabled || manager.level == GameLevel.easy) Background(
+      if (manager.disabled) Background(
           disabled: manager.disabled,
           asset: 'background_easy.png',
           priority: -1
       ),
-    ];
+    ]..shuffle();
   }
 }

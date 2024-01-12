@@ -47,7 +47,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     _sharedPreferences = sharedPreferences;
     _selectedLevel = level ?? GameLevel.easy;
     _level = disabled ? GameLevel.easy : level ?? GameLevel.easy;
-    _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index]);
+    _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index])..shuffle();
     _destroyedBars = ValueNotifier(0);
     _score = Score(text: '${_destroyedBars.value}');
   }
@@ -104,6 +104,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
 
   /// Restarts the game
   Future<void> restartGame() async {
+    _gameColors.shuffle();
     _destroyedBars.value = 0;
     game.overlays.remove('gameOver');
     if (_level == GameLevel.hard) {
@@ -171,7 +172,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Increases the game level
   void _increaseLevel() async {
     /// Sets medium level
-    if (_destroyedBars.value == 10 && _level == GameLevel.easy) {
+    if (_destroyedBars.value == 1 && _level == GameLevel.easy) {
       if (_buttonManager.actionButtons.length == 2) {
         _level = GameLevel.medium;
         await _buttonManager.addExtraActionButton();

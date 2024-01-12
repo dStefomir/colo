@@ -6,7 +6,6 @@ import 'package:colo/core/service/firestore.dart';
 import 'package:colo/core/service/purchase.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/module/main_module.dart';
-import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
