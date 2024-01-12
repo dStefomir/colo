@@ -114,6 +114,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     game.removeAll(game.children.whereType<Bullet>());
     game.removeAll(game.children.whereType<Bar>());
     game.removeAll(game.children.whereType<ColorfulButton>());
+    _backgroundManager.restartState();
     _buttonManager.restartState();
     _barManager.restartState();
     game.resumeEngine();

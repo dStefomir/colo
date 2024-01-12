@@ -9,7 +9,13 @@ import 'package:flutter/material.dart';
 class BackgroundManager extends Component {
 
   @override
-  Future<void> onLoad() async => await addAll(availableBackgrounds());
+  Future<void> onLoad() async => await addAll(_availableBackgrounds());
+
+  /// Restart the state of the manager
+  void restartState() {
+    removeAll(children);
+    addAll(_availableBackgrounds());
+  }
 
   /// Removes the current background layer
   void removeCurrentBackground() {
@@ -29,7 +35,7 @@ class BackgroundManager extends Component {
   }
 
   /// Gets all available backgrounds
-  List<Background> availableBackgrounds() {
+  List<Background> _availableBackgrounds() {
     final GameManager manager = parent as GameManager;
 
     return [
@@ -43,7 +49,7 @@ class BackgroundManager extends Component {
           asset: 'background_medium.png',
           priority: -1
       ),
-      if (!manager.disabled) Background(
+      Background(
           disabled: manager.disabled,
           asset: 'background_easy.png',
           priority: -1
