@@ -9,15 +9,13 @@ import 'package:flutter/material.dart';
 class BackgroundManager extends Component {
 
   @override
-  Future<void> onLoad() async {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
-    game.addAll(availableBackgrounds());
-  }
+  Future<void> onLoad() async => await addAll(availableBackgrounds());
 
   /// Removes the current background layer
-  void removeCurrentBackground({required int priorityOfCurrent}) {
+  void removeCurrentBackground() {
     final ColoGamePage game = parent!.parent as ColoGamePage;
-    final background = game.children.whereType<Background>().last;
+    final backgrounds = children;
+    final background = backgrounds.last;
     background.add(
         MoveByEffect(
             Vector2(0, game.size.y * - 1),
@@ -25,7 +23,7 @@ class BackgroundManager extends Component {
               duration: 0.5,
               curve: Curves.fastOutSlowIn,
             ),
-            onComplete: () => game.remove(background)
+            onComplete: () => remove(background)
         )
     );
   }
@@ -45,7 +43,7 @@ class BackgroundManager extends Component {
           asset: 'background_medium.png',
           priority: -1
       ),
-      if (manager.disabled) Background(
+      if (!manager.disabled) Background(
           disabled: manager.disabled,
           asset: 'background_easy.png',
           priority: -1

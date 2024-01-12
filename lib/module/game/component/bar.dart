@@ -8,6 +8,7 @@ import 'package:colo/utils/audio.dart';
 import 'package:colo/module/game/component/particle.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/particles.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   final Color barColor;
   /// Bar size
   final Vector2 barSize;
+  /// Glow controller
+  late EffectController _glowController;
 
   Bar({required this.barColor, required this.barSize}) : super(
       size: barSize,
@@ -38,6 +41,14 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     if (game.manager.level == GameLevel.hard) {
       final random = Random();
       paint.color = game.manager.barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
+      add(
+          ColorEffect(
+            barColors.values.toList()[random.nextInt(barColors.values.length)],
+            EffectController(duration: 2.5),
+            opacityFrom: 1,
+            opacityTo: 0,
+          )
+      );
     }
     if (!game.manager.disabled) {
       final waveRiv = await loadArtboard(
@@ -47,19 +58,30 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
       );
 
       final riv = RivAnimationComponent(artBoard: waveRiv, size: size);
-      await add(riv);
+      _glowController = EffectController(
+          duration: 0.5,
+          reverseDuration: 0.5,
+          curve: Curves.decelerate,
+          onMin: () async {
+            await add(riv);
+          }
+      );
+      add(GlowEffect(30, _glowController));
     }
   }
 
   @override
   void render(Canvas canvas) {
-    final Rect rect = Rect.fromPoints(Offset(size.x + 2, size.y + 2), const Offset(5, 5));
-    canvas.drawRect(
-        rect,
-        Paint()
-          ..color = Colors.black
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0)
-    );
+    if (_glowController.completed) {
+      final Rect rect = Rect.fromPoints(
+          Offset(size.x + 2, size.y + 2), const Offset(5, 5));
+      canvas.drawRect(
+          rect,
+          Paint()
+            ..color = Colors.black
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0)
+      );
+    }
     super.render(canvas);
   }
 
@@ -67,7 +89,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   void update(double dt) {
     super.update(dt);
     position.y += (barVelocity * dt) * game.manager.barManager.barFallingSpeedMultiplier;
-
     if (position.y > game.size.y) {
       game.manager.barManager.removeBar(bar: this);
       game.manager.gameOver();
@@ -113,7 +134,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   /// Generates a random dx for the bar
   _generateRandomDx({int min = 30}) {
     final random = Random();
-    return min + random.nextInt(((game.size.x / 2.5) - min + 1).toInt()).toDouble();
+    return min + random.nextInt(((game.size.x - size.x) - min).toInt()).toDouble();
   }
 
   // This method generates a random vector with its angle

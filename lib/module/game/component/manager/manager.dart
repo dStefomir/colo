@@ -176,17 +176,17 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       if (_buttonManager.actionButtons.length == 2) {
         _level = GameLevel.medium;
         await _buttonManager.addExtraActionButton();
-        _backgroundManager.removeCurrentBackground(priorityOfCurrent: -1);
+        _backgroundManager.removeCurrentBackground();
       }
     }
     /// Sets hard level
-    if (_destroyedBars.value == 30 && _level == GameLevel.medium) {
+    if (_destroyedBars.value == 2 && _level == GameLevel.medium) {
       if (_buttonManager.actionButtons.length == 3) {
         _level = GameLevel.hard;
         await _buttonManager.addExtraActionButton();
         _destroyedBars.value = 0;
         await game.add(_score);
-        _backgroundManager.removeCurrentBackground(priorityOfCurrent: -2);
+        _backgroundManager.removeCurrentBackground();
       }
     }
   }
