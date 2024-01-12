@@ -24,7 +24,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   /// What type the button should be
   final ButtonType type;
   /// Effect of the button
-  MoveEffect? effect;
+  MoveEffect? _effect;
 
   ColorfulButton({
     required this.artBoard,
@@ -41,7 +41,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   Future<void> onLoad() async {
     super.onLoad();
     priority = 1;
-    effect = _initEffect();
+    _effect = _initEffect();
     final controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',
@@ -71,10 +71,10 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    if (effect != null) {
-      await add(effect!);
+    if (_effect != null) {
+      await add(_effect!);
     } else {
-      effect = _initEffect();
+      _effect = _initEffect();
     }
   }
 
@@ -138,7 +138,7 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
             duration: 1.5,
             curve: Curves.linear,
           ),
-          onComplete: () => effect = null
+          onComplete: () => _effect = null
       )
       )
   );

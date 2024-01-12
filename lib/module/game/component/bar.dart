@@ -21,6 +21,8 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   final Vector2 barSize;
   /// Glow controller
   late EffectController _glowController;
+  /// Move controller
+  MoveEffect? _effect;
 
   Bar({required this.barColor, required this.barSize}) : super(
       size: barSize,
@@ -37,7 +39,12 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
 
   @override
   Future<void> onLoad() async {
-    position = Vector2(_generateRandomDx(), 0);
+    if (game.manager.level == GameLevel.hard) {
+      position = Vector2((game.size.x / 2) - barSize.x / 1.4, 0);
+    } else {
+      position = Vector2((game.size.x / 2) - (size.x / 2), 0);
+    }
+    _effect = _initMoveEffect();
     if (game.manager.level == GameLevel.hard) {
       final random = Random();
       paint.color = game.manager.barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
@@ -59,14 +66,16 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
 
       final riv = RivAnimationComponent(artBoard: waveRiv, size: size);
       _glowController = EffectController(
-          duration: 0.5,
+          duration: 0.01,
           reverseDuration: 0.5,
           curve: Curves.decelerate,
           onMin: () async {
             await add(riv);
           }
       );
-      add(GlowEffect(30, _glowController));
+      add(
+          GlowEffect(20, _glowController)
+      );
     }
   }
 
@@ -88,10 +97,16 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void update(double dt) {
     super.update(dt);
+
     position.y += (barVelocity * dt) * game.manager.barManager.barFallingSpeedMultiplier;
     if (position.y > game.size.y) {
       game.manager.barManager.removeBar(bar: this);
       game.manager.gameOver();
+    }
+    if (_effect != null) {
+      add(_effect!);
+    } else {
+      _effect = _initMoveEffect();
     }
   }
 
@@ -113,6 +128,41 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     game.add(_generateParticle());
   }
 
+  /// Creates a moving effect
+  MoveEffect _initMoveEffect() {
+    final GameManager manager = game.manager;
+    final double dx;
+    final double dy;
+    final double duration;
+    if (manager.level == GameLevel.easy || manager.level == GameLevel.medium) {
+      dx = 0;
+      dy = 5;
+      duration = 0.3;
+    } else {
+      dx = 100;
+      dy = 20;
+      duration = 1;
+    }
+    return MoveByEffect(
+        Vector2(dx, dy),
+        EffectController(
+          duration: duration,
+          curve: Curves.linear,
+        ),
+        onComplete: () =>
+            add(
+                MoveByEffect(
+                    Vector2(-dx , -dy),
+                    EffectController(
+                      duration: duration,
+                      curve: Curves.linear,
+                    ),
+                    onComplete: () => _effect = null
+                )
+            )
+    );
+  }
+
   /// Generates a particle
   _generateParticle() => ParticleSystemComponent(
     particle: Particle.generate(
@@ -130,12 +180,6 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
       ),
     ),
   );
-
-  /// Generates a random dx for the bar
-  _generateRandomDx({int min = 30}) {
-    final random = Random();
-    return min + random.nextInt(((game.size.x - size.x) - min).toInt()).toDouble();
-  }
 
   // This method generates a random vector with its angle
   // between from 0 and 360 degrees.
