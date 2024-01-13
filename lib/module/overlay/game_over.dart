@@ -5,6 +5,7 @@ import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
 import 'package:colo/widgets/button.dart';
+import 'package:colo/widgets/shadow.dart';
 import 'package:colo/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -70,31 +71,34 @@ class GameOverDialog extends HookConsumerWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: NormalButton(
-                          gradientColors: barColors.values.toList(),
-                          color: Colors.cyan,
-                          text: const StyledText(
-                            family: 'RenegadePursuit',
-                            text: 'Try again',
-                            fontSize: 20,
-                            align: TextAlign.start,
-                            color: Colors.white,
-                            weight: FontWeight.bold,
-                          ),
-                          onClick: () {
-                            if (account.noAds != true) {
-                              if (ad != null) {
-                                ad.fullScreenContentCallback = adMob.interstitialCallback(
-                                    createAdd: () => _createInterstitialAd(ref: ref),
-                                    onDismissed: onRestart
-                                );
-                                ad.show();
-                                ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                        child: ShadowWidget(
+                          shouldHaveBorderRadius: true,
+                          child: NormalButton(
+                            gradientColors: barColors.values.toList(),
+                            color: Colors.cyan,
+                            text: const StyledText(
+                              family: 'RenegadePursuit',
+                              text: 'Try again',
+                              fontSize: 20,
+                              align: TextAlign.start,
+                              color: Colors.white,
+                              weight: FontWeight.bold,
+                            ),
+                            onClick: () {
+                              if (account.noAds != true) {
+                                if (ad != null) {
+                                  ad.fullScreenContentCallback = adMob.interstitialCallback(
+                                      createAdd: () => _createInterstitialAd(ref: ref),
+                                      onDismissed: onRestart
+                                  );
+                                  ad.show();
+                                  ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                                }
+                              } else {
+                                onRestart();
                               }
-                            } else {
-                              onRestart();
                             }
-                          }
+                          ),
                         ),
                       ),
                     ],

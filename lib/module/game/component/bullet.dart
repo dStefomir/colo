@@ -44,8 +44,8 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     );
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
-        size: game.size / 2,
-        position: Vector2((game.size.x / 4) * -1, (game.size.y / 3.85) * -1),
+        size: game.size / 4,
+        position: Vector2((game.size.x / 8) * -1, (game.size.y / 7.85) * -1),
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );
@@ -55,8 +55,8 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   @override
   void render(Canvas canvas) {
     final Rect rect = Rect.fromPoints(
-        Offset((bulletSize / 4) * -1 , (size.y / 1.3) * -1),
-        Offset(bulletSize / 2 , size.y)
+        Offset((bulletSize / 8) * -1 , (size.y / 3.3) * -1),
+        Offset(bulletSize / 4 , size.y)
     );
     canvas.drawRRect(RRect.fromRectAndCorners(
         rect,

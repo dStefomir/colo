@@ -42,7 +42,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
     if (game.manager.level == GameLevel.hard) {
       position = Vector2((game.size.x / 2) - barSize.x / 1.4, 0);
     } else {
-      position = Vector2((game.size.x / 2) - (size.x / 2), 0);
+      position = Vector2(_generateRandomDx(), 0);
     }
     _effect = _initMoveEffect();
     if (game.manager.level == GameLevel.hard) {
@@ -147,7 +147,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
         Vector2(dx, dy),
         EffectController(
           duration: duration,
-          curve: Curves.linear,
+          curve: Curves.decelerate,
         ),
         onComplete: () =>
             add(
@@ -155,7 +155,7 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
                     Vector2(-dx , -dy),
                     EffectController(
                       duration: duration,
-                      curve: Curves.linear,
+                      curve: Curves.decelerate,
                     ),
                     onComplete: () => _effect = null
                 )
@@ -174,12 +174,20 @@ class Bar extends RectangleComponent with HasGameRef<ColoGamePage>, CollisionCal
         position: Vector2(size.x, position.y),
         child: CustomParticle(
             radius: 3,
+            isCircle: false,
+            shadowColor: game.manager.barManager.generateShade(baseColor: barColor, factor: Random().nextDouble()),
             paint: Paint()
               ..color = barColor
         ),
       ),
     ),
   );
+
+  /// Generates a random dx for the bar
+  _generateRandomDx({int min = 30}) {
+    final random = Random();
+    return min + random.nextInt(((game.size.x - size.x) - min).toInt()).toDouble();
+  }
 
   // This method generates a random vector with its angle
   // between from 0 and 360 degrees.
