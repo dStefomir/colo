@@ -49,12 +49,15 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     _level = disabled ? GameLevel.easy : level ?? GameLevel.easy;
     _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index])..shuffle();
     _destroyedBars = ValueNotifier(0);
-    _score = Score(text: '${_destroyedBars.value}');
   }
 
   @override
   Future<void> onLoad() async {
     _backgroundManager = BackgroundManager();
+    _score = Score(
+        gameSize: game.size,
+        text: '${_destroyedBars.value}'
+    );
     if (!disabled) {
       _barManager = BarManager();
       _bulletManager = BulletManager();

@@ -71,6 +71,8 @@ class ButtonManager extends Component {
 
     return gameColors.map((e) =>
         ColorfulButton(
+            game: game,
+            barManager: manager.barManager,
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
             type: ButtonType.color,
             buttonSize: colorfulBtnSize,
@@ -143,9 +145,12 @@ class ButtonManager extends Component {
   /// Adds a bomb button to the game
   Future<ColorfulButton> _addActionButtonBomb() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
+    final GameManager gameManager = parent as GameManager;
     final bomb = await loadArtboard(RiveFile.asset('assets/button_bomb.riv'));
 
     return ColorfulButton(
+        game: game,
+        barManager: gameManager.barManager,
         artBoard: bomb,
         type: ButtonType.bomb,
         buttonSize: colorfulBtnSize,

@@ -5,6 +5,9 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/parallax.dart';
 
+/// Speed of the background parallax effect
+const _backgroundParallax = 25.0;
+
 /// Renders a background
 class Background extends ParallaxComponent<ColoGamePage> {
   /// is the game disabled or not
@@ -31,6 +34,6 @@ class Background extends ParallaxComponent<ColoGamePage> {
           ),
         ]
     );
-    parallax?.baseVelocity.x = backgroundParallax;
+    parallax?.baseVelocity.x = _backgroundParallax;
   }
 }

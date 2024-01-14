@@ -1,5 +1,7 @@
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
+import 'package:colo/module/game/component/manager/bullet.dart';
+import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
@@ -8,13 +10,22 @@ import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a cannot that shoots bullets
-class Cannon extends RivAnimationComponent with HasGameRef<ColoGamePage> {
+class Cannon extends RivAnimationComponent {
+  /// Game
+  final ColoGamePage game;
+  /// Game manager
+  final GameManager gameManager;
+  /// Bullet manager
+  final BulletManager bulletManager;
   /// Art board for the riv component
   final Artboard artBoard;
   /// Dy effect of the cannon
   MoveEffect? _dYEffect;
 
   Cannon({
+    required this.game,
+    required this.gameManager,
+    required this.bulletManager,
     required this.artBoard,
     Vector2? size,
     Vector2? position,
@@ -31,7 +42,8 @@ class Cannon extends RivAnimationComponent with HasGameRef<ColoGamePage> {
     super.onLoad();
     priority = 3;
     size = game.size / 2;
-    position = Vector2((game.size.x / 4), (game.size.y / 1.35));
+    position = Vector2((game.size.x / 4), (game.size.y / 1.37));
+    // position = Vector2((game.size.x / 4), game.size.y);
     _dYEffect = _initDyEffect();
   }
 
@@ -39,7 +51,7 @@ class Cannon extends RivAnimationComponent with HasGameRef<ColoGamePage> {
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     this.size = size / 2;
-    position = Vector2((size.x / 4), (size.y / 1.35));
+    position = Vector2((game.size.x / 4), (game.size.y / 1.37));
   }
 
   @override
@@ -70,7 +82,7 @@ class Cannon extends RivAnimationComponent with HasGameRef<ColoGamePage> {
     required bool shouldRemoveBulletLimiter}) {
     final firstFallingBar = game.children.whereType<Bar>().first;
     final double currentDXPosition = this.position.x;
-    final Vector2 position = Vector2((firstFallingBar.position.x - currentDXPosition) + bulletSize, 0);
+    final Vector2 position = Vector2((firstFallingBar.position.x - currentDXPosition) + (bulletSize * 2), 0);
     add(
         MoveByEffect(
           position,
@@ -81,6 +93,9 @@ class Cannon extends RivAnimationComponent with HasGameRef<ColoGamePage> {
           onComplete: () async {
             await game.add(
                 Bullet(
+                    game: game,
+                    gameManager: gameManager,
+                    bulletManager: bulletManager,
                     bulletColor: bulletColor,
                     bulletSize: bulletSize,
                     shouldRemoveLimiter: shouldRemoveBulletLimiter

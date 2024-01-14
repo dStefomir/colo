@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/particle.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/vibration.dart';
@@ -14,7 +15,11 @@ enum ButtonType {
 }
 
 /// Renders a colorful button
-class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
+class ColorfulButton extends RiveComponent {
+  /// Game
+  final ColoGamePage game;
+  /// Bar manager
+  final BarManager barManager;
   /// Art board for the riv component
   final Artboard artBoard;
   /// Position of the button
@@ -27,6 +32,8 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
   MoveEffect? _effect;
 
   ColorfulButton({
+    required this.game,
+    required this.barManager,
     required this.artBoard,
     required this.buttonSize,
     required this.btnPosition,
@@ -104,8 +111,8 @@ class ColorfulButton extends RiveComponent with HasGameRef<ColoGamePage> {
       game.add(
           ParticleSystemComponent(
             particle: Particle.generate(
-              count: game.manager.barManager.getBarExplosionParticles(),
-              lifespan: game.manager.barManager.getBarExplosionLifespan(),
+              count: barManager.getBarExplosionParticles(),
+              lifespan: barManager.getBarExplosionLifespan(),
               generator: (i) => AcceleratedParticle(
                 acceleration: _getRandomVector() * 3.0,
                 speed: _getRandomVector() * 8.0,

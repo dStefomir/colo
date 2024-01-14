@@ -35,6 +35,9 @@ class BarManager extends Component {
 
     await game.add(
         Cannon(
+          game: game,
+          gameManager: manager,
+          bulletManager: manager.bulletManager,
           artBoard: await loadArtboard(
               RiveFile.asset('assets/starship.riv')
           ),
@@ -66,6 +69,8 @@ class BarManager extends Component {
 
   /// Renders a falling bar
   renderBar() => Bar(
+    gameManager: parent as GameManager,
+    gameSize: (parent!.parent as ColoGamePage).size,
     barColor: _getBarColor(),
     barSize: Vector2(255, 64),
   );

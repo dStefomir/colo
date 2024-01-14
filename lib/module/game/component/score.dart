@@ -4,18 +4,21 @@ import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a text score
-class Score extends TextComponent with HasGameRef<ColoGamePage> {
+class Score extends TextComponent {
+  /// Game size
+  final Vector2 gameSize;
+  /// Text of the score
   @override
   final String text;
 
-  Score({required this.text}) : super(
+  Score({required this.gameSize, required this.text}) : super(
       anchor: Anchor.topCenter,
   );
 
   @override
   Future<void> onLoad() async {
     /// Determine the biggest side of the display
-    final biggestSide = game.size.y > game.size.x ? game.size.y : game.size.x;
+    final biggestSide = gameSize.y > gameSize.x ? gameSize.y : gameSize.x;
     textRenderer = TextPaint(
       style: TextStyle(
           foreground: Paint()..shader = LinearGradient(
@@ -42,6 +45,6 @@ class Score extends TextComponent with HasGameRef<ColoGamePage> {
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    position = Vector2(game.size.x / 2, game.size.y / 18);
+    position = Vector2(gameSize.x / 2, gameSize.y / 18);
   }
 }

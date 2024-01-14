@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:colo/module/game/component/bar.dart';
+import 'package:colo/module/game/component/manager/bullet.dart';
+import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
@@ -12,7 +14,13 @@ import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bullet
-class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCallbacks {
+class Bullet extends CircleComponent with CollisionCallbacks {
+  /// Game
+  final ColoGamePage game;
+  /// Game manager
+  final GameManager gameManager;
+  /// Bullet manager
+  final BulletManager bulletManager;
   /// Color of the bullet
   final Color bulletColor;
   /// Bullet radius
@@ -20,7 +28,13 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   /// Should have a bullet limiter or not
   final bool shouldRemoveLimiter;
 
-  Bullet({required this.bulletColor, required this.bulletSize, required this.shouldRemoveLimiter}) : super(
+  Bullet({
+    required this.game,
+    required this.bulletManager,
+    required this.gameManager,
+    required this.bulletColor,
+    required this.bulletSize,
+    required this.shouldRemoveLimiter}) : super(
     paint: Paint()
       ..color = Colors.transparent
       ..filterQuality = FilterQuality.high
@@ -39,7 +53,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
     position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
-            game.manager.bulletManager.getBulletRivAssetBasedOnColor(color: bulletColor)
+            bulletManager.getBulletRivAssetBasedOnColor(color: bulletColor)
         )
     );
     final riv = RivAnimationComponent(
@@ -74,7 +88,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
   void update(double dt) {
     super.update(dt);
     /// Renders a barrier for the bullet based on the game level
-    if (!shouldRemoveLimiter && game.manager.bulletManager.getBulletDyLimit() >= position.y) {
+    if (!shouldRemoveLimiter && bulletManager.getBulletDyLimit() >= position.y) {
       _renderBarrier();
     }
     /// --------------------------------------------------------
@@ -122,7 +136,7 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
               )
           )
       );
-      game.manager.onBulletColorMiss();
+      gameManager.onBulletColorMiss();
     }
     super.onCollision(intersectionPoints, other);
   }
@@ -142,9 +156,9 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
               child: CustomParticle(
                 radius: 2,
                 paint: Paint()
-                  ..color = game.manager.gameColors[
+                  ..color = gameManager.gameColors[
                     random.nextInt(
-                        game.manager.gameColors.length
+                        gameManager.gameColors.length
                     )
                   ],
                 shadowColor: bulletColor
@@ -165,9 +179,9 @@ class Bullet extends CircleComponent with HasGameRef<ColoGamePage>, CollisionCal
               child: CustomParticle(
                   radius: 2,
                   paint: Paint()
-                    ..color = game.manager.gameColors[
+                    ..color = gameManager.gameColors[
                       random.nextInt(
-                          game.manager.gameColors.length
+                          gameManager.gameColors.length
                       )
                     ],
                   shadowColor: bulletColor
