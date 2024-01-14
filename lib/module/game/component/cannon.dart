@@ -50,17 +50,18 @@ class Cannon extends RivAnimationComponent {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    debugMode = true;
     priority = 3;
-    size = gameSize / 2;
-    position = Vector2(gameSize.x / 4, gameSize.y / 1.37);
+    size = Vector2.all(200);
+    position = Vector2(gameSize.x / 2 - size.x / 2, gameSize.y / 1.17);
     _dYEffect = _initDyEffect();
   }
 
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    this.size = size / 2;
-    position = Vector2(gameSize.x / 4, gameSize.y / 1.37);
+    size = Vector2.all(200);
+    position = Vector2(gameSize.x / 2 - size.x / 2, gameSize.y / 1.17);
   }
 
   @override
@@ -94,44 +95,38 @@ class Cannon extends RivAnimationComponent {
     } else {
       _lastFallingBar = getBars().where((element) => element != _lastFallingBar).first;
     }
-    final double currentDXPosition = this.position.x;
-    Vector2 position = Vector2(((_lastFallingBar!.position.x / 1.1) - currentDXPosition) + (bulletSize * 2), 0);
-    if (position.x < 0) {
-      position = position * 2;
-    } else {
-      position = position * 1.5;
-    }
+    final Vector2 position = Vector2((_lastFallingBar!.position.x - this.position.x) + bulletSize, 0);
     add(
         MoveByEffect(
-          position,
-          EffectController(
-            duration: 0.2,
-            curve: Curves.decelerate,
-          ),
-          onComplete: () async {
-            onGameAdd(
-                Bullet(
-                    gameSize: gameSize,
-                    getBars: getBars,
-                    gameColors: gameColors,
-                    onGameAdd: onGameAdd,
-                    onGameRemove: onGameRemove,
-                    bulletManager: bulletManager,
-                    bulletColor: bulletColor,
-                    bulletSize: bulletSize,
-                    shouldRemoveLimiter: shouldRemoveBulletLimiter
-                )
-            );
-            add(
-                MoveByEffect(
-                    -position,
-                    EffectController(
-                      duration: 0.8,
-                      curve: Curves.decelerate,
-                    )
-                )
-            );
-          }
+            position,
+            EffectController(
+              duration: 0.2,
+              curve: Curves.decelerate,
+            ),
+            onComplete: () async {
+              onGameAdd(
+                  Bullet(
+                      gameSize: gameSize,
+                      getBars: getBars,
+                      gameColors: gameColors,
+                      onGameAdd: onGameAdd,
+                      onGameRemove: onGameRemove,
+                      bulletManager: bulletManager,
+                      bulletColor: bulletColor,
+                      bulletSize: bulletSize,
+                      shouldRemoveLimiter: shouldRemoveBulletLimiter
+                  )
+              );
+              add(
+                  MoveByEffect(
+                      -position,
+                      EffectController(
+                        duration: 0.8,
+                        curve: Curves.decelerate,
+                      )
+                  )
+              );
+            }
         )
     );
     _lastFallingBar = null;

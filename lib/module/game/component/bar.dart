@@ -65,6 +65,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
     } else {
       position = Vector2(_generateRandomDx(), 0);
     }
+    debugMode = true;
     _effect = _initMoveEffect();
     if (level == GameLevel.hard) {
       final random = Random();
