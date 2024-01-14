@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/particle.dart';
-import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/vibration.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -16,12 +15,14 @@ enum ButtonType {
 
 /// Renders a colorful button
 class ColorfulButton extends RiveComponent {
-  /// Game
-  final ColoGamePage game;
   /// Bar manager
   final BarManager barManager;
   /// Art board for the riv component
   final Artboard artBoard;
+  /// Game size
+  final Vector2 gameSize;
+  /// Adds a component to the game
+  final void Function(Component) onGameAdd;
   /// Position of the button
   final Vector2 Function() btnPosition;
   /// Height of the button
@@ -32,11 +33,12 @@ class ColorfulButton extends RiveComponent {
   MoveEffect? _effect;
 
   ColorfulButton({
-    required this.game,
     required this.barManager,
     required this.artBoard,
+    required this.gameSize,
     required this.buttonSize,
     required this.btnPosition,
+    required this.onGameAdd,
     required this.type
   }) : super(
     artboard: artBoard,
@@ -108,7 +110,7 @@ class ColorfulButton extends RiveComponent {
           )
       );
     } else {
-      game.add(
+      onGameAdd(
           ParticleSystemComponent(
             particle: Particle.generate(
               count: barManager.getBarExplosionParticles(),
@@ -116,7 +118,7 @@ class ColorfulButton extends RiveComponent {
               generator: (i) => AcceleratedParticle(
                 acceleration: _getRandomVector() * 3.0,
                 speed: _getRandomVector() * 8.0,
-                position: Vector2((game.size / 2).x, position.y),
+                position: Vector2((gameSize / 2).x, position.y),
                 child: CustomParticle(
                     radius: 3,
                     shadowColor: Colors.black87,

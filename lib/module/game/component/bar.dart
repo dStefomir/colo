@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:colo/module/game/component/bullet.dart';
+import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
@@ -15,8 +16,16 @@ import 'package:flutter/material.dart';
 
 /// Renders a bar
 class Bar extends RectangleComponent with CollisionCallbacks {
-  /// Game manager
-  final GameManager gameManager;
+  /// Is the game disabled or not
+  final bool disabled;
+  /// Current game level
+  final GameLevel level;
+  /// Bar manager
+  final BarManager barManager;
+  /// Stops the game
+  final void Function() onGameOver;
+  /// Increases the current score
+  final void Function() onIncreaseScore;
   /// Game size
   final Vector2 gameSize;
   /// Color of the bar
@@ -29,7 +38,11 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   MoveEffect? _effect;
 
   Bar({
-    required this.gameManager,
+    required this.disabled,
+    required this.level,
+    required this.barManager,
+    required this.onGameOver,
+    required this.onIncreaseScore,
     required this.gameSize,
     required this.barColor,
     required this.barSize}) : super(
@@ -47,15 +60,15 @@ class Bar extends RectangleComponent with CollisionCallbacks {
 
   @override
   Future<void> onLoad() async {
-    if (gameManager.level == GameLevel.hard) {
+    if (level == GameLevel.hard) {
       position = Vector2((gameSize.x / 2) - barSize.x / 1.4, 0);
     } else {
       position = Vector2(_generateRandomDx(), 0);
     }
     _effect = _initMoveEffect();
-    if (gameManager.level == GameLevel.hard) {
+    if (level == GameLevel.hard) {
       final random = Random();
-      paint.color = gameManager.barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
+      paint.color = barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
       add(
           ColorEffect(
             barColors.values.toList()[random.nextInt(barColors.values.length)],
@@ -65,10 +78,10 @@ class Bar extends RectangleComponent with CollisionCallbacks {
           )
       );
     }
-    if (!gameManager.disabled) {
+    if (!disabled) {
       final waveRiv = await loadArtboard(
           RiveFile.asset(
-              gameManager.barManager.getBarRivAssetBasedOnColor(color: barColor)
+              barManager.getBarRivAssetBasedOnColor(color: barColor)
           )
       );
 
@@ -105,10 +118,10 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    position.y += (barVelocity * dt) * gameManager.barManager.barFallingSpeedMultiplier;
+    position.y += (barVelocity * dt) * barManager.barFallingSpeedMultiplier;
     if (position.y > gameSize.y) {
-      gameManager.barManager.removeBar(bar: this);
-      gameManager.gameOver();
+      barManager.removeBar(bar: this);
+      onGameOver();
     }
     if (_effect != null) {
       add(_effect!);
@@ -131,8 +144,8 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   destroyBar() {
     final ColoGamePage game = (parent as ColoGamePage);
     play(asset: 'blow.wav');
-    gameManager.increaseScore();
-    gameManager.barManager.removeBar(bar: this);
+    onIncreaseScore();
+    barManager.removeBar(bar: this);
     game.add(_generateParticle());
   }
 
@@ -141,7 +154,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
     final double dx;
     final double dy;
     final double duration;
-    if (gameManager.level == GameLevel.easy || gameManager.level == GameLevel.medium) {
+    if (level == GameLevel.easy || level == GameLevel.medium) {
       dx = 0;
       dy = 5;
       duration = 0.3;
@@ -173,8 +186,8 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   /// Generates a particle
   _generateParticle() => ParticleSystemComponent(
     particle: Particle.generate(
-      count: gameManager.barManager.getBarExplosionParticles(),
-      lifespan: gameManager.barManager.getBarExplosionLifespan(),
+      count: barManager.getBarExplosionParticles(),
+      lifespan: barManager.getBarExplosionLifespan(),
       generator: (i) => AcceleratedParticle(
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,
@@ -182,7 +195,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
         child: CustomParticle(
             radius: 3,
             isCircle: false,
-            shadowColor: gameManager.barManager.generateShade(baseColor: barColor, factor: Random().nextDouble()),
+            shadowColor: barManager.generateShade(baseColor: barColor, factor: Random().nextDouble()),
             paint: Paint()
               ..color = barColor
         ),

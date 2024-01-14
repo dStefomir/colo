@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 
 /// Manger for controlling the bullet rules
 class BulletManager extends Component {
-
   /// Gets a riv file bullet color based on the game level
   String getBulletRivAssetBasedOnColor({required Color color}) => bulletColors.entries.firstWhere((element) => element.value == color).key;
+
   /// Gets a dy limit for the bullet based on the game level
   double getBulletDyLimit() {
     double dy;
@@ -27,24 +27,21 @@ class BulletManager extends Component {
 
     return dy;
   }
+
   /// What happens when a bullet color hit a falling bar
   /// with a different color
-  void onBulletColorMiss({
-    required GameLevel level,
-    required int currentScore,
-    required void Function() onGameOver,
-    required void Function() onDecreaseScore,
-    required void Function() onResetDestroyedBars}) {
-    if (level == GameLevel.easy) {
-      onDecreaseScore();
-    } else if (level == GameLevel.medium) {
-      if (currentScore > 0) {
-        onResetDestroyedBars();
+  void onBulletColorMiss() {
+    final GameManager gameManager = (parent as GameManager);
+    if (gameManager.level == GameLevel.easy) {
+      gameManager.decreaseScore();
+    } else if (gameManager.level == GameLevel.medium) {
+      if (gameManager.score > 0) {
+        gameManager.resetScore();
       } else {
-        onDecreaseScore();
+        gameManager.decreaseScore();
       }
-    } else if (level == GameLevel.hard) {
-      onGameOver();
+    } else if (gameManager.level == GameLevel.hard) {
+      gameManager.gameOver();
     }
   }
 }

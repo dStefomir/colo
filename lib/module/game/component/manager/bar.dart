@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 /// Manger for controlling the bar rules
 class BarManager extends Component {
   /// Color used for the same bars
-  late Color colorForSameBar;
+  late Color _colorForSameBar;
   /// Numbers of same bars rendered
   late int _numberOfSameBars;
   /// Multiplier for the falling speed of the bars
@@ -21,8 +21,8 @@ class BarManager extends Component {
   /// Timer for updating the falling bars
   Timer? _barInterval;
 
-  BarManager() {
-    colorForSameBar = Colors.white;
+  BarManager({required bool disabled, required GameLevel level}) {
+    _colorForSameBar = Colors.white;
     _numberOfSameBars = 0;
     _barFallingSpeedMultiplier = 1;
   }
@@ -35,8 +35,11 @@ class BarManager extends Component {
 
     await game.add(
         Cannon(
-          game: game,
-          gameManager: manager,
+          gameColors: manager.gameColors,
+          onGameRemove: (component) => game.remove(component),
+          onGameAdd: (component) => game.add(component),
+          getBars: () => game.children.whereType<Bar>().toList(),
+          gameSize: game.size,
           bulletManager: manager.bulletManager,
           artBoard: await loadArtboard(
               RiveFile.asset('assets/starship.riv')
@@ -69,7 +72,11 @@ class BarManager extends Component {
 
   /// Renders a falling bar
   renderBar() => Bar(
-    gameManager: parent as GameManager,
+    barManager: this,
+    disabled: (parent as GameManager).disabled,
+    level: (parent as GameManager).level,
+    onGameOver: (parent as GameManager).gameOver,
+    onIncreaseScore: (parent as GameManager).increaseScore,
     gameSize: (parent!.parent as ColoGamePage).size,
     barColor: _getBarColor(),
     barSize: Vector2(255, 64),
@@ -153,9 +160,9 @@ class BarManager extends Component {
     if (_numberOfSameBars > 0) {
       _numberOfSameBars--;
 
-      return colorForSameBar;
+      return _colorForSameBar;
     } else if (manager.level == GameLevel.hard && manager.score % random.nextDouble() == 1) {
-      colorForSameBar = List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
+      _colorForSameBar = List.generate(manager.getGameColors(), (index) => manager.gameColors[index])[random.nextInt(manager.getGameColors())];
       _numberOfSameBars = 8;
     }
 

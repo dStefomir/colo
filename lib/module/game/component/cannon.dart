@@ -1,7 +1,6 @@
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
-import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
@@ -11,10 +10,16 @@ import 'package:flutter/material.dart';
 
 /// Renders a cannot that shoots bullets
 class Cannon extends RivAnimationComponent {
-  /// Game
-  final ColoGamePage game;
-  /// Game manager
-  final GameManager gameManager;
+  /// Game size
+  final Vector2 gameSize;
+  /// Falling bars
+  final List<Bar> Function() getBars;
+  /// Game colors
+  final List<Color> gameColors;
+  /// Adds component to the game
+  final void Function(Component) onGameAdd;
+  /// Removes component to the game
+  final void Function(Component) onGameRemove;
   /// Bullet manager
   final BulletManager bulletManager;
   /// Art board for the riv component
@@ -23,8 +28,11 @@ class Cannon extends RivAnimationComponent {
   MoveEffect? _dYEffect;
 
   Cannon({
-    required this.game,
-    required this.gameManager,
+    required this.gameSize,
+    required this.getBars,
+    required this.gameColors,
+    required this.onGameAdd,
+    required this.onGameRemove,
     required this.bulletManager,
     required this.artBoard,
     Vector2? size,
@@ -41,9 +49,8 @@ class Cannon extends RivAnimationComponent {
   Future<void> onLoad() async {
     super.onLoad();
     priority = 3;
-    size = game.size / 2;
-    position = Vector2((game.size.x / 4), (game.size.y / 1.37));
-    // position = Vector2((game.size.x / 4), game.size.y);
+    size = gameSize / 2;
+    position = Vector2(gameSize.x / 4, gameSize.y / 1.37);
     _dYEffect = _initDyEffect();
   }
 
@@ -51,13 +58,13 @@ class Cannon extends RivAnimationComponent {
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     this.size = size / 2;
-    position = Vector2((game.size.x / 4), (game.size.y / 1.37));
+    position = Vector2(gameSize.x / 4, gameSize.y / 1.37);
   }
 
   @override
   void render(Canvas canvas) {
     canvas.drawCircle(
-        Offset(game.size.x / 4, game.size.y / 4),
+        Offset(gameSize.x / 4, gameSize.y / 4),
         size.x / 14,
         Paint()
           ..color = Colors.black54
@@ -80,7 +87,7 @@ class Cannon extends RivAnimationComponent {
   void moveToTargetAndShoot({
     required Color bulletColor,
     required bool shouldRemoveBulletLimiter}) {
-    final firstFallingBar = game.children.whereType<Bar>().first;
+    final firstFallingBar = getBars().first;
     final double currentDXPosition = this.position.x;
     final Vector2 position = Vector2((firstFallingBar.position.x - currentDXPosition) + (bulletSize * 2), 0);
     add(
@@ -91,10 +98,13 @@ class Cannon extends RivAnimationComponent {
             curve: Curves.decelerate,
           ),
           onComplete: () async {
-            await game.add(
+            onGameAdd(
                 Bullet(
-                    game: game,
-                    gameManager: gameManager,
+                    gameSize: gameSize,
+                    getBars: getBars,
+                    gameColors: gameColors,
+                    onGameAdd: onGameAdd,
+                    onGameRemove: onGameRemove,
                     bulletManager: bulletManager,
                     bulletColor: bulletColor,
                     bulletSize: bulletSize,

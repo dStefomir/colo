@@ -59,7 +59,10 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
         text: '${_destroyedBars.value}'
     );
     if (!disabled) {
-      _barManager = BarManager();
+      _barManager = BarManager(
+        disabled: disabled,
+        level: level
+      );
       _bulletManager = BulletManager();
       _buttonManager = ButtonManager();
       await add(_barManager);
@@ -144,15 +147,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     return colors;
   }
 
-  /// What happens when a bar is hit by a bullet with different color
-  void onBulletColorMiss() => _bulletManager.onBulletColorMiss(
-      level: level,
-      currentScore: _destroyedBars.value,
-      onGameOver: gameOver,
-      onDecreaseScore: _decreaseScore,
-      onResetDestroyedBars: () => _destroyedBars.value = 0
-  );
-
   /// Increase the current score
   void increaseScore() {
     _destroyedBars.value = _destroyedBars.value + 1;
@@ -166,12 +160,15 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   }
 
   /// Decrease the current score
-  void _decreaseScore() {
+  void decreaseScore() {
     _destroyedBars.value = _destroyedBars.value - 1;
     if (_destroyedBars.value < 0) {
       gameOver();
     }
   }
+
+  /// Resets the game score
+  void resetScore() => _destroyedBars.value = 0;
 
   /// Increases the game level
   void _increaseLevel() async {

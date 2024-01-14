@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
-import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
@@ -15,10 +14,16 @@ import 'package:flutter/material.dart';
 
 /// Renders a bullet
 class Bullet extends CircleComponent with CollisionCallbacks {
-  /// Game
-  final ColoGamePage game;
-  /// Game manager
-  final GameManager gameManager;
+  /// Game size
+  final Vector2 gameSize;
+  /// Falling bars
+  final List<Bar> Function() getBars;
+  /// Game colors
+  final List<Color> gameColors;
+  /// Adds a bullet to the game
+  final void Function(Component) onGameAdd;
+  /// Removes a bullet from the game
+  final void Function(Component) onGameRemove;
   /// Bullet manager
   final BulletManager bulletManager;
   /// Color of the bullet
@@ -29,9 +34,12 @@ class Bullet extends CircleComponent with CollisionCallbacks {
   final bool shouldRemoveLimiter;
 
   Bullet({
-    required this.game,
+    required this.gameSize,
+    required this.getBars,
+    required this.gameColors,
+    required this.onGameAdd,
+    required this.onGameRemove,
     required this.bulletManager,
-    required this.gameManager,
     required this.bulletColor,
     required this.bulletSize,
     required this.shouldRemoveLimiter}) : super(
@@ -49,8 +57,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
   Future<void> onLoad() async {
     super.onLoad();
     play(asset: 'rocket.wav', volume: 0.05);
-    final lastBar = game.children.whereType<Bar>().first;
-    position = Vector2(lastBar.position.x + lastBar.size.x / 2, game.size.y);
+    final lastBar = getBars().first;
+    position = Vector2(lastBar.position.x + lastBar.size.x / 2, gameSize.y);
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
             bulletManager.getBulletRivAssetBasedOnColor(color: bulletColor)
@@ -58,8 +66,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
     );
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
-        size: game.size / 4,
-        position: Vector2((game.size.x / 8) * -1, (game.size.y / 7.85) * -1),
+        size: gameSize / 4,
+        position: Vector2((gameSize.x / -8), (gameSize.y / -7.85)),
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );
@@ -119,7 +127,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
     if (other is Bar && other.barColor != bulletColor) {
       /// Not successful bullet to bar
       play(asset: 'mismatch.wav', volume: 0.1);
-      game.add(
+      onGameAdd(
           ParticleSystemComponent(
               particle: Particle.generate(
                 count: 50,
@@ -136,7 +144,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
               )
           )
       );
-      gameManager.onBulletColorMiss();
+      bulletManager.onBulletColorMiss();
     }
     super.onCollision(intersectionPoints, other);
   }
@@ -144,7 +152,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
   /// Renders a barrier for the bullet
   void _renderBarrier() {
     final random = Random();
-    game.add(
+    onGameAdd(
         ParticleSystemComponent(
           particle: Particle.generate(
             count: 10,
@@ -156,10 +164,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
               child: CustomParticle(
                 radius: 2,
                 paint: Paint()
-                  ..color = gameManager.gameColors[
-                    random.nextInt(
-                        gameManager.gameColors.length
-                    )
+                  ..color = gameColors[
+                    random.nextInt(gameColors.length)
                   ],
                 shadowColor: bulletColor
               ),
@@ -167,7 +173,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
           ),
         )
     );
-    game.add(
+    onGameAdd(
         ParticleSystemComponent(
           particle: Particle.generate(
             count: 10,
@@ -179,10 +185,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
               child: CustomParticle(
                   radius: 2,
                   paint: Paint()
-                    ..color = gameManager.gameColors[
-                      random.nextInt(
-                          gameManager.gameColors.length
-                      )
+                    ..color = gameColors[
+                      random.nextInt(gameColors.length)
                     ],
                   shadowColor: bulletColor
               ),
@@ -190,7 +194,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
           ),
         )
     );
-    game.remove(this);
+    onGameRemove(this);
   }
 
   /// Gets a random vector

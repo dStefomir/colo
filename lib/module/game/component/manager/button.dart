@@ -71,7 +71,8 @@ class ButtonManager extends Component {
 
     return gameColors.map((e) =>
         ColorfulButton(
-            game: game,
+            gameSize: game.size,
+            onGameAdd: (component) => game.add(component),
             barManager: manager.barManager,
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
             type: ButtonType.color,
@@ -149,7 +150,8 @@ class ButtonManager extends Component {
     final bomb = await loadArtboard(RiveFile.asset('assets/button_bomb.riv'));
 
     return ColorfulButton(
-        game: game,
+        gameSize: game.size,
+        onGameAdd: (component) => game.add(component),
         barManager: gameManager.barManager,
         artBoard: bomb,
         type: ButtonType.bomb,
