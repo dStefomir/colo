@@ -50,7 +50,6 @@ class Cannon extends RivAnimationComponent {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    debugMode = true;
     priority = 3;
     size = Vector2.all(200);
     position = Vector2(gameSize.x / 2 - size.x / 2, gameSize.y / 1.17);
