@@ -24,6 +24,7 @@ class GameOverDialog extends HookConsumerWidget {
 
   const GameOverDialog({super.key, required this.account, required this.adMob, required this.bestScore, required this.onRestart});
 
+  /// Creates the interstitial ad
   void _createInterstitialAd({required WidgetRef ref}) {
     InterstitialAd.load(
         adUnitId: adMob.interstitialAdUnitId!,

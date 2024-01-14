@@ -26,6 +26,8 @@ class Cannon extends RivAnimationComponent {
   final Artboard artBoard;
   /// Dy effect of the cannon
   MoveEffect? _dYEffect;
+  /// Last falling bar
+  Bar? _lastFallingBar;
 
   Cannon({
     required this.gameSize,
@@ -87,9 +89,18 @@ class Cannon extends RivAnimationComponent {
   void moveToTargetAndShoot({
     required Color bulletColor,
     required bool shouldRemoveBulletLimiter}) {
-    final firstFallingBar = getBars().first;
+    if (_lastFallingBar == null) {
+      _lastFallingBar = getBars().first;
+    } else {
+      _lastFallingBar = getBars().where((element) => element != _lastFallingBar).first;
+    }
     final double currentDXPosition = this.position.x;
-    final Vector2 position = Vector2((firstFallingBar.position.x - currentDXPosition) + (bulletSize * 2), 0);
+    Vector2 position = Vector2(((_lastFallingBar!.position.x / 1.1) - currentDXPosition) + (bulletSize * 2), 0);
+    if (position.x < 0) {
+      position = position * 2;
+    } else {
+      position = position * 1.5;
+    }
     add(
         MoveByEffect(
           position,
@@ -123,6 +134,7 @@ class Cannon extends RivAnimationComponent {
           }
         )
     );
+    _lastFallingBar = null;
   }
 
   /// Initializes the moving effect of the cannon

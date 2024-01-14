@@ -67,6 +67,18 @@ class BarManager extends Component {
     _barFallingSpeedInterval?.update(dt);
   }
 
+  /// Pauses the falling bars
+  void pauseBars() {
+    _barInterval?.pause();
+    _barFallingSpeedInterval?.pause();
+  }
+
+  /// Resumes the falling bars
+  void unPauseBars() {
+    _barInterval?.resume();
+    _barFallingSpeedInterval?.resume();
+  }
+
   /// Reset the state of the manager
   void restartState() => _barFallingSpeedMultiplier = 1;
 
