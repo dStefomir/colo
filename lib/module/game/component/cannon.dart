@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
+import 'package:colo/module/game/component/particle.dart';
 import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame/particles.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +30,6 @@ class Cannon extends RivAnimationComponent {
   final Artboard artBoard;
   /// Dy effect of the cannon
   MoveEffect? _dYEffect;
-  /// Last falling bar
-  Bar? _lastFallingBar;
 
   Cannon({
     required this.gameSize,
@@ -43,8 +45,8 @@ class Cannon extends RivAnimationComponent {
       artBoard: artBoard,
       size: size,
       position: position,
-      stateMachineKey: 'State Machine 1',
-      animationKey: 'Background Travel'
+      stateMachineKey: '',
+      animationKey: ''
   );
 
   @override
@@ -83,18 +85,34 @@ class Cannon extends RivAnimationComponent {
     } else {
       _dYEffect = _initDyEffect();
     }
+    add(
+        ParticleSystemComponent(
+            particle: Particle.generate(
+              count: 10,
+              lifespan: 0.5,
+              generator: (i) => AcceleratedParticle(
+                position: Vector2(100, 120),
+                acceleration: bulletManager.getRandomVector(),
+                speed: bulletManager.getRandomVector(),
+                child: CustomParticle(
+                    radius: 1,
+                    paint: Paint()
+                      ..color = Colors.red,
+                    shadowColor: Colors.amber
+                ),
+              ),
+            )
+        )
+    );
   }
 
   /// Moves the cannon to target
   void moveToTargetAndShoot({
     required Color bulletColor,
     required bool shouldRemoveBulletLimiter}) {
-    if (_lastFallingBar == null) {
-      _lastFallingBar = getBars().first;
-    } else {
-      _lastFallingBar = getBars().where((element) => element != _lastFallingBar).first;
-    }
-    final Vector2 position = Vector2((_lastFallingBar!.position.x - this.position.x) + bulletSize, 0);
+    final lastFallingBar = getBars().first;
+
+    final Vector2 position = Vector2((lastFallingBar.position.x - this.position.x) + bulletSize, 0);
     add(
         MoveByEffect(
             position,
@@ -122,13 +140,12 @@ class Cannon extends RivAnimationComponent {
                       EffectController(
                         duration: 0.8,
                         curve: Curves.decelerate,
-                      )
+                      ),
                   )
               );
             }
         )
     );
-    _lastFallingBar = null;
   }
 
   /// Initializes the moving effect of the cannon

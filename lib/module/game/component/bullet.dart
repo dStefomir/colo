@@ -107,8 +107,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
               count: 10,
               lifespan: 0.5,
               generator: (i) => AcceleratedParticle(
-                acceleration: _getRandomVector(),
-                speed: _getRandomVector(),
+                acceleration: bulletManager.getRandomVector(),
+                speed: bulletManager.getRandomVector(),
                 child: CustomParticle(
                   radius: 1,
                   paint: Paint()
@@ -134,8 +134,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
                 lifespan: 1,
                 generator: (i) => AcceleratedParticle(
                   position: position.clone(),
-                  acceleration: _getRandomVector() * 2.0,
-                  speed: _getRandomVector() * 2.0,
+                  acceleration: bulletManager.getRandomVector() * 2.0,
+                  speed: bulletManager.getRandomVector() * 2.0,
                   child: CustomParticle(
                     radius: 1,
                     paint: Paint()..color = bulletColor,
@@ -195,12 +195,6 @@ class Bullet extends CircleComponent with CollisionCallbacks {
         )
     );
     onGameRemove(this);
-  }
-
-  /// Gets a random vector
-  _getRandomVector() {
-    final random = Random();
-    return (Vector2.random(random) - Vector2(0.5, -1)) * 100;
   }
 
   // This method generates a random vector with its angle

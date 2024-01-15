@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
@@ -26,6 +28,12 @@ class BulletManager extends Component {
     }
 
     return dy;
+  }
+
+  /// Gets a random vector
+  Vector2 getRandomVector() {
+    final random = Random();
+    return (Vector2.random(random) - Vector2(0.5, -1)) * 100;
   }
 
   /// What happens when a bullet color hit a falling bar
