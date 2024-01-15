@@ -161,13 +161,13 @@ class Bar extends RectangleComponent with CollisionCallbacks {
     } else {
       dx = 100;
       dy = 20;
-      duration = 1;
+      duration = 1 / barManager.barFallingSpeedMultiplier;
     }
     return MoveByEffect(
         Vector2(dx, dy),
         EffectController(
           duration: duration,
-          curve: Curves.decelerate,
+          curve: Curves.easeInOut,
         ),
         onComplete: () =>
             add(
@@ -175,7 +175,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
                     Vector2(-dx , -dy),
                     EffectController(
                       duration: duration,
-                      curve: Curves.decelerate,
+                      curve: Curves.easeInOut,
                     ),
                     onComplete: () => _effect = null
                 )
