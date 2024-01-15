@@ -191,7 +191,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
       generator: (i) => AcceleratedParticle(
         acceleration: _getRandomVector() * 3.0,
         speed: _getRandomVector() * 8.0,
-        position: Vector2(size.x, position.y),
+        position: Vector2(position.x + size.x / 2, position.y),
         child: CustomParticle(
             radius: 3,
             isCircle: false,

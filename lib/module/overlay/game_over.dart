@@ -44,66 +44,69 @@ class GameOverDialog extends HookConsumerWidget {
     }
 
     return MainScaffold(
-        body: Container(
-            color: Colors.transparent,
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                StyledText(
-                  family: 'RenegadePursuit',
-                  text: 'Game Over',
-                  fontSize: 40,
-                  align: TextAlign.start,
-                  letterSpacing: 5,
-                  gradientColors: barColors.values.toList(),
-                  weight: FontWeight.bold,
-                  useShadow: true,
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: ShadowWidget(
-                        shouldHaveBorderRadius: true,
-                        child: NormalButton(
-                          gradientColors: barColors.values.toList(),
-                          color: Colors.cyan,
-                          text: const StyledText(
-                            family: 'RenegadePursuit',
-                            text: 'Try again',
-                            fontSize: 20,
-                            align: TextAlign.start,
-                            color: Colors.white,
-                            weight: FontWeight.bold,
-                          ),
-                          onClick: () {
-                            if (account.noAds != true) {
-                              if (ad != null) {
-                                ad.fullScreenContentCallback = adMob.interstitialCallback(
-                                    createAdd: () => _createInterstitialAd(ref: ref),
-                                    onDismissed: onRestart
-                                );
-                                ad.show();
-                                ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+        body: Blurrable(
+          strength: 5,
+          child: Container(
+              color: Colors.transparent,
+              height: double.infinity,
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  StyledText(
+                    family: 'RenegadePursuit',
+                    text: 'Game Over',
+                    fontSize: 40,
+                    align: TextAlign.start,
+                    letterSpacing: 5,
+                    gradientColors: barColors.values.toList(),
+                    weight: FontWeight.bold,
+                    useShadow: true,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: ShadowWidget(
+                          shouldHaveBorderRadius: true,
+                          child: NormalButton(
+                            gradientColors: barColors.values.toList(),
+                            color: Colors.cyan,
+                            text: const StyledText(
+                              family: 'RenegadePursuit',
+                              text: 'Try again',
+                              fontSize: 20,
+                              align: TextAlign.start,
+                              color: Colors.white,
+                              weight: FontWeight.bold,
+                            ),
+                            onClick: () {
+                              if (account.noAds != true) {
+                                if (ad != null) {
+                                  ad.fullScreenContentCallback = adMob.interstitialCallback(
+                                      createAdd: () => _createInterstitialAd(ref: ref),
+                                      onDismissed: onRestart
+                                  );
+                                  ad.show();
+                                  ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                                }
+                              } else {
+                                onRestart();
                               }
-                            } else {
-                              onRestart();
                             }
-                          }
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            )
+                    ],
+                  ),
+                ],
+              )
+          ),
         )
     );
   }

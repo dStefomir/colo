@@ -66,8 +66,8 @@ class Bullet extends CircleComponent with CollisionCallbacks {
     );
     final riv = RivAnimationComponent(
         artBoard: bulletRiv,
-        size: gameSize / 4,
-        position: Vector2((gameSize.x / -8), (gameSize.y / -7.85)),
+        size: Vector2.all(bulletSize) * 8,
+        position: Vector2(-60, -65),
         stateMachineKey: 'State Machine 1',
         animationKey: 'All'
     );

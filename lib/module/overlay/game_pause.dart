@@ -25,64 +25,67 @@ class GamePauseDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MainScaffold(
-      body: GestureDetector(
-        onTap: () {
-          if (ref.read(secondsToUnpauseProvider) == null) {
-            vibrate();
-            ref.read(secondsToUnpauseProvider.notifier).onSecondsChanged(4);
-            Timer.periodic(const Duration(milliseconds: 650), (timer) {
-              final secondsToUnpause = ref.watch(secondsToUnpauseProvider);
-              ref.read(secondsToUnpauseProvider.notifier).onSecondsChanged(
-                  ref.read(secondsToUnpauseProvider)! - 1);
-              if (secondsToUnpause == 1) {
-                timer.cancel();
+      body: Blurrable(
+        strength: 5,
+        child: GestureDetector(
+          onTap: () {
+            if (ref.read(secondsToUnpauseProvider) == null) {
+              vibrate();
+              ref.read(secondsToUnpauseProvider.notifier).onSecondsChanged(4);
+              Timer.periodic(const Duration(milliseconds: 650), (timer) {
+                final secondsToUnpause = ref.watch(secondsToUnpauseProvider);
                 ref.read(secondsToUnpauseProvider.notifier).onSecondsChanged(
-                    null);
-                onUnpause();
-              }
-            });
-          }
-        },
-        child: Container(
-            color: Colors.transparent,
-            height: double.infinity,
-            width: double.infinity,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    StyledText(
-                      family: 'RenegadePursuit',
-                      text: '${ref.read(secondsToUnpauseProvider) ?? 'Paused'}',
-                      fontSize: 40,
-                      align: TextAlign.start,
-                      letterSpacing: 5,
-                      gradientColors: barColors.values.toList(),
-                      weight: FontWeight.bold,
-                      useShadow: true,
-                    ),
-                  ],
-                ),
-                if (account.noAds != true) Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    height: 60,
-                    child: AdWidget(
-                        ad: BannerAd(
-                            size: AdSize.fullBanner,
-                            adUnitId: adMob.bannerAdUnitId!,
-                            request: const AdRequest(),
-                            listener: adMob.bannerListener
-                        )..load()
+                    ref.read(secondsToUnpauseProvider)! - 1);
+                if (secondsToUnpause == 1) {
+                  timer.cancel();
+                  ref.read(secondsToUnpauseProvider.notifier).onSecondsChanged(
+                      null);
+                  onUnpause();
+                }
+              });
+            }
+          },
+          child: Container(
+              color: Colors.transparent,
+              height: double.infinity,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      StyledText(
+                        family: 'RenegadePursuit',
+                        text: '${ref.read(secondsToUnpauseProvider) ?? 'Paused'}',
+                        fontSize: 40,
+                        align: TextAlign.start,
+                        letterSpacing: 5,
+                        gradientColors: barColors.values.toList(),
+                        weight: FontWeight.bold,
+                        useShadow: true,
+                      ),
+                    ],
+                  ),
+                  if (account.noAds != true) Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      height: 60,
+                      child: AdWidget(
+                          ad: BannerAd(
+                              size: AdSize.fullBanner,
+                              adUnitId: adMob.bannerAdUnitId!,
+                              request: const AdRequest(),
+                              listener: adMob.bannerListener
+                          )..load()
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
+          ),
         ),
       )
   );
