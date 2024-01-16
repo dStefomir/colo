@@ -110,9 +110,15 @@ class Cannon extends RivAnimationComponent {
   void moveToTargetAndShoot({
     required Color bulletColor,
     required bool shouldRemoveBulletLimiter}) {
-    final lastFallingBar = getBars().first;
+    final Vector2 position;
 
-    final Vector2 position = Vector2((lastFallingBar.position.x - this.position.x) + bulletSize, 0);
+    if (getBars().isEmpty) {
+      position = Vector2.zero();
+    } else {
+      final lastFallingBar = getBars().first;
+      position = Vector2((lastFallingBar.position.x - this.position.x) + bulletSize, 0);
+    }
+
     add(
         MoveByEffect(
             position,

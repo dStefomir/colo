@@ -57,8 +57,12 @@ class Bullet extends CircleComponent with CollisionCallbacks {
   Future<void> onLoad() async {
     super.onLoad();
     play(asset: 'rocket.wav', volume: 0.05);
-    final lastBar = getBars().first;
-    position = Vector2(lastBar.position.x + lastBar.size.x / 2, gameSize.y);
+    if (getBars().isEmpty) {
+      position = Vector2((gameSize.x / 2) - (bulletSize / 2), gameSize.y);
+    } else {
+      final lastBar = getBars().first;
+      position = Vector2(lastBar.position.x + lastBar.size.x / 2, gameSize.y);
+    }
     final bulletRiv = await loadArtboard(
         RiveFile.asset(
             bulletManager.getBulletRivAssetBasedOnColor(color: bulletColor)
