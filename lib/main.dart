@@ -29,8 +29,6 @@ void main() async {
   final adMobService = AdMobService();
   /// Initializes fire store service
   final fireStoreService = FireStoreService(userId: authService.currentUser!.uid);
-  /// Initializes in app purchases service
-  final inAppPurchasesService = InAppPurchaseService(fireStoreService: fireStoreService);
   /// Plays the game background music
   playLooped(asset: 'background.mp3', volume: 0.05);
 
@@ -38,7 +36,9 @@ void main() async {
       ModularApp(
           module: MainModule(adMob: adMobService, auth: authService),
           child: ProviderScope(
-              child: _MyApp(inAppPurchaseService: inAppPurchasesService)
+              child: _MyApp(
+                  inAppPurchaseService: InAppPurchaseService(fireStoreService: fireStoreService)
+              )
           )
       )
   );
@@ -58,20 +58,20 @@ class _MyApp extends StatefulWidget {
 
 class _MyAppState extends State<_MyApp> {
   /// Stream subscription for handling the bought items from the game
-  late StreamSubscription<List<PurchaseDetails>> _inAppPurchaseSubscription;
+  StreamSubscription<List<PurchaseDetails>>? _inAppPurchaseSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
-    _inAppPurchaseSubscription = purchaseUpdated.listen((purchaseDetailsList) {
-      widget.inAppPurchaseService.listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () {
-      _inAppPurchaseSubscription.cancel();
-    }, onError: (error) {
-      _inAppPurchaseSubscription.cancel();
-    }) as StreamSubscription<List<PurchaseDetails>>;
+      final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
+      _inAppPurchaseSubscription = purchaseUpdated.listen((purchaseDetailsList) {
+        widget.inAppPurchaseService.listenToPurchaseUpdated(purchaseDetailsList);
+      }, onDone: () {
+        _inAppPurchaseSubscription!.cancel();
+      }, onError: (error) {
+        _inAppPurchaseSubscription!.cancel();
+      }) as StreamSubscription<List<PurchaseDetails>>;
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
 import 'package:colo/core/service/auth.dart';
@@ -89,8 +88,8 @@ class MainModule extends Module {
               },
               game: ColoGamePage(
                     sharedPrefs: sharedPrefs,
-                    account: account,
                     level: r.args.queryParams['level'],
+                    limiter: bool.parse(r.args.queryParams['limiter'] ?? 'false'),
                     disabled: false
                 ),
             )

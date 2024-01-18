@@ -3,6 +3,7 @@ import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/service/auth.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
+import 'package:colo/module/initial/provider.dart';
 import 'package:colo/module/overlay/game_mode.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/module/overlay/store.dart';
@@ -31,7 +32,7 @@ class InitialPageBody extends HookConsumerWidget {
   const InitialPageBody({super.key, required this.sharedPrefs, required this.adMob, required this.auth, required this.account});
 
   /// Renders the portrait layout
-  List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size}) => [
+  List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
     if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
@@ -94,6 +95,55 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
+    if (account.rocketLimiter) SlideTransitionAnimation(
+      getStart: () => const Offset(0, -1),
+      getEnd: () => const Offset(0, 0),
+      duration: const Duration(milliseconds: 1000),
+      child: Align(
+        alignment: Alignment.center,
+        child: Padding(
+            padding: EdgeInsets.only(bottom: size.height / 1.85),
+            child: ShadowWidget(
+              shouldHaveBorderRadius: true,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  onTap: () => ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.all(Radius.circular(30))
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<bool>(
+                          value: true,
+                          toggleable: true,
+                          groupValue: shouldHaveRocketLimiter,
+                          onChanged: (_) {
+                            ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter);
+                          },
+                        ),
+                        StyledText(
+                          family: 'RenegadePursuit',
+                          text: 'Rocket limiter',
+                          fontSize: 15,
+                          padding: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
+                          gradientColors: barColors.values.toList(),
+                          align: TextAlign.start,
+                          weight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            )
+        ),
+      ),
+    ),
     if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
@@ -101,7 +151,7 @@ class InitialPageBody extends HookConsumerWidget {
       child: Align(
         alignment: Alignment.center,
         child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 2.5),
+            padding: EdgeInsets.only(bottom: size.height / 2.8),
             child: ShadowWidget(
               shouldHaveBorderRadius: true,
               child: TextIconButton(
@@ -202,7 +252,7 @@ class InitialPageBody extends HookConsumerWidget {
   ];
 
   /// Renders the landscape layout
-  List<Widget> _renderLandscapeMode({required WidgetRef ref, required Size size}) => [
+  List<Widget> _renderLandscapeMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
     if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
@@ -265,6 +315,55 @@ class InitialPageBody extends HookConsumerWidget {
         ),
       ),
     ),
+    if (account.rocketLimiter) SlideTransitionAnimation(
+      getStart: () => const Offset(0, -1),
+      getEnd: () => const Offset(0, 0),
+      duration: const Duration(milliseconds: 1000),
+      child: Align(
+        alignment: Alignment.center,
+        child: Padding(
+            padding: EdgeInsets.only(bottom: size.height / 6),
+            child: ShadowWidget(
+                shouldHaveBorderRadius: true,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(30)),
+                    onTap: () => ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.all(Radius.circular(30))
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Radio<bool>(
+                            value: true,
+                            toggleable: true,
+                            groupValue: shouldHaveRocketLimiter,
+                            onChanged: (_) {
+                              ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter);
+                            },
+                          ),
+                          StyledText(
+                            family: 'RenegadePursuit',
+                            text: 'Rocket limiter',
+                            fontSize: 15,
+                            padding: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
+                            gradientColors: barColors.values.toList(),
+                            align: TextAlign.start,
+                            weight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+            )
+        ),
+      ),
+    ),
     if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
       getStart: () => const Offset(0, -1),
       getEnd: () => const Offset(0, 0),
@@ -272,7 +371,7 @@ class InitialPageBody extends HookConsumerWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-            padding: EdgeInsets.only(top: size.height / 8, left: size.width / 16),
+            padding: EdgeInsets.only(top: size.height / 3, left: size.width / 16),
             child: ShadowWidget(
               shouldHaveBorderRadius: true,
               child: TextIconButton(
@@ -305,7 +404,7 @@ class InitialPageBody extends HookConsumerWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: Padding(
-          padding: EdgeInsets.only(top: size.height / 8, right: size.width / 16),
+          padding: EdgeInsets.only(top: size.height / 3, right: size.width / 16),
           child: ShadowWidget(
             shouldHaveBorderRadius: true,
             child: TextIconButton(
@@ -342,7 +441,7 @@ class InitialPageBody extends HookConsumerWidget {
       child: Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.only(top: size.height / 9),
+          padding: EdgeInsets.only(top: size.height / 3),
           child: StyledText(
             family: 'RenegadePursuit',
             text: '${sharedPrefs.getInt('score') ?? 0}',
@@ -377,12 +476,13 @@ class InitialPageBody extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
     final bool? shouldShowGameModeDialog = ref.watch(overlayVisibilityProvider(const Key('game_mode')));
     final bool? shouldShowGameStoreDialog = ref.watch(overlayVisibilityProvider(const Key('game_store')));
+    final bool shouldHaveRocketLimiter = ref.watch(rocketLimiterProvider(const Key('rocket_limiter')));
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        if( mediaQuery.orientation == Orientation.portrait) ..._renderPortraitMode(ref: ref, size: mediaQuery.size)
-        else ..._renderLandscapeMode(ref: ref, size: mediaQuery.size),
+        if (mediaQuery.orientation == Orientation.portrait) ..._renderPortraitMode(ref: ref, size: mediaQuery.size, shouldHaveRocketLimiter: shouldHaveRocketLimiter)
+        else ..._renderLandscapeMode(ref: ref, size: mediaQuery.size, shouldHaveRocketLimiter: shouldHaveRocketLimiter),
         if (shouldShowGameStoreDialog != null) Align(
           alignment: Alignment.bottomCenter,
           child: SlideTransitionAnimation(

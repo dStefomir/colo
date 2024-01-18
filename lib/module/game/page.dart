@@ -1,4 +1,3 @@
-import 'package:colo/model/account.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/cannon.dart';
 import 'package:colo/module/game/component/color_button.dart';
@@ -43,23 +42,23 @@ const Map<String, Color> bulletColors = {
 class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Shared prefs
   late SharedPreferences _sharedPreferences;
-  /// User account
-  late Account _account;
   /// Is the game disabled or not.
   /// Disabled means no touch and rules apply to the game.
   late bool _disabled;
   /// Gama manager component
   late GameManager manager;
+  /// Should remove bullet limiter or not
+  late bool _shouldRemoveLimiter;
   /// Selected game level
   GameLevel? _level;
 
   ColoGamePage({
     required SharedPreferences sharedPrefs,
-    required Account account,
+    required bool limiter,
     String? level, bool disabled = false
   }) {
     _sharedPreferences = sharedPrefs;
-    _account = account;
+    _shouldRemoveLimiter = limiter;
     if (level == 'easy') {
       _level = GameLevel.easy;
     } else if (level == 'medium') {
@@ -90,7 +89,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
           final cannon = children.whereType<Cannon>().first;
           cannon.moveToTargetAndShoot(
               bulletColor: buttonColor,
-              shouldRemoveBulletLimiter: _account.rocketLimiter
+              shouldRemoveBulletLimiter: _shouldRemoveLimiter
           );
         } else {
           /// A Bomb button has been pressed

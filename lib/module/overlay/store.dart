@@ -117,6 +117,7 @@ class GameStoreDialog extends HookConsumerWidget {
                   }
 
                   if (details.data == null) {
+
                     return const Center(
                         child: LoadingIndicator(color: Colors.purple)
                     );
@@ -131,6 +132,7 @@ class GameStoreDialog extends HookConsumerWidget {
                   }
 
                   if (error != null) {
+
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

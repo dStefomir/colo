@@ -1,5 +1,6 @@
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
+import 'package:colo/module/initial/provider.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
 import 'package:colo/widgets/button.dart';
@@ -163,15 +164,17 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
       child: InkWell(
         onTap: () {
           ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(false);
+          final shouldRemoveLimiter = ref.read(rocketLimiterProvider(const Key('rocket_limiter')));
+
           switch (level) {
             case GameLevel.easy:
-              Modular.to.popAndPushNamed('/game?level=easy');
+              Modular.to.popAndPushNamed('/game?level=easy&limiter=$shouldRemoveLimiter');
               break;
             case GameLevel.medium:
-              Modular.to.popAndPushNamed('/game?level=medium');
+              Modular.to.popAndPushNamed('/game?level=medium&limiter=$shouldRemoveLimiter');
               break;
             case GameLevel.hard:
-              Modular.to.popAndPushNamed('/game?level=hard');
+              Modular.to.popAndPushNamed('/game?level=hard&limiter=$shouldRemoveLimiter');
               break;
           }
         },
