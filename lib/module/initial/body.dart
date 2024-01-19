@@ -31,79 +31,84 @@ class InitialPageBody extends HookConsumerWidget {
 
   const InitialPageBody({super.key, required this.sharedPrefs, required this.adMob, required this.auth, required this.account});
 
-  /// Renders the portrait layout
-  List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
-    if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-            padding: EdgeInsets.only(top: size.height / 7),
-            child: StyledText(
-              text: account.accountType.capitalize(),
-              fontSize: 14,
-              align: TextAlign.start,
-              letterSpacing: 2,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              useShadow: true,
-            )
-        ),
+  /// Renders the account type
+  _renderAccountType({required EdgeInsets padding, required Alignment align}) => (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) ? SlideTransitionAnimation(
+    getStart: () => const Offset(0, -1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
+          child: StyledText(
+            text: account.accountType.capitalize(),
+            fontSize: 14,
+            align: TextAlign.start,
+            letterSpacing: 2,
+            gradientColors: barColors.values.toList(),
+            weight: FontWeight.bold,
+            useShadow: true,
+          )
       ),
     ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-            padding: EdgeInsets.only(top: size.height / 8.5),
-            child: StyledText(
-              text: auth.currentUser!.uid,
-              fontSize: 14,
-              align: TextAlign.start,
-              letterSpacing: 2,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              useShadow: true,
-            )
-        ),
+  ) : const SizedBox.shrink();
+
+  /// Renders the account Id
+  _renderAccountId({required EdgeInsets padding, required Alignment align}) => SlideTransitionAnimation(
+    getStart: () => const Offset(0, -1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
+          child: StyledText(
+            text: auth.currentUser!.uid,
+            fontSize: 14,
+            align: TextAlign.start,
+            letterSpacing: 2,
+            gradientColors: barColors.values.toList(),
+            weight: FontWeight.bold,
+            useShadow: true,
+          )
       ),
     ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 1.25),
-            child: StyledText(
-              family: 'RenegadePursuit',
-              text: 'Colost',
-              fontSize: 40,
-              align: TextAlign.start,
-              letterSpacing: 20,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              italic: true,
-              useShadow: true,
-            )
-        ),
+  );
+
+  /// Renders the game title
+  _renderGameTitle({required EdgeInsets padding, required Alignment align}) => SlideTransitionAnimation(
+    getStart: () => const Offset(0, -1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
+          child: StyledText(
+            family: 'RenegadePursuit',
+            text: 'Colost',
+            fontSize: 40,
+            align: TextAlign.start,
+            letterSpacing: 20,
+            gradientColors: barColors.values.toList(),
+            weight: FontWeight.bold,
+            italic: true,
+            useShadow: true,
+          )
       ),
     ),
-    if (account.rocketLimiter) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 1.85),
-            child: ShadowWidget(
+  );
+
+  /// Renders the bullet limiter button if available
+  _renderBulletLimiterButton({required WidgetRef ref, required bool shouldHaveRocketLimiter, required EdgeInsets padding, required Alignment align}) => account.rocketLimiter ? SlideTransitionAnimation(
+    getStart: () => const Offset(0, -1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
+          child: ShadowWidget(
               shouldHaveBorderRadius: true,
               child: Material(
                 color: Colors.transparent,
@@ -112,8 +117,8 @@ class InitialPageBody extends HookConsumerWidget {
                   onTap: () => ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter),
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.all(Radius.circular(30))
+                        color: Colors.black,
+                        borderRadius: BorderRadius.all(Radius.circular(30))
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -121,7 +126,7 @@ class InitialPageBody extends HookConsumerWidget {
                         Radio<bool>(
                           value: true,
                           toggleable: true,
-                          groupValue: shouldHaveRocketLimiter,
+                          groupValue: !shouldHaveRocketLimiter,
                           onChanged: (_) {
                             ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter);
                           },
@@ -140,335 +145,196 @@ class InitialPageBody extends HookConsumerWidget {
                   ),
                 ),
               )
-            )
-        ),
+          )
       ),
     ),
-    if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 2.8),
-            child: ShadowWidget(
-              shouldHaveBorderRadius: true,
-              child: TextIconButton(
-                onClick: () {
-                  final isGameModeOpened = ref.read(overlayVisibilityProvider(const Key('game_mode')));
-                  if (isGameModeOpened == null || !isGameModeOpened) {
-                    ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
-                  }
-                },
-                gradientColors: barColors.values.toList(),
-                text: const StyledText(
-                  family: 'RenegadePursuit',
-                  text: 'Store',
-                  fontSize: 15,
-                  align: TextAlign.start,
-                  color: Colors.white,
-                  weight: FontWeight.bold,
-                ),
-                asset: 'assets/svgs/store.svg',
-                assetPaddingBottom: 5,
-              ),
-            )
-        ),
-      ),
-    ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, 1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 800),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: size.height / 8),
+  ) : const SizedBox.shrink();
+
+  /// Renders the store button if available
+  _renderStoreButton({required WidgetRef ref, required EdgeInsets padding, required Alignment align}) => (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) ? SlideTransitionAnimation(
+    getStart: () => const Offset(0, -1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
           child: ShadowWidget(
             shouldHaveBorderRadius: true,
             child: TextIconButton(
+              onClick: () {
+                final isGameModeOpened = ref.read(overlayVisibilityProvider(const Key('game_mode')));
+                if (isGameModeOpened == null || !isGameModeOpened) {
+                  ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
+                }
+              },
               gradientColors: barColors.values.toList(),
               text: const StyledText(
                 family: 'RenegadePursuit',
-                text: 'Start',
+                text: 'Store',
                 fontSize: 15,
                 align: TextAlign.start,
                 color: Colors.white,
                 weight: FontWeight.bold,
               ),
-              asset: 'assets/svgs/game.svg',
-              assetPaddingBottom: 10,
-              onClick: () {
-                if (account.premium == true || account.difficultySelect == true) {
-                  final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
-                  if (isGameStoreOpened == null || !isGameStoreOpened) {
-                    ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
-                  }
-                } else {
-                  Modular.to.popAndPushNamed('/game?level=easy');
-                }
-              },
+              asset: 'assets/svgs/store.svg',
+              assetPaddingBottom: 5,
             ),
-          ),
-        ),
+          )
       ),
     ),
-    FadeAnimation(
-      start: 0,
-      end: 1,
-      duration: const Duration(milliseconds: 2000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.only(top: size.height / 9),
-          child: StyledText(
-            family: 'RenegadePursuit',
-            text: '${sharedPrefs.getInt('score') ?? 0}',
-            fontSize: 100,
-            align: TextAlign.start,
+  ) : const SizedBox.shrink();
+
+  /// Renders the start game button
+  _renderStartButton({required WidgetRef ref, required EdgeInsets padding, required Alignment align}) => SlideTransitionAnimation(
+    getStart: () => const Offset(0, 1),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 800),
+    child: Align(
+      alignment: align,
+      child: Padding(
+        padding: padding,
+        child: ShadowWidget(
+          shouldHaveBorderRadius: true,
+          child: TextIconButton(
             gradientColors: barColors.values.toList(),
-            weight: FontWeight.bold,
-            clip: false,
-            useShadow: true,
+            text: const StyledText(
+              family: 'RenegadePursuit',
+              text: 'Start',
+              fontSize: 15,
+              align: TextAlign.start,
+              color: Colors.white,
+              weight: FontWeight.bold,
+            ),
+            asset: 'assets/svgs/game.svg',
+            assetPaddingBottom: 10,
+            onClick: () {
+              if (account.premium == true || account.difficultySelect == true) {
+                final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
+                if (isGameStoreOpened == null || !isGameStoreOpened) {
+                  ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
+                }
+              } else {
+                Modular.to.popAndPushNamed('/game?level=easy');
+              }
+            },
           ),
         ),
       ),
     ),
-    if (account.noAds != true) Align(
-      alignment: Alignment.bottomCenter,
-      child: SizedBox(
-        height: 60,
-        child: AdWidget(
-            ad: BannerAd(
-                size: AdSize.fullBanner,
-                adUnitId: adMob.bannerAdUnitId!,
-                request: const AdRequest(),
-                listener: adMob.bannerListener
-            )..load()
+  );
+
+  /// Renders the game score
+  _renderGameScore({required EdgeInsets padding, required Alignment align}) => FadeAnimation(
+    start: 0,
+    end: 1,
+    duration: const Duration(milliseconds: 2000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+        padding: padding,
+        child: StyledText(
+          family: 'RenegadePursuit',
+          text: '${sharedPrefs.getInt('score') ?? 0}',
+          fontSize: 100,
+          align: TextAlign.start,
+          gradientColors: barColors.values.toList(),
+          weight: FontWeight.bold,
+          clip: false,
+          useShadow: true,
         ),
       ),
     ),
+  );
+
+  /// Renders in game ad
+  _renderAd({required Alignment align}) => account.noAds != true ? Align(
+    alignment: align,
+    child: SizedBox(
+      height: 60,
+      child: AdWidget(
+          ad: BannerAd(
+              size: AdSize.fullBanner,
+              adUnitId: adMob.bannerAdUnitId!,
+              request: const AdRequest(),
+              listener: adMob.bannerListener
+          )..load()
+      ),
+    ),
+  ) : const SizedBox.shrink();
+
+  /// Renders the portrait layout
+  List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
+    _renderAccountType(
+        padding: EdgeInsets.only(top: size.height / 7),
+        align: Alignment.topCenter
+    ),
+    _renderAccountId(
+        padding: EdgeInsets.only(top: size.height / 8.5),
+        align: Alignment.topCenter
+    ),
+    _renderGameTitle(
+        padding: EdgeInsets.only(bottom: size.height / 1.25),
+        align: Alignment.center
+    ),
+    _renderBulletLimiterButton(
+        ref: ref,
+        shouldHaveRocketLimiter: shouldHaveRocketLimiter,
+        padding: EdgeInsets.only(bottom: size.height / 1.85),
+        align: Alignment.center
+    ),
+    _renderStoreButton(
+        ref: ref,
+        padding: EdgeInsets.only(bottom: size.height / 2.8),
+        align: Alignment.center
+    ),
+    _renderStartButton(
+        ref: ref,
+        padding: EdgeInsets.only(bottom: size.height / 8),
+        align: Alignment.bottomCenter
+    ),
+    _renderGameScore(
+        padding: EdgeInsets.only(top: size.height / 9),
+        align: Alignment.center
+    ),
+    _renderAd(align: Alignment.bottomCenter)
   ];
 
   /// Renders the landscape layout
   List<Widget> _renderLandscapeMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
-    if (account.difficultySelect == true && account.rocketLimiter == true && account.noAds == true) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-            padding: EdgeInsets.only(top: size.height / 5),
-            child: StyledText(
-              text: account.accountType.capitalize(),
-              fontSize: 14,
-              align: TextAlign.start,
-              letterSpacing: 2,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              useShadow: true,
-            )
-        ),
-      ),
+    _renderAccountType(
+        padding: EdgeInsets.only(top: size.height / 5),
+        align: Alignment.topCenter
     ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-            padding: EdgeInsets.only(top: size.height / 6.5),
-            child: StyledText(
-              text: auth.currentUser!.uid,
-              fontSize: 14,
-              align: TextAlign.start,
-              letterSpacing: 2,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              useShadow: true,
-            )
-        ),
-      ),
+    _renderAccountId(
+        padding: EdgeInsets.only(top: size.height / 6.5),
+        align: Alignment.topCenter
     ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 1.25),
-            child: StyledText(
-              family: 'RenegadePursuit',
-              text: 'Colost',
-              fontSize: 40,
-              align: TextAlign.start,
-              letterSpacing: 20,
-              gradientColors: barColors.values.toList(),
-              weight: FontWeight.bold,
-              italic: true,
-              useShadow: true,
-            )
-        ),
-      ),
+    _renderGameTitle(
+        padding: EdgeInsets.only(bottom: size.height / 1.25),
+        align: Alignment.center
     ),
-    if (account.rocketLimiter) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: EdgeInsets.only(bottom: size.height / 6),
-            child: ShadowWidget(
-                shouldHaveBorderRadius: true,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: const BorderRadius.all(Radius.circular(30)),
-                    onTap: () => ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.all(Radius.circular(30))
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Radio<bool>(
-                            value: true,
-                            toggleable: true,
-                            groupValue: shouldHaveRocketLimiter,
-                            onChanged: (_) {
-                              ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter);
-                            },
-                          ),
-                          StyledText(
-                            family: 'RenegadePursuit',
-                            text: 'Rocket limiter',
-                            fontSize: 15,
-                            padding: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
-                            gradientColors: barColors.values.toList(),
-                            align: TextAlign.start,
-                            weight: FontWeight.bold,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-            )
-        ),
-      ),
+    _renderBulletLimiterButton(
+        ref: ref,
+        shouldHaveRocketLimiter: shouldHaveRocketLimiter,
+        padding: EdgeInsets.only(bottom: size.height / 6),
+        align: Alignment.center
     ),
-    if (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) SlideTransitionAnimation(
-      getStart: () => const Offset(0, -1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 1000),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-            padding: EdgeInsets.only(top: size.height / 3, left: size.width / 16),
-            child: ShadowWidget(
-              shouldHaveBorderRadius: true,
-              child: TextIconButton(
-                onClick: () {
-                  final isGameModeOpened = ref.read(overlayVisibilityProvider(const Key('game_mode')));
-                  if (isGameModeOpened == null || !isGameModeOpened) {
-                    ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
-                  }
-                },
-                gradientColors: barColors.values.toList(),
-                text: const StyledText(
-                  family: 'RenegadePursuit',
-                  text: 'Store',
-                  fontSize: 15,
-                  align: TextAlign.start,
-                  color: Colors.white,
-                  weight: FontWeight.bold,
-                ),
-                asset: 'assets/svgs/store.svg',
-                assetPaddingBottom: 5,
-              ),
-            )
-        ),
-      ),
+    _renderStoreButton(
+        ref: ref,
+        padding: EdgeInsets.only(top: size.height / 3, left: size.width / 16),
+        align: Alignment.centerLeft
     ),
-    SlideTransitionAnimation(
-      getStart: () => const Offset(0, 1),
-      getEnd: () => const Offset(0, 0),
-      duration: const Duration(milliseconds: 800),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: EdgeInsets.only(top: size.height / 3, right: size.width / 16),
-          child: ShadowWidget(
-            shouldHaveBorderRadius: true,
-            child: TextIconButton(
-              gradientColors: barColors.values.toList(),
-              text: const StyledText(
-                family: 'RenegadePursuit',
-                text: 'Start',
-                fontSize: 15,
-                align: TextAlign.start,
-                color: Colors.white,
-                weight: FontWeight.bold,
-              ),
-              asset: 'assets/svgs/game.svg',
-              assetPaddingBottom: 10,
-              onClick: () {
-                if (account.premium == true || account.difficultySelect == true) {
-                  final isGameStoreOpened = ref.read(overlayVisibilityProvider(const Key('game_store')));
-                  if (isGameStoreOpened == null || !isGameStoreOpened) {
-                    ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
-                  }
-                } else {
-                  Modular.to.popAndPushNamed('/game?level=easy');
-                }
-              },
-            ),
-          ),
-        ),
-      ),
+    _renderStartButton(
+        ref: ref,
+        padding: EdgeInsets.only(top: size.height / 3, right: size.width / 16),
+        align: Alignment.centerRight
     ),
-    FadeAnimation(
-      start: 0,
-      end: 1,
-      duration: const Duration(milliseconds: 2000),
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.only(top: size.height / 3),
-          child: StyledText(
-            family: 'RenegadePursuit',
-            text: '${sharedPrefs.getInt('score') ?? 0}',
-            fontSize: 100,
-            align: TextAlign.start,
-            gradientColors: barColors.values.toList(),
-            weight: FontWeight.bold,
-            clip: false,
-            useShadow: true,
-          ),
-        ),
-      ),
+    _renderGameScore(
+        padding: EdgeInsets.only(top: size.height / 3),
+        align: Alignment.center
     ),
-    if (account.premium != true || account.noAds != true) Align(
-      alignment: Alignment.bottomCenter,
-      child: SizedBox(
-        height: 60,
-        child: AdWidget(
-            ad: BannerAd(
-                size: AdSize.fullBanner,
-                adUnitId: adMob.bannerAdUnitId!,
-                request: const AdRequest(),
-                listener: adMob.bannerListener
-            )..load()
-        ),
-      ),
-    ),
+    _renderAd(align: Alignment.bottomCenter)
   ];
 
   @override
