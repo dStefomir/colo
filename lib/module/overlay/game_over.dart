@@ -55,13 +55,13 @@ class GameOverDialog extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  StyledText(
+                  const StyledText(
                     family: 'RenegadePursuit',
                     text: 'Game Over',
                     fontSize: 40,
                     align: TextAlign.start,
                     letterSpacing: 5,
-                    gradientColors: barColors.values.toList(),
+                    gradientColors: barColors,
                     weight: FontWeight.bold,
                     useShadow: true,
                   ),
@@ -75,7 +75,7 @@ class GameOverDialog extends HookConsumerWidget {
                         child: ShadowWidget(
                           shouldHaveBorderRadius: true,
                           child: NormalButton(
-                            gradientColors: barColors.values.toList(),
+                            gradientColors: barColors,
                             color: Colors.cyan,
                             text: const StyledText(
                               family: 'RenegadePursuit',

@@ -25,12 +25,12 @@ const Map<String, Color> buttonColors = {
   'assets/button_green.riv': Colors.greenAccent,
 };
 /// Game bar colors
-const Map<String, Color> barColors = {
-  'assets/wave_purple.riv' : Colors.deepPurpleAccent,
-  'assets/wave_red.riv': Colors.pink,
-  'assets/wave_blue.riv': Colors.blue,
-  'assets/wave_green.riv': Colors.greenAccent,
-};
+const List<Color> barColors = [
+  Colors.deepPurpleAccent,
+  Colors.pink,
+  Colors.blue,
+  Colors.greenAccent,
+];
 /// Game bullet colors
 const Map<String, Color> bulletColors = {
   'assets/bullet_purple.riv' : Colors.deepPurpleAccent,

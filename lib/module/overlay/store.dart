@@ -76,8 +76,8 @@ class GameStoreDialog extends HookConsumerWidget {
                   fontSize: 14,
                   align: TextAlign.start,
                   letterSpacing: 2,
-                  gradientColors: List.generate(barColors.values.length, (index) {
-                    final color = barColors.values.toList()[index];
+                  gradientColors: List.generate(barColors.length, (index) {
+                    final color = barColors[index];
 
                     return Color.fromRGBO(color.red, color.green, color.blue, 0.6);
                   }),
@@ -146,7 +146,7 @@ class GameStoreDialog extends HookConsumerWidget {
                               clip: false,
                               align: TextAlign.center,
                               letterSpacing: 2,
-                              gradientColors: barColors.values.toList(),
+                              gradientColors: barColors,
                               weight: FontWeight.bold,
                               useShadow: true,
                             ),
@@ -216,7 +216,7 @@ class _GameStoreBody extends HookConsumerWidget {
                           color: Colors.pink.withOpacity(0.3),
                           text: StyledText(
                             family: 'RenegadePursuit',
-                            gradientColors: barColors.values.toList(),
+                            gradientColors: barColors,
                             text: product.price,
                             fontSize: 13,
                             align: TextAlign.start,
@@ -240,7 +240,7 @@ class _GameStoreBody extends HookConsumerWidget {
                             clip: false,
                             maxLines: 4,
                             letterSpacing: 2,
-                            gradientColors: barColors.values.toList(),
+                            gradientColors: barColors,
                             weight: FontWeight.bold,
                           ),
                           StyledText(
@@ -251,7 +251,7 @@ class _GameStoreBody extends HookConsumerWidget {
                             padding: const EdgeInsets.only(left: 15, bottom: 15),
                             align: TextAlign.start,
                             letterSpacing: 2,
-                            gradientColors: barColors.values.toList(),
+                            gradientColors: barColors,
                           )
                         ],
                       ),

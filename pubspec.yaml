@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+25
+version: 1.0.1+26
 
 environment:
   sdk: '>=3.2.1 <4.0.0'
@@ -55,6 +55,8 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.16.0
   cloud_firestore: ^4.14.0
+  # shader library
+  shader: ^1.0.1
   # in app purchases library
   in_app_purchase: ^3.1.13
 
@@ -88,12 +90,18 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
   assets:
     - assets/
     - assets/images/
     - assets/audio/
     - assets/icon/
     - assets/svgs/
+
+  shaders:
+    - shaders/background.glsl
+    - shaders/glow.glsl
+
   fonts:
     - family: RenegadePursuit
       fonts:

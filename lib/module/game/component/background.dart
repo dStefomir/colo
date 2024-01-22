@@ -1,39 +1,32 @@
 import 'dart:ui';
 
 import 'package:colo/module/game/page.dart';
+import 'package:colo/utils/shader.dart';
 import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
-import 'package:flame/parallax.dart';
-
-/// Speed of the background parallax effect
-const _backgroundParallax = 25.0;
 
 /// Renders a background
-class Background extends ParallaxComponent<ColoGamePage> {
-  /// is the game disabled or not
-  final bool disabled;
-  /// Asset for the background
-  final String asset;
-  /// Priority for the background component
-  @override
-  final int priority;
-
-  Background({required this.disabled, required this.asset, required this.priority});
+class Background extends RectangleComponent with HasGameRef<ColoGamePage>{
+  /// Fragment shader
+  late FragmentShader _shader;
+  /// Shader timer, used for update
+  late double _shaderTimer;
 
   @override
   Future<void> onLoad() async {
-    final background = await Flame.images.load(disabled ? 'background_disabled.png' : asset);
-    parallax = Parallax(
-        [
-          ParallaxLayer(
-              ParallaxImage(
-                background,
-                fill: LayerFill.height,
-                filterQuality: FilterQuality.high,
-              )
-          ),
-        ]
-    );
-    parallax?.baseVelocity.x = _backgroundParallax;
+    size = game.size;
+    _shader = await loadShader(asset: 'shaders/background.glsl');
+    _shaderTimer = 0.1;
+    _shader.setFloat(0, _shaderTimer);
+    _shader.setFloat(1, size.x * 4);
+    _shader.setFloat(2, size.y * 4);
+    _shader.setFloat(3, 0.5);
+    _shader.setFloat(4, 1.8);
+    paint = Paint()..shader = _shader;
+  }
+
+  @override
+  void update(double dt) {
+    _shaderTimer = _shaderTimer + 0.011;
+    _shader.setFloat(0, _shaderTimer);
   }
 }

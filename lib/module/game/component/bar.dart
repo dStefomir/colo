@@ -1,17 +1,17 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
-import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/module/game/component/particle.dart';
+import 'package:colo/utils/shader.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/particles.dart';
-import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bar
@@ -34,6 +34,10 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   final Vector2 barSize;
   /// Glow controller
   late EffectController _glowController;
+  /// Fragment shader
+  late FragmentShader _shader;
+  /// Shader timer, used for update
+  late double _shaderTimer;
   /// Move controller
   MoveEffect? _effect;
 
@@ -66,33 +70,21 @@ class Bar extends RectangleComponent with CollisionCallbacks {
       position = Vector2(_generateRandomDx(), 0);
     }
     _effect = _initMoveEffect();
-    if (level == GameLevel.hard) {
-      final random = Random();
-      paint.color = barManager.generateShade(baseColor: barColor, factor: random.nextDouble());
-      add(
-          ColorEffect(
-            barColors.values.toList()[random.nextInt(barColors.values.length)],
-            EffectController(duration: 2.5),
-            opacityFrom: 1,
-            opacityTo: 0,
-          )
-      );
-    }
+    _shader = await loadShader(asset: 'shaders/glow.glsl');
+    _shaderTimer = 0.1;
     if (!disabled) {
-      final waveRiv = await loadArtboard(
-          RiveFile.asset(
-              barManager.getBarRivAssetBasedOnColor(color: barColor)
-          )
-      );
-
-      final riv = RivAnimationComponent(artBoard: waveRiv, size: size);
+      _shader.setFloat(0, _shaderTimer);
+      _shader.setFloat(1, size.x);
+      _shader.setFloat(2, size.y);
+      _shader.setFloat(3, barColor.red.toDouble() / 110);
+      _shader.setFloat(4, barColor.green.toDouble() / 110);
+      _shader.setFloat(5, barColor.blue.toDouble() / 110);
+      paint.shader = _shader;
       _glowController = EffectController(
-          duration: 0.01,
-          reverseDuration: 0.5,
-          curve: Curves.decelerate,
-          onMin: () async {
-            await add(riv);
-          }
+        duration: 0.01,
+        reverseDuration: 0.5,
+        curve: Curves.decelerate,
+
       );
       add(
           GlowEffect(20, _glowController)
@@ -101,24 +93,12 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   }
 
   @override
-  void render(Canvas canvas) {
-    if (_glowController.completed) {
-      final Rect rect = Rect.fromPoints(
-          Offset(size.x + 2, size.y + 2), const Offset(5, 5));
-      canvas.drawRect(
-          rect,
-          Paint()
-            ..color = Colors.black
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0)
-      );
-    }
-    super.render(canvas);
-  }
-
-  @override
   void update(double dt) {
     super.update(dt);
     position.y += (barVelocity * dt) * barManager.barFallingSpeedMultiplier;
+    _shaderTimer = _shaderTimer + 0.011;
+    _shader.setFloat(0, _shaderTimer);
+    _shader.setFloat(2, size.y + 1);
     if (position.y > gameSize.y) {
       barManager.removeBar(bar: this);
       onGameOver();
@@ -193,7 +173,7 @@ class Bar extends RectangleComponent with CollisionCallbacks {
         speed: _getRandomVector() * 8.0,
         position: Vector2(position.x + size.x / 2, position.y),
         child: CustomParticle(
-            radius: 3,
+            radius: 1,
             isCircle: false,
             shadowColor: barManager.generateShade(baseColor: barColor, factor: Random().nextDouble()),
             paint: Paint()

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
@@ -116,7 +114,7 @@ class Cannon extends RivAnimationComponent {
       position = Vector2.zero();
     } else {
       final lastFallingBar = getBars().first;
-      position = Vector2((lastFallingBar.position.x - this.position.x) + bulletSize, 0);
+      position = Vector2(((lastFallingBar.position.x + (lastFallingBar.size.x / 2)) - (this.position.x + (size.x / 2))) + bulletSize, 0);
     }
 
     add(

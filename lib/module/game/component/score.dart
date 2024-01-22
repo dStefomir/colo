@@ -21,8 +21,8 @@ class Score extends TextComponent {
     final biggestSide = gameSize.y > gameSize.x ? gameSize.y : gameSize.x;
     textRenderer = TextPaint(
       style: TextStyle(
-          foreground: Paint()..shader = LinearGradient(
-            colors: barColors.values.toList(),
+          foreground: Paint()..shader = const LinearGradient(
+            colors: barColors,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             tileMode: TileMode.clamp,

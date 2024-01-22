@@ -47,7 +47,11 @@ class InitialPage extends HookConsumerWidget {
             AbsorbPointer(
               absorbing: true,
               child: GameWidget(
-                  game: ColoGamePage(sharedPrefs: sharedPrefs, limiter: true, disabled: true)
+                  game: ColoGamePage(
+                      sharedPrefs: sharedPrefs,
+                      limiter: true,
+                      disabled: true
+                  )
               ),
             ),
             InitialPageBody(

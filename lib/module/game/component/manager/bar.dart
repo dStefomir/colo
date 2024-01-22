@@ -91,7 +91,8 @@ class BarManager extends Component {
     onIncreaseScore: (parent as GameManager).increaseScore,
     gameSize: (parent!.parent as ColoGamePage).size,
     barColor: _getBarColor(),
-    barSize: Vector2(255, 64),
+    // barSize: Vector2(255, 64),
+    barSize: Vector2(120, 120),
   );
 
   /// Removes a bar from the game
@@ -119,13 +120,13 @@ class BarManager extends Component {
 
     switch (manager.level) {
       case GameLevel.easy:
-        lifespan = 0.3;
+        lifespan = 3.5;
         break;
       case GameLevel.medium:
-        lifespan = 1.5;
+        lifespan = 3.5;
         break;
       case GameLevel.hard:
-        lifespan = 1.5 * _barFallingSpeedMultiplier;
+        lifespan = 3.5 * _barFallingSpeedMultiplier;
         break;
     }
 
@@ -139,29 +140,17 @@ class BarManager extends Component {
 
     switch (manager.level) {
       case GameLevel.easy:
-        count = 50;
+        count = 150;
         break;
       case GameLevel.medium:
-        count = 100;
+        count = 150;
         break;
       case GameLevel.hard:
-        count = (100 * _barFallingSpeedMultiplier).toInt();
+        count = (150 * _barFallingSpeedMultiplier).toInt();
         break;
     }
 
     return count;
-  }
-
-  /// Gets a riv file bar color based on the game level
-  String getBarRivAssetBasedOnColor({required Color color}) {
-    final GameManager manager = parent as GameManager;
-    if (manager.level == GameLevel.easy || manager.level == GameLevel.medium) {
-
-      return barColors.entries.firstWhere((element) => element.value == color).key;
-    }
-    final random = Random();
-
-    return barColors.keys.toList()[random.nextInt(barColors.length)];
   }
 
   /// Gets a color for a bar

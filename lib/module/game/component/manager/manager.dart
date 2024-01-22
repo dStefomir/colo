@@ -1,8 +1,8 @@
+import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/cannon.dart';
 import 'package:colo/module/game/component/color_button.dart';
-import 'package:colo/module/game/component/manager/background.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
 import 'package:colo/module/game/component/manager/button.dart';
@@ -41,21 +41,18 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   late BulletManager _bulletManager;
   /// Button manager
   late ButtonManager _buttonManager;
-  /// Background manager
-  late BackgroundManager _backgroundManager;
   /// --------------------------------------------------------------------------
 
   GameManager({required SharedPreferences sharedPreferences, required this.disabled, GameLevel? level}) {
     _sharedPreferences = sharedPreferences;
     _selectedLevel = level ?? GameLevel.easy;
     _level = disabled ? GameLevel.easy : level ?? GameLevel.easy;
-    _gameColors = List.generate(barColors.values.length, (index) => barColors.values.toList()[index])..shuffle();
+    _gameColors = List.generate(barColors.length, (index) => barColors[index])..shuffle();
     _destroyedBars = ValueNotifier(0);
   }
 
   @override
   Future<void> onLoad() async {
-    _backgroundManager = BackgroundManager();
     _score = Score(
         gameSize: game.size,
         text: '${_destroyedBars.value}'
@@ -75,7 +72,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
         game.add(_score);
       }
     }
-    await add(_backgroundManager);
+    await add(Background());
   }
 
   @override
@@ -125,7 +122,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     game.removeAll(game.children.whereType<Bar>());
     game.removeAll(game.children.whereType<ColorfulButton>());
     game.remove(game.children.whereType<Cannon>().first);
-    _backgroundManager.restartState();
     _buttonManager.restartState();
     _barManager.restartState();
     game.add(
@@ -195,7 +191,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       if (_buttonManager.actionButtons.length == 2) {
         _level = GameLevel.medium;
         await _buttonManager.addExtraActionButton();
-        _backgroundManager.removeCurrentBackground();
       }
     }
     /// Sets hard level
@@ -205,7 +200,6 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
         await _buttonManager.addExtraActionButton();
         _destroyedBars.value = 0;
         await game.add(_score);
-        _backgroundManager.removeCurrentBackground();
       }
     }
   }

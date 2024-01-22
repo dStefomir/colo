@@ -63,7 +63,7 @@ class GamePauseDialog extends HookConsumerWidget {
                         fontSize: 40,
                         align: TextAlign.start,
                         letterSpacing: 5,
-                        gradientColors: barColors.values.toList(),
+                        gradientColors: barColors,
                         weight: FontWeight.bold,
                         useShadow: true,
                       ),

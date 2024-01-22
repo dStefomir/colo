@@ -45,7 +45,7 @@ class InitialPageBody extends HookConsumerWidget {
             fontSize: 14,
             align: TextAlign.start,
             letterSpacing: 2,
-            gradientColors: barColors.values.toList(),
+            gradientColors: barColors,
             weight: FontWeight.bold,
             useShadow: true,
           )
@@ -67,7 +67,7 @@ class InitialPageBody extends HookConsumerWidget {
             fontSize: 14,
             align: TextAlign.start,
             letterSpacing: 2,
-            gradientColors: barColors.values.toList(),
+            gradientColors: barColors,
             weight: FontWeight.bold,
             useShadow: true,
           )
@@ -84,13 +84,13 @@ class InitialPageBody extends HookConsumerWidget {
       alignment: align,
       child: Padding(
           padding: padding,
-          child: StyledText(
+          child: const StyledText(
             family: 'RenegadePursuit',
             text: 'Colost',
             fontSize: 40,
             align: TextAlign.start,
             letterSpacing: 20,
-            gradientColors: barColors.values.toList(),
+            gradientColors: barColors,
             weight: FontWeight.bold,
             italic: true,
             useShadow: true,
@@ -131,12 +131,12 @@ class InitialPageBody extends HookConsumerWidget {
                             ref.read(rocketLimiterProvider(const Key('rocket_limiter')).notifier).shouldHaveLimiter(!shouldHaveRocketLimiter);
                           },
                         ),
-                        StyledText(
+                        const StyledText(
                           family: 'RenegadePursuit',
                           text: 'Rocket limiter',
                           fontSize: 15,
-                          padding: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
-                          gradientColors: barColors.values.toList(),
+                          padding: EdgeInsets.only(right: 15, top: 15, bottom: 15),
+                          gradientColors: barColors,
                           align: TextAlign.start,
                           weight: FontWeight.bold,
                         ),
@@ -168,7 +168,7 @@ class InitialPageBody extends HookConsumerWidget {
                   ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
                 }
               },
-              gradientColors: barColors.values.toList(),
+              gradientColors: barColors,
               text: const StyledText(
                 family: 'RenegadePursuit',
                 text: 'Store',
@@ -197,7 +197,7 @@ class InitialPageBody extends HookConsumerWidget {
         child: ShadowWidget(
           shouldHaveBorderRadius: true,
           child: TextIconButton(
-            gradientColors: barColors.values.toList(),
+            gradientColors: barColors,
             text: const StyledText(
               family: 'RenegadePursuit',
               text: 'Start',
@@ -238,7 +238,7 @@ class InitialPageBody extends HookConsumerWidget {
           text: '${sharedPrefs.getInt('score') ?? 0}',
           fontSize: 100,
           align: TextAlign.start,
-          gradientColors: barColors.values.toList(),
+          gradientColors: barColors,
           weight: FontWeight.bold,
           clip: false,
           useShadow: true,

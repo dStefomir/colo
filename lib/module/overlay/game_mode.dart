@@ -69,15 +69,15 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
                     ],
                   ),
                 ),
-                StyledText(
+                const StyledText(
                   family: 'RenegadePursuit',
                   text: 'Easy',
                   fontSize: 30,
                   align: TextAlign.start,
                   letterSpacing: 20,
-                  gradientColors: barColors.values.toList(),
+                  gradientColors: barColors,
                   weight: FontWeight.bold,
-                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  padding: EdgeInsets.only(left: 5, bottom: 15),
                   italic: true,
                   useShadow: true,
                 )
@@ -104,15 +104,15 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
                     ],
                   ),
                 ),
-                StyledText(
+                const StyledText(
                   family: 'RenegadePursuit',
                   text: 'Medium',
                   fontSize: 30,
                   align: TextAlign.start,
                   letterSpacing: 20,
-                  gradientColors: barColors.values.toList(),
+                  gradientColors: barColors,
                   weight: FontWeight.bold,
-                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  padding: EdgeInsets.only(left: 5, bottom: 15),
                   italic: true,
                   useShadow: true,
                 )
@@ -141,15 +141,15 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
                     ],
                   ),
                 ),
-                StyledText(
+                const StyledText(
                   family: 'RenegadePursuit',
                   text: 'Hard',
                   fontSize: 30,
                   align: TextAlign.start,
                   letterSpacing: 20,
-                  gradientColors: barColors.values.toList(),
+                  gradientColors: barColors,
                   weight: FontWeight.bold,
-                  padding: const EdgeInsets.only(left: 5, bottom: 15),
+                  padding: EdgeInsets.only(left: 5, bottom: 15),
                   italic: true,
                   useShadow: true,
                 )
