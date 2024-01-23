@@ -32,8 +32,6 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   final Color barColor;
   /// Bar size
   final Vector2 barSize;
-  /// Glow controller
-  late EffectController _glowController;
   /// Fragment shader
   late FragmentShader _shader;
   /// Shader timer, used for update
@@ -65,9 +63,9 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   @override
   Future<void> onLoad() async {
     if (level == GameLevel.hard) {
-      position = Vector2((gameSize.x / 2) - barSize.x / 1.4, 0);
+      position = Vector2((gameSize.x / 2) - barSize.x / 1.4, -15);
     } else {
-      position = Vector2(_generateRandomDx(), 0);
+      position = Vector2(_generateRandomDx(), -15);
     }
     _effect = _initMoveEffect();
     _shader = await loadShader(asset: 'shaders/glow.glsl');
@@ -80,15 +78,6 @@ class Bar extends RectangleComponent with CollisionCallbacks {
       _shader.setFloat(4, barColor.green.toDouble() / 110);
       _shader.setFloat(5, barColor.blue.toDouble() / 110);
       paint.shader = _shader;
-      _glowController = EffectController(
-        duration: 0.01,
-        reverseDuration: 0.5,
-        curve: Curves.decelerate,
-
-      );
-      add(
-          GlowEffect(20, _glowController)
-      );
     }
   }
 

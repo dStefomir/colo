@@ -1,24 +1,28 @@
-#version 400
+#version 460 core
+
+precision mediump float;
+
+#include <flutter/runtime_effect.glsl>
 
 uniform float iTime;
 uniform vec2 iResolution;
 uniform vec2 iMouse;
 out vec4 fragColor;
 
-#define iterations 17
-#define formuparam 0.53
+#define iterations 8
+#define formuparam 0.33
 
-#define volsteps 20
+#define volsteps 10
 #define stepsize 0.1
 
-#define zoom   0.800
-#define tile   0.850
-#define speed  0.010
+#define zoom   5.800
+#define tile   0.350
+#define speed  0.050
 
-#define brightness 0.0005
+#define brightness 0.0025
 #define darkmatter 0.500
-#define distfading 0.730
-#define saturation 1.200
+#define distfading 0.430
+#define saturation 0.800
 
 
 vec4 mainImage( in vec2 fragCoord )
@@ -46,7 +50,7 @@ vec4 mainImage( in vec2 fragCoord )
     vec3 v=vec3(0.);
     for (int r=0; r<volsteps; r++) {
         vec3 p=from+s*dir*.5;
-        p = abs(vec3(tile)-mod(p,vec3(tile*2.))); // tiling fold
+        p = abs(vec3(tile)-mod(p,vec3(tile*2.))); // tinting fold
         float pa,a=pa=0.;
     for (int i=0; i<iterations; i++) {
     p=abs(p)/dot(p,p)-formuparam; // the magic formula
@@ -69,6 +73,6 @@ vec4 mainImage( in vec2 fragCoord )
 }
 
 void main() {
-    vec2 pos = gl_FragCoord.xy;
+    vec2 pos = FlutterFragCoord().xy;
     fragColor = mainImage(pos);
 }
