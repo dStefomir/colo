@@ -82,7 +82,7 @@ float distanceToScene(vec3 cameraPos, vec3 rayDir, float start, float end, inout
         // Calculate the glow at the current distance using the distance based glow function
         // Accumulate this value over the whole view ray
         // The smaller the step size, the smoother the final result
-        glow += getGlow(dist, 1e-3, 0.55);
+        glow += getGlow(dist, 1e-3, 0.45);
 
         // If the distance is small enough, we have hit a surface
         // Return the depth that the ray travelled through the scene
@@ -114,7 +114,7 @@ vec3 ACESFilm(vec3 x){
 vec4 mainImage( in vec2 fragCoord ){
 
     // Get the default direction of the ray (along the negative Z direction)
-    vec3 rayDir = rayDirection(60.0, fragCoord);
+    vec3 rayDir = rayDirection(75.0, fragCoord);
 
     //----------------- Define a camera -----------------
 

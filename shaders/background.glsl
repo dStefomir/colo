@@ -1,5 +1,3 @@
-#version 460 core
-
 precision mediump float;
 
 #include <flutter/runtime_effect.glsl>
@@ -9,65 +7,72 @@ uniform vec2 iResolution;
 uniform vec2 iMouse;
 out vec4 fragColor;
 
-#define iterations 8
-#define formuparam 0.33
+mat2 Rot(float angle){
+    float s=sin(angle), c=cos(angle);
+    return mat2(c, -s, s, c);
+}
 
-#define volsteps 10
-#define stepsize 0.1
+//random number between 0 and 1
+float Hash21(vec2 p){
+    p = fract(p*vec2(123.34, 456.21));
+    p +=dot(p, p+45.32);
+    return  fract(p.x*p.y);
+}
 
-#define zoom   5.800
-#define tile   0.350
-#define speed  0.050
+float Star(vec2 uv, float flare){
+    float d = length(uv);//center of screen is origin of uv -- length give us distance from every pixel to te center
+    float m = .05/d;
+    float rays = max(0., 1.-abs(uv.x*uv.y*1000.));
+    m +=rays*flare;
 
-#define brightness 0.0025
-#define darkmatter 0.500
-#define distfading 0.430
-#define saturation 0.800
+    uv *=Rot(3.1415/4.);
+    rays = max(0., 1.-abs(uv.x*uv.y*1000.));
+    m +=rays*.3*flare;
+    m *=smoothstep(1., .2, d);
+    return m;
+}
 
+vec3 StarLayer(vec2 uv){
 
+    vec3 col = vec3(0.);
+
+    vec2 gv= fract(uv)-.5; //gv is grid view
+    vec2 id= floor(uv);
+
+    for(int y=-1; y<=1; y++){
+        for(int x=-1; x<=1; x++){
+
+            vec2 offset= vec2(x, y);
+            float n = Hash21(id+offset);
+            float size = fract(n*345.32);
+            float star= Star(gv-offset-(vec2(n, fract(n*34.))-.5), smoothstep(.9, 1., size)*.6);
+            vec3 color = sin(vec3(.2, .3, .9)*fract(n*2345.2)*123.2)*.5+.5;
+            color = color*vec3(1., .25, 1.+size);
+
+            star *=sin(iTime*3.+n*6.2831)*.5+1.;
+            col +=star*size*color;
+
+        }
+    }
+    return col;
+}
 vec4 mainImage( in vec2 fragCoord )
 {
-    //get coords and direction
-    vec2 uv=fragCoord.xy/iResolution.xy-.5;
-    uv.y*=iResolution.y/iResolution.x;
-    vec3 dir=vec3(uv*zoom,1.);
-    float time=iTime*speed+.25;
+    vec2 uv = (fragCoord-.5*iResolution.xy)/iResolution.y;
+    float t=  iTime*.02;
+    vec2 M = (iMouse.xy-iResolution.xy*.5)/iResolution.y;
+    uv *=Rot(t);
+    uv +=M*4.;
 
-    //mouse rotation
-    float a1=.5+iMouse.x/iResolution.x*2.;
-    float a2=.8+iMouse.y/iResolution.y*2.;
-    mat2 rot1=mat2(cos(a1),sin(a1),-sin(a1),cos(a1));
-    mat2 rot2=mat2(cos(a2),sin(a2),-sin(a2),cos(a2));
-    dir.xz*=rot1;
-    dir.xy*=rot2;
-    vec3 from=vec3(1.,.5,0.5);
-    from+=vec3(time*2.,time,-2.);
-    from.xz*=rot1;
-    from.xy*=rot2;
+    vec3 col = vec3(0.);
 
-    //volumetric rendering
-    float s=0.1,fade=1.;
-    vec3 v=vec3(0.);
-    for (int r=0; r<volsteps; r++) {
-        vec3 p=from+s*dir*.5;
-        p = abs(vec3(tile)-mod(p,vec3(tile*2.))); // tinting fold
-        float pa,a=pa=0.;
-    for (int i=0; i<iterations; i++) {
-    p=abs(p)/dot(p,p)-formuparam; // the magic formula
-    a+=abs(length(p)-pa); // absolute sum of average change
-    pa=length(p);
+    for(float i =0.; i<1.; i += 1./2.5){
+        float depth = fract(i+t);
+        float scale= mix(20.,.5, depth);
+        float fade = depth*smoothstep(1., .9, depth) / 2;
+        col += StarLayer(uv*scale+i*453.32-M)*fade;
     }
-    float dm=max(0.,darkmatter-a*a*.001); //dark matter
-    a*=a*a; // add contrast
-    if (r>6) fade*=1.-dm; // dark matter, don't render near
-    //v+=vec3(dm,dm*.5,0.);
-    v+=fade;
-    v+=vec3(s,s*s,s*s*s*s)*a*brightness*fade; // coloring based on distance
-    fade*=distfading; // distance fading
-    s+=stepsize;
-    }
-    v=mix(vec3(length(v)),v,saturation); //color adjust
-    fragColor = vec4(v*.01,1.);
+    fragColor = vec4(col,1.0);
 
     return fragColor;
 }

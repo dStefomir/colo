@@ -20,7 +20,6 @@ class Background extends RectangleComponent with HasGameRef<ColoGamePage>{
     _shader.setFloat(1, game.size.x);
     _shader.setFloat(2, game.size.y);
     _shader.setFloat(3, 0.5);
-    _shader.setFloat(4, 1.8);
     paint = Paint()..shader = _shader;
   }
 
