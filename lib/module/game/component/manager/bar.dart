@@ -92,7 +92,7 @@ class BarManager extends Component {
     gameSize: (parent!.parent as ColoGamePage).size,
     barColor: _getBarColor(),
     // barSize: Vector2(255, 64),
-    barSize: Vector2(120, 120),
+    barSize: Vector2(100, 100),
   );
 
   /// Removes a bar from the game

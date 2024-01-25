@@ -72,8 +72,8 @@ class Bar extends RectangleComponent with CollisionCallbacks {
     _shaderTimer = 0.1;
     if (!disabled) {
       _shader.setFloat(0, _shaderTimer);
-      _shader.setFloat(1, size.x);
-      _shader.setFloat(2, size.y);
+      _shader.setFloat(1, 100);
+      _shader.setFloat(2, 100);
       _shader.setFloat(3, barColor.red.toDouble() / 110);
       _shader.setFloat(4, barColor.green.toDouble() / 110);
       _shader.setFloat(5, barColor.blue.toDouble() / 110);
@@ -87,7 +87,6 @@ class Bar extends RectangleComponent with CollisionCallbacks {
     position.y += (barVelocity * dt) * barManager.barFallingSpeedMultiplier;
     _shaderTimer = _shaderTimer + 0.015;
     _shader.setFloat(0, _shaderTimer);
-    _shader.setFloat(2, size.y + 1);
     if (position.y > gameSize.y) {
       barManager.removeBar(bar: this);
       onGameOver();

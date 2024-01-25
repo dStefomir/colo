@@ -19,8 +19,8 @@ float Hash21(vec2 p){
 
 float Star(vec2 uv, float flare){
     float d = length(uv);
-    float m = .05/d;
-    float rays = max(0., 1.-abs(uv.x*uv.y*1000.));
+    float m = .10/d;
+    float rays = max(0.8, 1.-abs(uv.x*uv.y*1000.));
     m +=rays*flare;
 
     uv *=Rot(3.1415/4.);

@@ -25,10 +25,10 @@ class Background extends RectangleComponent with HasGameRef<ColoGamePage>{
             ? 'shaders/background_disabled.glsl'
             : 'shaders/background.glsl'
     );
-    _shaderTimer = 0.001;
+    _shaderTimer = 0.0001;
     _shader.setFloat(0, _shaderTimer);
-    _shader.setFloat(1, game.size.x);
-    _shader.setFloat(2, game.size.y);
+    _shader.setFloat(1, 100);
+    _shader.setFloat(2, 100);
     paint = Paint()..shader = _shader;
   }
 
@@ -36,13 +36,13 @@ class Background extends RectangleComponent with HasGameRef<ColoGamePage>{
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     this.size = size;
-    _shader.setFloat(1, size.x);
-    _shader.setFloat(2, size.y);
+    _shader.setFloat(1, 100);
+    _shader.setFloat(2, 100);
   }
 
   @override
   void update(double dt) {
-    _shaderTimer = _shaderTimer + (_disabled ? 0.05 : 0.0005);
+    _shaderTimer = _shaderTimer + (_disabled ? 0.005 : 0.0005);
     _shader.setFloat(0, _shaderTimer);
   }
 }
