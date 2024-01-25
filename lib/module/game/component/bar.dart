@@ -64,10 +64,10 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   Future<void> onLoad() async {
     if (level == GameLevel.hard) {
       position = Vector2((gameSize.x / 2) - barSize.x / 1.4, -15);
+      _effect = _initMoveEffect();
     } else {
       position = Vector2(_generateRandomDx(), -15);
     }
-    _effect = _initMoveEffect();
     _shader = await loadShader(asset: 'shaders/glow.glsl');
     _shaderTimer = 0.1;
     if (!disabled) {
@@ -85,17 +85,19 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   void update(double dt) {
     super.update(dt);
     position.y += (barVelocity * dt) * barManager.barFallingSpeedMultiplier;
-    _shaderTimer = _shaderTimer + 0.011;
+    _shaderTimer = _shaderTimer + 0.015;
     _shader.setFloat(0, _shaderTimer);
     _shader.setFloat(2, size.y + 1);
     if (position.y > gameSize.y) {
       barManager.removeBar(bar: this);
       onGameOver();
     }
-    if (_effect != null) {
-      add(_effect!);
-    } else {
-      _effect = _initMoveEffect();
+    if (level == GameLevel.hard) {
+      if (_effect != null) {
+        add(_effect!);
+      } else {
+        _effect = _initMoveEffect();
+      }
     }
   }
 
@@ -120,18 +122,10 @@ class Bar extends RectangleComponent with CollisionCallbacks {
 
   /// Creates a moving effect
   MoveEffect _initMoveEffect() {
-    final double dx;
-    final double dy;
-    final double duration;
-    if (level == GameLevel.easy || level == GameLevel.medium) {
-      dx = 0;
-      dy = 5;
-      duration = 0.3;
-    } else {
-      dx = 100;
-      dy = 20;
-      duration = 1 / barManager.barFallingSpeedMultiplier;
-    }
+    const double dx = 100;
+    const double dy = 20;
+    final double duration = 1 / barManager.barFallingSpeedMultiplier;
+
     return MoveByEffect(
         Vector2(dx, dy),
         EffectController(
