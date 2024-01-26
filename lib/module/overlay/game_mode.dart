@@ -96,11 +96,11 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
                   padding: const EdgeInsets.only(left: 15, top: 15),
                   child: Row(
                     children: [
-                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
+                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
                       const SizedBox(width: 10,),
                       _renderRiv(asset: 'assets/button_red.riv', width: size),
                       const SizedBox(width: 10,),
-                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
+                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
                     ],
                   ),
                 ),
@@ -131,13 +131,13 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
                   padding: const EdgeInsets.only(left: 15, top: 15),
                   child: Row(
                     children: [
-                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
+                      _renderRiv(asset: 'assets/button_green.riv', width: size),
                       const SizedBox(width: 10,),
                       _renderRiv(asset: 'assets/button_red.riv', width: size),
                       const SizedBox(width: 10,),
-                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
+                      _renderRiv(asset: 'assets/button_purple.riv', width: size),
                       const SizedBox(width: 10,),
-                      _renderRiv(asset: 'assets/button_green.riv', width: size),
+                      _renderRiv(asset: 'assets/button_blue.riv', width: size),
                     ],
                   ),
                 ),

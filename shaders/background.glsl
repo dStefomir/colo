@@ -1,5 +1,3 @@
-precision mediump float;
-
 #include <flutter/runtime_effect.glsl>
 
 uniform float iTime;
