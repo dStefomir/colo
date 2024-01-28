@@ -72,7 +72,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
         game.add(_score);
       }
     }
-    await add(Background(disabled: disabled));
+    await add(Background());
   }
 
   @override

@@ -38,7 +38,6 @@ class AdMobService {
 
   /// Get an banner add id
   String? get bannerAdUnitId {
-    return "ca-app-pub-3940256099942544/6300978111";
     if (kReleaseMode) {
       if (Platform.isIOS) {
         return "ca-app-pub-2745355777679464/2009413172";
@@ -75,7 +74,6 @@ class AdMobService {
 
   /// Get an interstitial add id
   String? get interstitialAdUnitId {
-    return "ca-app-pub-3940256099942544/1033173712";
     if (kReleaseMode) {
       if (Platform.isIOS) {
         return "ca-app-pub-2745355777679464/2123348840";
