@@ -1,7 +1,6 @@
 import 'package:colo/module/game/component/background.dart';
 import 'package:colo/module/game/component/bar.dart';
 import 'package:colo/module/game/component/bullet.dart';
-import 'package:colo/module/game/component/cannon.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
@@ -10,7 +9,6 @@ import 'package:colo/module/game/component/score.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:flame/components.dart';
-import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -121,22 +119,8 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
     game.removeAll(game.children.whereType<Bullet>());
     game.removeAll(game.children.whereType<Bar>());
     game.removeAll(game.children.whereType<ColorfulButton>());
-    game.remove(game.children.whereType<Cannon>().first);
     _buttonManager.restartState();
     _barManager.restartState();
-    game.add(
-        Cannon(
-            gameColors: gameColors,
-            onGameRemove: (component) => game.remove(component),
-            onGameAdd: (component) => game.add(component),
-            getBars: () => game.children.whereType<Bar>().toList(),
-            gameSize: game.size,
-            bulletManager: bulletManager,
-            artBoard: await loadArtboard(
-                RiveFile.asset('assets/starship.riv')
-            )
-        )
-    );
     game.resumeEngine();
     if (_level == GameLevel.hard) {
       game.add(_score);

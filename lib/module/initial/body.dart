@@ -17,6 +17,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Renders the Initial page body content
 class InitialPageBody extends HookConsumerWidget {
@@ -263,6 +264,41 @@ class InitialPageBody extends HookConsumerWidget {
     ),
   ) : const SizedBox.shrink();
 
+  /// Renders a policy privacy button
+  _renderPrivacyPolicy({required EdgeInsets padding, required Alignment align, required double animationStart}) => SlideTransitionAnimation(
+    getStart: () => Offset(0, animationStart),
+    getEnd: () => const Offset(0, 0),
+    duration: const Duration(milliseconds: 1000),
+    child: Align(
+      alignment: align,
+      child: Padding(
+          padding: padding,
+          child: ShadowWidget(
+              shouldHaveBorderRadius: true,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  onTap: () async {
+                    final url = Uri.parse('https://www.iubenda.com/privacy-policy/39557464');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    }
+                  },
+                  child: const StyledText(
+                    family: 'RenegadePursuit',
+                    text: 'Privacy Policy',
+                    fontSize: 15,
+                    gradientColors: barColors,
+                    align: TextAlign.center,
+                  ),
+                ),
+              )
+          )
+      ),
+    ),
+  );
+
   /// Renders the portrait layout
   List<Widget> _renderPortraitMode({required WidgetRef ref, required Size size, required bool shouldHaveRocketLimiter}) => [
     _renderAccountType(
@@ -297,6 +333,11 @@ class InitialPageBody extends HookConsumerWidget {
         padding: EdgeInsets.only(top: size.height / 9),
         align: Alignment.center
     ),
+    _renderPrivacyPolicy(
+        padding: EdgeInsets.only(bottom: size.height / 4),
+        align: Alignment.bottomCenter,
+        animationStart: 1
+    ),
     _renderAd(align: Alignment.bottomCenter)
   ];
 
@@ -317,8 +358,13 @@ class InitialPageBody extends HookConsumerWidget {
     _renderBulletLimiterButton(
         ref: ref,
         shouldHaveRocketLimiter: shouldHaveRocketLimiter,
-        padding: EdgeInsets.only(bottom: size.height / 6),
-        align: Alignment.center
+        padding: EdgeInsets.only(bottom: size.height / 6, left: size.width / 6),
+        align: Alignment.centerLeft
+    ),
+    _renderPrivacyPolicy(
+        padding: EdgeInsets.only(bottom: size.height / 6, right: size.width / 6),
+        align: Alignment.centerRight,
+        animationStart: -1
     ),
     _renderStoreButton(
         ref: ref,

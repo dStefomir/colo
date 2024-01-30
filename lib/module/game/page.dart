@@ -1,5 +1,5 @@
 import 'package:colo/module/game/component/bar.dart';
-import 'package:colo/module/game/component/cannon.dart';
+import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:flame/events.dart';
@@ -86,10 +86,18 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
         final ColorfulButton actionButton = children.whereType<ColorfulButton>().firstWhere((element) => element.containsPoint(info.eventPosition.global));
         if (actionButton.type == ButtonType.color) {
           final Color buttonColor = manager.gameColors[manager.buttonManager.actionButtons.indexOf(actionButton)];
-          final cannon = children.whereType<Cannon>().first;
-          cannon.moveToTargetAndShoot(
-              bulletColor: buttonColor,
-              shouldRemoveBulletLimiter: _shouldRemoveLimiter
+          add(
+              Bullet(
+                  gameSize: size,
+                  getBars: () => children.whereType<Bar>().toList(),
+                  gameColors: manager.gameColors,
+                  onGameAdd: (component) => add(component),
+                  onGameRemove: (component) => remove(component),
+                  bulletManager: manager.bulletManager,
+                  bulletColor: buttonColor,
+                  bulletSize: bulletSize,
+                  shouldRemoveLimiter: _shouldRemoveLimiter
+              )
           );
         } else {
           /// A Bomb button has been pressed

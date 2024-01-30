@@ -94,6 +94,8 @@ class GameOverDialog extends HookConsumerWidget {
                                   );
                                   ad.show();
                                   ref.read(interstitialAdProvider.notifier).onAddCreated(null);
+                                } else {
+                                  onRestart();
                                 }
                               } else {
                                 onRestart();

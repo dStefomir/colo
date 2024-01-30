@@ -1,11 +1,9 @@
 import 'dart:math';
 
 import 'package:colo/module/game/component/bar.dart';
-import 'package:colo/module/game/component/cannon.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
-import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Manger for controlling the bar rules
@@ -33,19 +31,6 @@ class BarManager extends Component {
     final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
 
-    await game.add(
-        Cannon(
-          gameColors: manager.gameColors,
-          onGameRemove: (component) => game.remove(component),
-          onGameAdd: (component) => game.add(component),
-          getBars: () => game.children.whereType<Bar>().toList(),
-          gameSize: game.size,
-          bulletManager: manager.bulletManager,
-          artBoard: await loadArtboard(
-              RiveFile.asset('assets/starship.riv')
-          ),
-        )
-    );
     _barFallingSpeedInterval ??= Timer(30, repeat: true, onTick: () {
       /// If its hard level and 20 more bars are destroyed - increase bar falling speed
       if (manager.level == GameLevel.hard) {
