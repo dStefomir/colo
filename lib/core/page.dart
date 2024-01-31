@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/widgets/load.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_messaging_platform/user_messaging_platform.dart';
 
 /// Responsible for wrapping all pages and handling the app bar and the app drawer
 class CorePage extends HookConsumerWidget {
@@ -30,6 +33,35 @@ class CorePage extends HookConsumerWidget {
     this.resizeToAvoidBottomInset = true,
   }) : super(key: key);
 
+  /// Loads the Tracking Authorization status of the ios app
+  Widget _loadTrackingAuthorizationStatus(Widget child) => FutureBuilder<TrackingAuthorizationStatus?>(
+      future: UserMessagingPlatform.instance.getTrackingAuthorizationStatus(),
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          return _loadConsentInfo(child);
+        }
+
+        return child;
+      }
+  );
+
+  /// Loads the Consent info of the app
+  Widget _loadConsentInfo(Widget child) => FutureBuilder<ConsentInformation>(
+      future: UserMessagingPlatform.instance.requestConsentInfoUpdate(),
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data!.consentStatus == ConsentStatus.required) {
+            return FutureBuilder<ConsentInformation>(
+                future: UserMessagingPlatform.instance.showConsentForm(),
+                builder: (_, __) => child
+            );
+          }
+        }
+
+        return child;
+      }
+  );
+
   /// Renders the default page widget
   Widget _renderDefaultPage(BuildContext context, WidgetRef ref) {
     final page = MainScaffold(
@@ -45,8 +77,7 @@ class CorePage extends HookConsumerWidget {
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       final account = Account.fromSnapshot(snapshot.data);
-
-                      return PopScope(
+                      final child = PopScope(
                           onPopInvoked: (shouldPop) {
                             if (onPopInvoked != null) {
                               onPopInvoked!(shouldPop, ref);
@@ -55,6 +86,13 @@ class CorePage extends HookConsumerWidget {
                           canPop: false,
                           child: render(sharedPrefs!, account)
                       );
+                      if (pageName == 'Initial') {
+                        return Platform.isIOS
+                            ? _loadTrackingAuthorizationStatus(child)
+                            : _loadConsentInfo(child);
+                      }
+
+                      return child;
                     }
 
                     return const BackgroundPage(

@@ -13,8 +13,8 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-const String _initialPageRoute = '/';
-const String _gamePageRoute = '/game';
+const String initialPageRoute = '/';
+const String gamePageRoute = '/game';
 
 /// Represents the main module of the app
 class MainModule extends Module {
@@ -32,7 +32,7 @@ class MainModule extends Module {
   @override
   void routes(r) {
     r.child(
-        _initialPageRoute,
+        initialPageRoute,
         transition: TransitionType.fadeIn,
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
@@ -55,13 +55,13 @@ class MainModule extends Module {
         )
     );
     r.child(
-        _gamePageRoute,
+        gamePageRoute,
         transition: TransitionType.scale,
         duration: const Duration(milliseconds: 800),
         child: (_) => CorePage(
             pageName: 'Game',
             userId: auth.currentUser!.uid,
-            onPopInvoked: (_, __) => Modular.to.popAndPushNamed(_initialPageRoute),
+            onPopInvoked: (_, __) => Modular.to.popAndPushNamed(initialPageRoute),
             render: (sharedPrefs, account) => GameWidget(
               overlayBuilderMap: {
                 'gameOver': (BuildContext context, ColoGamePage game) => SlideTransitionAnimation(

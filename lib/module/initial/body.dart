@@ -4,6 +4,7 @@ import 'package:colo/core/service/auth.dart';
 import 'package:colo/model/account.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/initial/provider.dart';
+import 'package:colo/module/main_module.dart';
 import 'package:colo/module/overlay/game_mode.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/module/overlay/store.dart';
@@ -216,7 +217,7 @@ class InitialPageBody extends HookConsumerWidget {
                   ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
                 }
               } else {
-                Modular.to.popAndPushNamed('/game?level=easy');
+                Modular.to.popAndPushNamed('$gamePageRoute?level=easy');
               }
             },
           ),
