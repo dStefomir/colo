@@ -169,7 +169,7 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
 
           switch (level) {
             case GameLevel.easy:
-              Modular.to.popAndPushNamed('$gamePageRoute}?level=easy&limiter=$shouldRemoveLimiter');
+              Modular.to.popAndPushNamed('$gamePageRoute?level=easy&limiter=$shouldRemoveLimiter');
               break;
             case GameLevel.medium:
               Modular.to.popAndPushNamed('$gamePageRoute?level=medium&limiter=$shouldRemoveLimiter');
