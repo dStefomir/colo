@@ -83,6 +83,16 @@ class BarManager extends Component {
   /// Removes a bar from the game
   void removeBar({required Bar bar}) => parent?.parent?.remove(bar);
 
+  /// Get available bars
+  List<Bar> getAvailableBars() {
+    final ColoGamePage game = parent!.parent as ColoGamePage;
+
+    return game.children.whereType<Bar>().toList();
+  }
+
+  /// Gets a riv file bullet aim color
+  String getBulletAimRivAsset({required Color color}) => aimColors.entries.firstWhere((element) => element.value == color).key;
+
   /// Generate a different shades of color
   Color generateShade({required Color baseColor, required double factor}) {
     factor = factor.clamp(-1.0, 0.3);

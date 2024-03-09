@@ -70,7 +70,8 @@ class MainModule extends Module {
                   getEnd: () => const Offset(0, 0),
                   child: GameOverDialog(
                       onRestart: () async => game.manager.restartGame(),
-                      bestScore: sharedPrefs.getInt('score') ?? game.manager.score,
+                      level: game.manager.level,
+                      currentScore: game.manager.score,
                       account: account,
                       adMob: adMob
                   ),

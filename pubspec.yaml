@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.7+45
+version: 1.0.9+46
 
 environment:
   sdk: '>=3.2.1 <4.0.0'
@@ -37,10 +37,10 @@ dependencies:
   # Modular library
   flutter_modular: ^6.3.2
   # 2d game engine library
-  flame: ^1.14.0
-  flame_rive: ^1.9.10
+  flame: ^1.16.0
+  flame_rive: ^1.10.0
   # 2d game audio library
-  flame_audio: ^2.1.7
+  flame_audio: ^2.10.0
   # Hooks library
   flutter_hooks: ^0.20.5
   flutter_riverpod: ^2.4.10
@@ -54,11 +54,11 @@ dependencies:
   # google ads
   google_mobile_ads: ^4.0.0
   # url launcher library
-  url_launcher: ^6.2.4
+  url_launcher: ^6.2.5
   # firebase library
-  firebase_core: ^2.25.4
-  firebase_auth: ^4.17.4
-  cloud_firestore: ^4.15.4
+  firebase_core: ^2.25.5
+  firebase_auth: ^4.17.6
+  cloud_firestore: ^4.15.6
   # shader library
   shader: ^1.0.1
   # in app purchases library

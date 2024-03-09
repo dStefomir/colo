@@ -1,6 +1,7 @@
 import 'package:colo/core/service/admob.dart';
 import 'package:colo/core/page.dart';
 import 'package:colo/model/account.dart';
+import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/module/overlay/provider.dart';
 import 'package:colo/widgets/blur.dart';
@@ -19,21 +20,23 @@ class GameOverDialog extends HookConsumerWidget {
   final AdMobService adMob;
   /// What happens when the restart button is pressed
   final void Function() onRestart;
-  /// Best game score
-  final int bestScore;
+  /// Current game level
+  final GameLevel level;
+  /// Current game score
+  final int currentScore;
 
-  const GameOverDialog({super.key, required this.account, required this.adMob, required this.bestScore, required this.onRestart});
+  const GameOverDialog({super.key, required this.account, required this.adMob, required this.level, required this.currentScore, required this.onRestart});
 
   /// Creates the interstitial ad
   void _createInterstitialAd({required WidgetRef ref}) {
-    InterstitialAd.load(
-        adUnitId: adMob.interstitialAdUnitId!,
-        request: const AdRequest(),
-        adLoadCallback: adMob.interstitialListener(
-            onAdCreated: (ad) => ref.read(interstitialAdProvider.notifier).onAddCreated(ad),
-            onAdFailed: () => ref.read(interstitialAdProvider.notifier).onAddCreated(null)
-        )
-    );
+      InterstitialAd.load(
+          adUnitId: adMob.interstitialAdUnitId!,
+          request: const AdRequest(),
+          adLoadCallback: adMob.interstitialListener(
+              onAdCreated: (ad) => ref.read(interstitialAdProvider.notifier).onAddCreated(ad),
+              onAdFailed: () => ref.read(interstitialAdProvider.notifier).onAddCreated(null)
+          )
+      );
   }
 
   @override
@@ -86,7 +89,7 @@ class GameOverDialog extends HookConsumerWidget {
                               weight: FontWeight.bold,
                             ),
                             onClick: () {
-                              if (account.noAds != true) {
+                              if (account.noAds != true && level == GameLevel.hard && currentScore % 2 == 1) {
                                 if (ad != null) {
                                   ad.fullScreenContentCallback = adMob.interstitialCallback(
                                       createAdd: () => _createInterstitialAd(ref: ref),

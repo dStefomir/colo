@@ -38,6 +38,13 @@ const Map<String, Color> bulletColors = {
   'assets/bullet_blue.riv': Colors.blue,
   'assets/bullet_green.riv': Colors.greenAccent,
 };
+/// Game bullet aim colors
+const Map<String, Color> aimColors = {
+  'assets/aim_purple.riv' : Colors.deepPurpleAccent,
+  'assets/aim_red.riv': Colors.pink,
+  'assets/aim_blue.riv': Colors.blue,
+  'assets/aim_green.riv': Colors.greenAccent,
+};
 /// Represents the game itself
 class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
   /// Shared prefs

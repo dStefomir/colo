@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
+import 'package:colo/module/game/component/riv.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:colo/utils/audio.dart';
 import 'package:colo/module/game/component/particle.dart';
@@ -12,6 +13,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/particles.dart';
+import 'package:flame_rive/flame_rive.dart';
 import 'package:flutter/material.dart';
 
 /// Renders a bar
@@ -38,6 +40,8 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   late double _shaderTimer;
   /// Move controller
   MoveEffect? _effect;
+  /// Aim riv
+  Artboard? _aimRiv;
 
   Bar({
     required this.disabled,
@@ -82,8 +86,23 @@ class Bar extends RectangleComponent with CollisionCallbacks {
   }
 
   @override
-  void update(double dt) {
+  Future<void> update(double dt) async {
     super.update(dt);
+    if (barManager.getAvailableBars().first == this && _aimRiv == null) {
+      _aimRiv = await loadArtboard(
+          RiveFile.asset(
+              barManager.getBulletAimRivAsset(color: barColor)
+          )
+      );
+      final barAim = RivAnimationComponent(
+          artBoard: _aimRiv!,
+          size: Vector2.all(bulletSize) * 2,
+          position: Vector2(36, 35),
+          stateMachineKey: 'State Machine 1',
+          animationKey: 'Target',
+      );
+      add(barAim);
+    }
     position.y += (barVelocity * dt) * barManager.barFallingSpeedMultiplier;
     _shaderTimer = _shaderTimer + 0.015;
     _shader.setFloat(0, _shaderTimer);

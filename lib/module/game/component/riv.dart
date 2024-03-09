@@ -11,11 +11,13 @@ class RivAnimationComponent extends RiveComponent {
     required Artboard artBoard,
     Vector2? size,
     Vector2? position,
+    int priorityIndex = 0,
     this.stateMachineKey = 'State Machine 1',
     this.animationKey = 'Wave'}) : super(
       artboard: artBoard,
       size: size,
       position: position,
+      priority: priorityIndex
   );
 
   @override
