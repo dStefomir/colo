@@ -51,6 +51,15 @@ class ColorfulButton extends RiveComponent {
     super.onLoad();
     priority = 1;
     _effect = _initEffect();
+    await add(
+      MoveByEffect(
+          Vector2(0, -80),
+          EffectController(
+            duration: 0.5,
+            curve: Curves.linear,
+          )
+      )
+    );
     final controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',

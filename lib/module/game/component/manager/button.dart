@@ -80,7 +80,7 @@ class ButtonManager extends Component {
             btnPosition: () {
               const double padding = 5;
               const double dX = colorfulBtnSize + (padding * 2);
-              final double dY = game.size.y - ((game.size.y / 10) + padding);
+              final double dY = game.size.y;
 
               /// Game has two colors
               if (gameColors.length == 2) {
@@ -157,8 +157,7 @@ class ButtonManager extends Component {
         type: ButtonType.bomb,
         buttonSize: colorfulBtnSize,
         btnPosition: () {
-          const double padding = 5;
-          final double dY = game.size.y - ((game.size.y / 10) + padding);
+          final double dY = game.size.y;
           return Vector2(
               (game.size.x / 2) - (colorfulBtnSize / 2),
               dY - colorfulBtnSize * 1.2

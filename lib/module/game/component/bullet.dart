@@ -92,7 +92,7 @@ class Bullet extends CircleComponent with CollisionCallbacks {
         bottomRight: const Radius.circular(35)
     ), Paint()
       ..color = Colors.black54
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3));
+      );
     super.render(canvas);
   }
 
