@@ -1,6 +1,4 @@
 import 'package:colo/module/game/component/background.dart';
-import 'package:colo/module/game/component/bar.dart';
-import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/color_button.dart';
 import 'package:colo/module/game/component/manager/bar.dart';
 import 'package:colo/module/game/component/manager/bullet.dart';
@@ -89,11 +87,10 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   void handleGamePause() {
     if (!game.paused) {
       game.overlays.add('gamePause');
-      barManager.pauseBars();
       game.pauseEngine();
     } else {
       game.overlays.remove('gamePause');
-      barManager.unPauseBars();
+      _buttonManager.restartState();
       game.resumeEngine();
     }
   }
@@ -104,6 +101,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       play(asset: 'game_over.wav', volume: 0.3);
       game.overlays.add('gameOver');
       game.pauseEngine();
+      game.removeAll(game.children.whereType<ColorfulButton>());
     }
   }
 
@@ -116,9 +114,7 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
       game.remove(_score);
     }
     _level = _selectedLevel;
-    game.removeAll(game.children.whereType<Bullet>());
-    game.removeAll(game.children.whereType<Bar>());
-    game.removeAll(game.children.whereType<ColorfulButton>());
+    _bulletManager.restartState();
     _buttonManager.restartState();
     _barManager.restartState();
     game.resumeEngine();
@@ -171,20 +167,16 @@ class GameManager extends Component with HasGameRef<ColoGamePage> {
   /// Increases the game level
   void _increaseLevel() async {
     /// Sets medium level
-    if (_destroyedBars.value == 10 && _level == GameLevel.easy) {
-      if (_buttonManager.actionButtons.length == 2) {
-        _level = GameLevel.medium;
-        await _buttonManager.addExtraActionButton();
-      }
+    if (_destroyedBars.value == 1 && _level == GameLevel.easy) {
+      _level = GameLevel.medium;
+      await _buttonManager.addExtraActionButton();
     }
     /// Sets hard level
-    if (_destroyedBars.value == 20 && _level == GameLevel.medium) {
-      if (_buttonManager.actionButtons.length == 3) {
-        _level = GameLevel.hard;
-        await _buttonManager.addExtraActionButton();
-        _destroyedBars.value = 0;
-        await game.add(_score);
-      }
+    if (_destroyedBars.value == 2 && _level == GameLevel.medium) {
+      _level = GameLevel.hard;
+      await _buttonManager.addExtraActionButton();
+      _destroyedBars.value = 0;
+      await game.add(_score);
     }
   }
 

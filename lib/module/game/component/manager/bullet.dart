@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:colo/module/game/component/bullet.dart';
 import 'package:colo/module/game/component/manager/manager.dart';
 import 'package:colo/module/game/page.dart';
 import 'package:flame/components.dart';
@@ -51,5 +52,11 @@ class BulletManager extends Component {
     } else if (gameManager.level == GameLevel.hard) {
       gameManager.gameOver();
     }
+  }
+
+  /// Reset the state of the manager
+  void restartState() {
+    final GameManager manager = parent as GameManager;
+    manager.game.removeAll(manager.game.children.whereType<Bullet>());
   }
 }

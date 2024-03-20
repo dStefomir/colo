@@ -16,7 +16,7 @@ class ButtonManager extends Component {
 
   @override
   Future<void> onLoad() async {
-    _actionButtons = await _renderActionButtons();
+    _actionButtons = await _addActionButtons();
     await (parent!.parent as ColoGamePage).addAll(_actionButtons);
   }
 
@@ -26,10 +26,12 @@ class ButtonManager extends Component {
     final GameManager manager = parent as GameManager;
     // If its hard level add a bomb button if there is none already
     if (manager.level == GameLevel.hard) {
-      _bombInterval ??= Timer(0.01, repeat: true, onTick: () {
+      _bombInterval ??= Timer(0.1, repeat: true, onTick: () {
         final random = Random();
-        _orAddBomb();
-        _bombInterval!.limit = random.nextInt(120).toDouble();
+        if (_bombInterval!.progress > 0.01) {
+          _orAddBomb();
+        }
+        _bombInterval!.limit = random.nextInt(10).toDouble();
       });
       _bombInterval?.update(dt);
     } else {
@@ -40,19 +42,18 @@ class ButtonManager extends Component {
 
   /// Adds a bomb to the game
   void _orAddBomb() async {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
 
-    final bombs = game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb);
+    final bombs = manager.game.children.whereType<ColorfulButton>().where((element) => element.type == ButtonType.bomb);
     if (bombs.isEmpty && manager.level == GameLevel.hard) {
-      await game.add(await _addActionButtonBomb());
+      await manager.game.add(await _addActionButtonBomb());
     }
   }
 
   /// Renders the action buttons
-  Future<List<ColorfulButton>> _renderActionButtons() async {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
+  Future<List<ColorfulButton>> _addActionButtons() async {
     final GameManager manager = parent as GameManager;
+    final List<Color> spawnButtonColors = manager.game.children.whereType<ColorfulButton>().map((e) => e.buttonColor).toList();
     final List<Color> gameColors = List.generate(manager.getGameColors(), (index) => manager.gameColors[index]);
     final List<MapEntry<Artboard, Color>> rivBoards = [];
 
@@ -71,32 +72,33 @@ class ButtonManager extends Component {
 
     return gameColors.map((e) =>
         ColorfulButton(
-            gameSize: game.size,
-            onGameAdd: (component) => game.add(component),
+            gameSize: manager.game.size,
+            onGameAdd: (component) => manager.game.add(component),
             barManager: manager.barManager,
+            buttonColor: e,
             artBoard: rivBoards.firstWhere((element) => element.value == e).key,
             type: ButtonType.color,
             buttonSize: colorfulBtnSize,
-            btnPosition: () {
+            buttonPosition: () {
               const double padding = 5;
               const double dX = colorfulBtnSize + (padding * 2);
-              final double dY = game.size.y;
+              final double dY = manager.game.size.y;
 
               /// Game has two colors
-              if (gameColors.length == 2) {
+              if (manager.level == GameLevel.easy) {
                 if (gameColors.indexOf(e) == 0) {
 
                   return Vector2(padding, dY);
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX - padding),
+                      manager.game.size.x - (dX - padding),
                       dY
                   );
                 }
 
                 /// Game has three colors
-              } else if (gameColors.length == 3) {
+              } else if (manager.level == GameLevel.medium) {
                 if (gameColors.indexOf(e) == 0) {
 
                   return Vector2(padding, dY);
@@ -109,11 +111,10 @@ class ButtonManager extends Component {
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX - padding),
+                      manager.game.size.x - (dX - padding),
                       dY
                   );
                 }
-
                 /// Game has four colors
               } else {
                 if (gameColors.indexOf(e) == 0) {
@@ -128,38 +129,38 @@ class ButtonManager extends Component {
                 } else if (gameColors.indexOf(e) == 3) {
 
                   return Vector2(
-                      game.size.x - ((dX - padding) * 1.95),
+                      manager.game.size.x - ((dX - padding) * 1.95),
                       dY - colorfulBtnSize / 2
                   );
                 } else {
 
                   return Vector2(
-                      game.size.x - (dX - padding),
+                      manager.game.size.x - (dX - padding),
                       dY
                   );
                 }
               }
             })
-    ).toList();
+    ).where((element) => !spawnButtonColors.contains(element.buttonColor)).toList();
   }
 
   /// Adds a bomb button to the game
   Future<ColorfulButton> _addActionButtonBomb() async {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager gameManager = parent as GameManager;
     final bomb = await loadArtboard(RiveFile.asset('assets/button_bomb.riv'));
 
     return ColorfulButton(
-        gameSize: game.size,
-        onGameAdd: (component) => game.add(component),
+        gameSize: gameManager.game.size,
+        onGameAdd: (component) => gameManager.game.add(component),
         barManager: gameManager.barManager,
+        buttonColor: Colors.transparent,
         artBoard: bomb,
         type: ButtonType.bomb,
         buttonSize: colorfulBtnSize,
-        btnPosition: () {
-          final double dY = game.size.y;
+        buttonPosition: () {
+          final double dY = gameManager.game.size.y;
           return Vector2(
-              (game.size.x / 2) - (colorfulBtnSize / 2),
+              (gameManager.game.size.x / 2) - (colorfulBtnSize / 2),
               dY - colorfulBtnSize * 1.2
           );
         }
@@ -169,8 +170,7 @@ class ButtonManager extends Component {
   /// Adds a button to the game
   Future<void> addExtraActionButton() async {
     final ColoGamePage game = parent!.parent as ColoGamePage;
-    game.removeAll(game.children.whereType<ColorfulButton>());
-    _actionButtons = await _renderActionButtons();
+    _actionButtons = await _addActionButtons();
     game.addAll(_actionButtons);
   }
 
@@ -179,13 +179,12 @@ class ButtonManager extends Component {
 
   /// Restart the state of the game buttons
   void restartState() async {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
-    _actionButtons = await _renderActionButtons();
-    await game.addAll(_actionButtons);
-    if (manager.level == GameLevel.hard) {
-      await game.add(await _addActionButtonBomb());
-    }
+    manager.game.removeAll(manager.game.children.whereType<ColorfulButton>());
+    Future.delayed(const Duration(milliseconds: 100), () async {
+      _actionButtons = await _addActionButtons();
+      await manager.game.addAll(_actionButtons);
+    });
   }
 
   /// Getter for the colorful buttons

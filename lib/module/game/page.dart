@@ -92,7 +92,6 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
         /// An colorful button has been pressed
         final ColorfulButton actionButton = children.whereType<ColorfulButton>().firstWhere((element) => element.containsPoint(info.eventPosition.global));
         if (actionButton.type == ButtonType.color) {
-          final Color buttonColor = manager.gameColors[manager.buttonManager.actionButtons.indexOf(actionButton)];
           add(
               Bullet(
                   gameSize: size,
@@ -101,7 +100,7 @@ class ColoGamePage extends FlameGame with TapDetector, HasCollisionDetection {
                   onGameAdd: (component) => add(component),
                   onGameRemove: (component) => remove(component),
                   bulletManager: manager.bulletManager,
-                  bulletColor: buttonColor,
+                  bulletColor: actionButton.buttonColor,
                   bulletSize: bulletSize,
                   shouldRemoveLimiter: _shouldRemoveLimiter
               )

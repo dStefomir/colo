@@ -28,7 +28,6 @@ class BarManager extends Component {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    final ColoGamePage game = parent!.parent as ColoGamePage;
     final GameManager manager = parent as GameManager;
 
     _barFallingSpeedInterval ??= Timer(30, repeat: true, onTick: () {
@@ -39,7 +38,7 @@ class BarManager extends Component {
     });
     _barInterval = Timer(barInterval / manager.barManager.barFallingSpeedMultiplier, repeat: true);
     _barInterval!.onTick = () async {
-      await game.add(manager.barManager.renderBar());
+      await manager.game.add(manager.barManager.renderBar());
     };
   }
 
@@ -52,20 +51,12 @@ class BarManager extends Component {
     _barFallingSpeedInterval?.update(dt);
   }
 
-  /// Pauses the falling bars
-  void pauseBars() {
-    _barInterval?.pause();
-    _barFallingSpeedInterval?.pause();
-  }
-
-  /// Resumes the falling bars
-  void unPauseBars() {
-    _barInterval?.resume();
-    _barFallingSpeedInterval?.resume();
-  }
-
   /// Reset the state of the manager
-  void restartState() => _barFallingSpeedMultiplier = 1;
+  void restartState() {
+    final GameManager manager = parent as GameManager;
+    manager.game.removeAll(manager.game.children.whereType<Bar>());
+    _barFallingSpeedMultiplier = 1;
+  }
 
   /// Renders a falling bar
   renderBar() => Bar(
@@ -85,9 +76,9 @@ class BarManager extends Component {
 
   /// Get available bars
   List<Bar> getAvailableBars() {
-    final ColoGamePage game = parent!.parent as ColoGamePage;
+    final GameManager manager = parent as GameManager;
 
-    return game.children.whereType<Bar>().toList();
+    return manager.game.children.whereType<Bar>().toList();
   }
 
   /// Gets a riv file bullet aim color

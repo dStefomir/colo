@@ -17,6 +17,8 @@ enum ButtonType {
 class ColorfulButton extends RiveComponent {
   /// Bar manager
   final BarManager barManager;
+  /// Color of the button
+  final Color buttonColor;
   /// Art board for the riv component
   final Artboard artBoard;
   /// Game size
@@ -24,7 +26,7 @@ class ColorfulButton extends RiveComponent {
   /// Adds a component to the game
   final void Function(Component) onGameAdd;
   /// Position of the button
-  final Vector2 Function() btnPosition;
+  final Vector2 Function() buttonPosition;
   /// Height of the button
   final double buttonSize;
   /// What type the button should be
@@ -34,32 +36,33 @@ class ColorfulButton extends RiveComponent {
 
   ColorfulButton({
     required this.barManager,
+    required this.buttonColor,
     required this.artBoard,
     required this.gameSize,
     required this.buttonSize,
-    required this.btnPosition,
+    required this.buttonPosition,
     required this.onGameAdd,
     required this.type
   }) : super(
     artboard: artBoard,
     size: Vector2(buttonSize, buttonSize),
-    position: btnPosition()
+    position: buttonPosition()
   );
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     priority = 1;
-    _effect = _initEffect();
-    await add(
-      MoveByEffect(
-          Vector2(0, -80),
-          EffectController(
-            duration: 0.5,
-            curve: Curves.linear,
-          )
-      )
+    add(
+        MoveByEffect(
+            Vector2(0, -80),
+            EffectController(
+              duration: 0.5,
+              curve: Curves.linear,
+            ),
+        )
     );
+    _effect = _initEffect();
     final controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',
@@ -74,7 +77,7 @@ class ColorfulButton extends RiveComponent {
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    position = btnPosition();
+    position = buttonPosition();
   }
 
   @override
