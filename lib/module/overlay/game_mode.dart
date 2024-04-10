@@ -55,7 +55,7 @@ class _GameModeDialogState extends ConsumerState<GameModeDialog> {
     switch (level) {
       case GameLevel.easy:
         selector = ShadowWidget(
-          child: Card(
+          child: ColoredBox(
             color: Colors.black,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

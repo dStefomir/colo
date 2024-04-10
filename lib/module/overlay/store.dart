@@ -41,10 +41,10 @@ class GameStoreDialog extends HookConsumerWidget {
               await InAppPurchase.instance.restorePurchases();
               ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false);
             },
-            child: const Card(
+            child: const ColoredBox(
               color: Colors.black,
               child: SizedBox(
-                width: 300,
+                width: double.infinity,
                 child: StyledText(
                   text: 'Restore purchases',
                   fontSize: 18,
@@ -203,30 +203,28 @@ class _GameStoreBody extends HookConsumerWidget {
             } else {
               purchaseParam = PurchaseParam(productDetails: product);
             }
+
             return ShadowWidget(
-              child: Card(
+              child: ColoredBox(
                 color: Colors.black,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: NormalButton(
-                          color: Colors.pink.withOpacity(0.3),
-                          text: StyledText(
-                            family: 'RenegadePursuit',
-                            gradientColors: barColors,
-                            text: product.price,
-                            fontSize: 13,
-                            align: TextAlign.start,
-                            color: Colors.white,
-                            weight: FontWeight.bold,
-                          ),
-                          onClick: () => InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam).then((value) =>
-                              ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false)
-                          )
-                      ),
+                    NormalButton(
+                        color: Colors.pink.withOpacity(0.3),
+                        text: StyledText(
+                          family: 'RenegadePursuit',
+                          gradientColors: barColors,
+                          text: product.price,
+                          fontSize: 13,
+                          align: TextAlign.start,
+                          color: Colors.white,
+                          weight: FontWeight.bold,
+                        ),
+                        onClick: () => InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam).then((value) =>
+                            ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(false)
+                        )
                     ),
                     Expanded(
                       child: Column(
@@ -262,7 +260,6 @@ class _GameStoreBody extends HookConsumerWidget {
             );
           }).toList(),
           renderRestorePurchases,
-          const SizedBox(height: 10,)
         ],
       ),
     );

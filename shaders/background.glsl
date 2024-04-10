@@ -4,13 +4,13 @@ uniform float iTime;
 uniform vec2 iResolution;
 out vec4 fragColor;
 
-#define NUM_LAYERS 1.3
+#define NUM_LAYERS 1
 #define TAU 6.28318
 #define PI 3.141592
 #define Velocity .1 //modified value to increse or decrease speed, negative value travel backwards
 #define StarGlow 0.035
 #define StarSize 38.
-#define CanvasView 0.01
+#define CanvasView 0.1
 
 float Star(vec2 uv, float flare){
     float d = length(uv);

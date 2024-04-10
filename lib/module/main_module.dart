@@ -61,7 +61,7 @@ class MainModule extends Module {
         child: (_) => CorePage(
             pageName: 'Game',
             userId: auth.currentUser!.uid,
-            onPopInvoked: (_, __) => Modular.to.popAndPushNamed(initialPageRoute),
+            onPopInvoked: (_, __) {},
             render: (sharedPrefs, account) => GameWidget(
               overlayBuilderMap: {
                 'gameOver': (BuildContext context, ColoGamePage game) => SlideTransitionAnimation(
