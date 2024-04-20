@@ -78,7 +78,6 @@ class _MyAppState extends State<_MyApp> {
   Widget build(BuildContext context) => MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: "Colost",
-      routeInformationParser: Modular.routeInformationParser,
-      routerDelegate: Modular.routerDelegate,
+      routerConfig: Modular.routerConfig,
   );
 }

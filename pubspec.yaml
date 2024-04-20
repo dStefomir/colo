@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.2+49
+version: 1.1.4+51
 
 environment:
   sdk: '>=3.2.1 <4.0.0'
@@ -35,34 +35,34 @@ dependencies:
   flutter:
     sdk: flutter
   # Modular library
-  flutter_modular: ^6.3.2
+  flutter_modular: ^6.3.3
   # 2d game engine library
-  flame: ^1.16.0
-  flame_rive: ^1.10.0
+  flame: ^1.17.0
+  flame_rive: ^1.10.1
   # 2d game audio library
-  flame_audio: ^2.10.0
+  flame_audio: ^2.10.1
   # Hooks library
   flutter_hooks: ^0.20.5
-  flutter_riverpod: ^2.4.10
-  hooks_riverpod: ^2.4.10
+  flutter_riverpod: ^2.5.1
+  hooks_riverpod: ^2.5.1
   # shared prefs library
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.2.3
   # svg library
   flutter_svg: ^2.0.9
   # ump library
   user_messaging_platform: ^1.3.0
   # google ads
-  google_mobile_ads: ^4.0.0
+  google_mobile_ads: ^5.0.0
   # url launcher library
-  url_launcher: ^6.2.5
+  url_launcher: ^6.2.6
   # firebase library
-  firebase_core: ^2.25.5
-  firebase_auth: ^4.17.6
-  cloud_firestore: ^4.15.6
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.19.2
+  cloud_firestore: ^4.17.0
   # shader library
   shader: ^1.0.1
   # in app purchases library
-  in_app_purchase: ^3.1.13
+  in_app_purchase: ^3.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
