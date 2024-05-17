@@ -217,7 +217,7 @@ class InitialPageBody extends HookConsumerWidget {
                   ref.read(overlayVisibilityProvider(const Key('game_mode')).notifier).setOverlayVisibility(true);
                 }
               } else {
-                Modular.to.popAndPushNamed('$gamePageRoute?level=easy');
+                Modular.to.navigate('/game?level=easy');
               }
             },
           ),
