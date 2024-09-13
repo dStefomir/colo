@@ -17,6 +17,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -153,39 +154,52 @@ class InitialPageBody extends HookConsumerWidget {
   ) : const SizedBox.shrink();
 
   /// Renders the store button if available
-  _renderStoreButton({required WidgetRef ref, required EdgeInsets padding, required Alignment align}) => (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) ? SlideTransitionAnimation(
-    getStart: () => const Offset(0, -1),
-    getEnd: () => const Offset(0, 0),
-    duration: const Duration(milliseconds: 1000),
-    child: Align(
-      alignment: align,
-      child: Padding(
-          padding: padding,
-          child: ShadowWidget(
-            shouldHaveBorderRadius: true,
-            child: TextIconButton(
-              onClick: () {
-                final isGameModeOpened = ref.read(overlayVisibilityProvider(const Key('game_mode')));
-                if (isGameModeOpened == null || !isGameModeOpened) {
-                  ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
-                }
-              },
-              gradientColors: barColors,
-              text: const StyledText(
-                family: 'RenegadePursuit',
-                text: 'Store',
-                fontSize: 15,
-                align: TextAlign.start,
-                color: Colors.white,
-                weight: FontWeight.bold,
+  _renderStoreButton({required WidgetRef ref, required EdgeInsets padding, required Alignment align}) {
+    final purchases = InAppPurchase.instance;
+    Widget renderWidget() => (account.difficultySelect != true || account.rocketLimiter != true || account.noAds != true) ? SlideTransitionAnimation(
+      getStart: () => const Offset(0, -1),
+      getEnd: () => const Offset(0, 0),
+      duration: const Duration(milliseconds: 1000),
+      child: Align(
+        alignment: align,
+        child: Padding(
+            padding: padding,
+            child: ShadowWidget(
+              shouldHaveBorderRadius: true,
+              child: TextIconButton(
+                onClick: () {
+                  final isGameModeOpened = ref.read(overlayVisibilityProvider(const Key('game_mode')));
+                  if (isGameModeOpened == null || !isGameModeOpened) {
+                    ref.read(overlayVisibilityProvider(const Key('game_store')).notifier).setOverlayVisibility(true);
+                  }
+                },
+                gradientColors: barColors,
+                text: const StyledText(
+                  family: 'RenegadePursuit',
+                  text: 'Store',
+                  fontSize: 15,
+                  align: TextAlign.start,
+                  color: Colors.white,
+                  weight: FontWeight.bold,
+                ),
+                asset: 'assets/svgs/store.svg',
+                assetPaddingBottom: 5,
               ),
-              asset: 'assets/svgs/store.svg',
-              assetPaddingBottom: 5,
-            ),
-          )
+            )
+        ),
       ),
-    ),
-  ) : const SizedBox.shrink();
+    ) : const SizedBox.shrink();
+
+    return FutureBuilder<bool>(
+        future: purchases.isAvailable(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data! == false) {
+            return const SizedBox.shrink();
+          }
+
+          return renderWidget();
+        });
+  }
 
   /// Renders the start game button
   _renderStartButton({required WidgetRef ref, required EdgeInsets padding, required Alignment align}) => SlideTransitionAnimation(

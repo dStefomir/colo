@@ -58,43 +58,56 @@ class MainModule extends Module {
         gamePageRoute,
         transition: TransitionType.scale,
         duration: const Duration(milliseconds: 800),
-        child: (_) => CorePage(
-            pageName: 'Game',
-            userId: auth.currentUser!.uid,
-            // onPopInvoked: (_, __) {},
-            render: (sharedPrefs, account) => GameWidget(
-              overlayBuilderMap: {
-                'gameOver': (BuildContext context, ColoGamePage game) => SlideTransitionAnimation(
-                  duration: const Duration(milliseconds: 1000),
-                  getStart: () => const Offset(0, 1),
-                  getEnd: () => const Offset(0, 0),
-                  child: GameOverDialog(
-                      onRestart: () async => game.manager.restartGame(),
-                      level: game.manager.level,
-                      currentScore: game.manager.score,
-                      account: account,
-                      adMob: adMob
-                  ),
-                ),
-                'gamePause': (BuildContext context, ColoGamePage game) => FadeAnimation(
-                    start: 0,
-                    end: 1,
-                    duration: const Duration(milliseconds: 1000),
-                    child: GamePauseDialog(
-                        adMob: adMob,
-                        account: account,
-                        onUnpause: () => game.manager.handleGamePause()
-                    )
-                )
+        child: (_) {
+          bool isGamePaused = false;
+          return CorePage(
+              pageName: 'Game',
+              userId: auth.currentUser!.uid,
+              onPopInvoked: (_, __) {
+                if (!isGamePaused) {
+                  Modular.to.navigate('/');
+                }
               },
-              game: ColoGamePage(
+              render: (sharedPrefs, account) => GameWidget(
+                overlayBuilderMap: {
+                  'gameOver': (BuildContext context, ColoGamePage game) {
+                    isGamePaused = true;
+                    return SlideTransitionAnimation(
+                      duration: const Duration(milliseconds: 1000),
+                      getStart: () => const Offset(0, 1),
+                      getEnd: () => const Offset(0, 0),
+                      child: GameOverDialog(
+                          onRestart: () async {
+                            isGamePaused = false;
+                            game.manager.restartGame();
+                          },
+                          level: game.manager.level,
+                          currentScore: game.manager.score,
+                          account: account,
+                          adMob: adMob
+                      ),
+                    );
+                  },
+                  'gamePause': (BuildContext context, ColoGamePage game) => FadeAnimation(
+                      start: 0,
+                      end: 1,
+                      duration: const Duration(milliseconds: 1000),
+                      child: GamePauseDialog(
+                          adMob: adMob,
+                          account: account,
+                          onUnpause: () => game.manager.handleGamePause()
+                      )
+                  )
+                },
+                game: ColoGamePage(
                     sharedPrefs: sharedPrefs,
                     level: r.args.queryParams['level'],
                     limiter: bool.parse(r.args.queryParams['limiter'] ?? 'false'),
                     disabled: false
                 ),
-            )
-        )
+              )
+          );
+        }
     );
   }
 }

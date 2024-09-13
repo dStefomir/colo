@@ -55,10 +55,12 @@ class CorePage extends HookConsumerWidget {
                 future: UserMessagingPlatform.instance.showConsentForm(),
                 builder: (_, __) => child
             );
+          } else {
+            return child;
           }
         }
 
-        return child;
+        return const SizedBox.shrink();
       }
   );
 
@@ -78,7 +80,7 @@ class CorePage extends HookConsumerWidget {
                     if (snapshot.hasData) {
                       final account = Account.fromSnapshot(snapshot.data);
                       final child = PopScope(
-                          onPopInvoked: (shouldPop) {
+                          onPopInvokedWithResult: (shouldPop, result) {
                             if (onPopInvoked != null) {
                               onPopInvoked!(shouldPop, ref);
                             }
